@@ -89,6 +89,21 @@ git reset HEAD test.txt
 git commit -a text.txt 
 ```
 
+```shell
+#提交所有文件
+git add -A
+git commit -a -m "comment"
+git push
+```
+
+```shell
+git add -A  #提交所有变化
+git add -u  #提交被修改（modified）和被删除的（deleted）文件，不包含新增的文件（new）
+git add .   #提交被修改（modified）和新文件（new），不包括被删除（deleted）的文件
+```
+
+
+
 #### 3.4.查看历史记录
 
 ```shell

@@ -222,11 +222,11 @@ zoom:1;
 > 使用table优化高度塌陷
 
 ```css
-.clearfix:after{
-    content:"";
-    display:table;
-    clear:both;
-}
+    .clearfix:after{
+        content:"";
+        display:table;
+        clear:both;
+    }
 ```
 
 > 使用table解决父子元素外边距重叠问题
@@ -1206,7 +1206,99 @@ filter:appha(opacity=50); /*此方式支持IE6,但是在IE Tester中不支持*/
 
 
 
-## 9.7.等高布局
+## 9.7.伪等高布局
+
+圣杯布局+为等高布局，使背景随内容撑开
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      /*防止缩放时，中间缩没了*/
+      min-width: 600px; /*left*2+right*/
+    }
+
+    .header, .footer {
+      height: 50px;
+      background-color: #fafabc;
+      text-align: center;
+      border: 1px solid rgba(0, 0, 0, 0.78);
+    }
+
+    .center {
+      padding: 0 200px;/*显示中间内容*/
+      overflow:hidden;  
+    }
+
+    .middle {
+      float: left;
+      width: 100%;
+      background-color: deeppink;
+    }
+
+    .left, .right {
+      width: 200px;
+      background-color: pink;
+    }
+
+    .left {
+      position: relative;
+      left:-200px;
+      margin-left: -100%;
+      float: left;
+    }
+
+    .right {
+      position: relative;
+      right:-200px;
+      /*自身的宽度*/
+      margin-left: -200px;
+      float: left;
+    }
+
+    .clearfix:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    /*兼容IE6*/
+    .clearfix {
+      *zoom: 1;
+    }
+    /*伪等高布局*/
+    .middle,.left,.right{
+      padding-bottom: 10000px;
+      margin-bottom: -10000px;
+    }
+  </style>
+</head>
+<body>
+    <div class="header">header</div>
+    <!--高度塌陷-->
+    <div class="center clearfix">
+      <!--middle优先加载-->
+      <div class="middle">
+    
+      </div>
+      <div class="left">left</div>
+      <div class="right">right</div>
+    </div>
+    <div class="footer">footer</div>
+</body>
+</html>
+```
+
+
 
 
 
