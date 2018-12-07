@@ -1,6 +1,6 @@
-### 一、软件管理
+# 一、软件管理
 
-#### 1.1.`apt`
+1.1.`apt`
 
 `apt（advanced packaging tool）`是安装包管理工具，在`ubuntu`下可使用`apt`命令安装、删除、清理软件包。
 
@@ -50,9 +50,7 @@ apt-get install vim
 apt-cache show vim 
 ```
 
-
-
-#### 1.2.修改仓库地址
+## 1.2.修改仓库地址
 
 `/etc/apt/source.list`指定了官方的软件仓库地址
 
@@ -92,16 +90,16 @@ sudo apt-get dist-upgrade
 echo '' > source.list   #清空文件内容，需要root下执行
 ```
 
-### 二、用户管理
+# 二、用户管理
 
-#### 2.1.设置`root`的密码
+## 2.1.设置`root`的密码
 
 ```shell
 #设置用户密码
 sudo passwd 
 ```
 
-#### 2.2.远程登录`ubuntu`
+## 2.2.远程登录`ubuntu`
 
 ```shell
 #安装ssh，openssh-server包含服务器端和客户端

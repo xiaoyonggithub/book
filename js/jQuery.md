@@ -1,12 +1,12 @@
-## 一、jQuery
+# 一、jQuery
 
-### 1.1.jQuery的两把利器
+## 1.1.jQuery的两把利器
 
 jQuery的核心函数：`$或jQuery`
 
 jQuery的核心对象：执行`$()`返回的对象
 
-### 1.2.作为函数调用
+## 1.2.作为函数调用
 
 1).参数为函数：当DOM加载完成后，执行此回调函数
 
@@ -34,7 +34,7 @@ $(this).html()
 $("<button id='save'>保存</button>")
 ```
 
-### 1.3.作为对象使用`$.xxx()`
+## 1.3.作为对象使用`$.xxx()`
 
 1).`$.each()`：隐式遍历数组
 
@@ -62,7 +62,7 @@ str.trim();
 $.trim(str);
 ```
 
-### 1.4.对象操作函数
+## 1.4.对象操作函数
 
 1).`index()`：得到在所在兄弟元素中的下标 
 
@@ -98,7 +98,7 @@ for(var i = 0 ; i< weiArr.length;i++){
 console.log(weiArr.forEach,$buttons.forEach) //undefined undefined
 ```
 
-### 1.5.选择器
+## 1.5.选择器
 
 ```js
 $('div.box')  //选择所有div且class为box，交集
@@ -120,7 +120,7 @@ $('input[type=text]') //属性值可以不加引号
 $('input[type="text"]')
 ```
 
-### 1.6.工具
+## 1.6.工具
 
 1).`$.each()`
 
@@ -145,12 +145,12 @@ $.each(obj,function(key,val){
 
 5).`$.parseJSON(json)`解析json字符串转化为js对象/数组
 
-### 1.7.属性操作
+## 1.7.属性操作
 
 - `attr()`：操作属性值不为布尔值的属性
 - `prop()`：操作属性值为布尔值的属性
 
-### 1.8.CSS操作
+## 1.8.CSS操作
 
 - css()中的可以不用加`px`
 
@@ -179,7 +179,7 @@ $(document.body).scrollTop() + $(document.documentElement).scrollTop()
 $('html,body').scrollTop(height)
 ```
 
-### 1.9.尺寸
+## 1.9.尺寸
 
 1).内容尺寸
 
@@ -196,7 +196,7 @@ $('html,body').scrollTop(height)
 - `outerHeight(false/true)`：height+padding+border，若是true，加上margin
 - `outerWidth(false/true)`：width+padding+border，若是true，加上margin
 
-### 1.10.过滤
+## 1.10.过滤
 
 - `first()`
 - `last()`
@@ -219,7 +219,7 @@ $lis.not('[type!=text]')
 $lis.has('sapn')  //有span的li
 ```
 
-### 1.11.查找
+## 1.11.查找
 
 - `children()`：查找子元素
 - `find()`：查找后代元素
@@ -228,7 +228,7 @@ $lis.has('sapn')  //有span的li
 - `prevall()`：查找前面的所有同辈元素
 - `siblings()`：查找所有的兄弟元素
 
-### 1.12.文档处理
+## 1.12.文档处理
 
 - `appendTo()`
 
@@ -237,7 +237,7 @@ $('<span>appendTo</span>').appendTo('#li') //可以直接传入选择器
 $('<span>appendTo</span>').appendTo($('#li'))
 ```
 
-### 1.13.事件
+## 1.13.事件
 
 1).事件的绑定
 
@@ -319,30 +319,22 @@ $('ul').delegate('li','click',function(){
 
 
 
-#### 1.13.1.`mouseover`与`mouseenter`的区别
+## 1.13.1.`mouseover`与`mouseenter`的区别
 
 - `mouseover`：在移入子元素也会触发事件，对应`mouseout(移出子元素也会触发事件)`
 
 - `mouseenter`：只在移入当前元素才会触发事件，对应`mouseleave(只有移出当前元素才会触发事件)`
 - `hover()`使用的是`mouseenter()`和`mouseleave()`
 
-#### 
+## 
 
 
 
 
 
-## 二、实例
+# 二、实例
 
-### 2.1.表格隔行变色
-
-```js
-
-```
-
-
-
-### 2.2.`Tab`页切换
+## 2.1.表格隔行变色
 
 ```js
 
@@ -350,7 +342,15 @@ $('ul').delegate('li','click',function(){
 
 
 
-### 2.3.回到顶部
+## 2.2.`Tab`页切换
+
+```js
+
+```
+
+
+
+## 2.3.回到顶部
 
 ```html
 <div id="top" style="position: fixed;bottom: 20px;right: 20px;height: 40px;width: 40px;background: #746758;text-align: center;padding: 5px;">回到顶部</div>
@@ -381,7 +381,7 @@ $(function(){
 })
 ```
 
-### 2.4.反选
+## 2.4.反选
 
 ![1538057391843](E:\typora\images\1538057391843.png)
 

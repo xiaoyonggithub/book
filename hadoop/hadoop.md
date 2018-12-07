@@ -84,6 +84,19 @@ MapRedure将计算分为
 
 
 
+
+
+## 1.11.`Hadoop`的子项目
+
+- `HDFS`：Hadoop分布式文件系统
+- `Map/Reduce`
+- `Zookeeper`
+- `Pig`
+- `Hive`
+- `Hbase`
+
+
+
 # 二、环境搭建
 
 ## 2.1.虚拟机环境准备
