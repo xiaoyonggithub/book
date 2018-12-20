@@ -76,8 +76,6 @@ where a.sql_address =b.address order by cpu_time/executions desc;
 
 ```sql
 
-
-
 alter system kill session'532,4562' 
 ```
 
@@ -161,15 +159,13 @@ end;
 /  
 ```
 
-6、	job_queue_processes工作队列进程
+6、job_queue_processes工作队列进程
 
 ```sql
 show parameter job_queue_processes ;  
 --修改用户system中job_queue_processes的值
 alter system set job_queue_processes=100;  
 ```
-
-
 
 
 
@@ -346,10 +342,6 @@ select * from dba_roles;
 select * from dba_role_privs where grantee = upper('dba');
 select * from role_role_privs where role = upper('dba');
 ```
-
-
-
-
 
 
 

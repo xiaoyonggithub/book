@@ -30,7 +30,7 @@
 - Cloudera 在大型互联网企业中用的较多
 - Hortonworks 文档较好。
 
-## 1.4.Hadoop的优势
+## 1.4.Hadoop的优势  
 
 - 高可靠性:因为Hadoop假设计算元素和存储会出现故障，因为它维护多个工作数据副本，在出现故障时可以对失败的节点重新分布处理。 
 - 高扩展性:在集群间分配任务数据，可方便的扩展数以千计的节点
@@ -101,21 +101,87 @@ MapRedure将计算分为
 
 ## 2.1.虚拟机环境准备
 
+1. 修改IP地址
 
+```shell
+vim /etc/udev/rules.d/70-snap.core.rules  #查看物理ip地址
+vim /etc/sysconfig/network-scripts/igcfg-eth0 #修改物理ip地址
+vim /etc/sysconfig/network  #修改主机名称
+vim /etc/hosts #配置ip与主机名的映射关系
+```
 
-## 2.2.安装JDK
+2. 关闭防火墙
 
+3. 配置用户具有root权限
 
+```shell
+vim /etc/sudoers
+```
 
-## 2.3.安装Hadoop
+4. 创建目录
 
+```shell
+sudo mkdir /opt/module  #放置安装程序
+sudo mkdir /opt/software #放置软件包
+sudo chown xiaoyong:xiaoyong module/ software/ #修改所有者和所有组
+```
 
+5. 安装jdk
 
-## 2.4.Hadoop目录结构
+```shell
+tar -zxvf jdk.tar.gz -C /opt/module/
+pwd #查看当前路径
+#配置环境变量
+export JAVA_HOME=/opt/module/jdk
+export PATH=$PATH:$JAVA_HOEM/bin
+source /etc/profile
+java -version
+```
 
+6. 安装hadoop
+
+```shell
+tar -zxvf hadoop -C /opt/module
+pwd
+#配置环境变量
+export HADOOP_HOME=/opt/module/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin
+export PATH=$PATH:$HADOOP_HOME/sbin
+source /etc/profile
+hadoop
+```
+
+## 2.2.Hadoop目录结构
+
+- `bin` 命令
+
+- `etc` 配置文件
+
+- `lib` 本地库
+
+- `share` 文档和案例
 
 
 # 三、Hadoop的运行模式
+
+Hadoop的运行模式
+
+- 本地模式
+- 伪分布式模式
+- 完全分布式模式
+
+## 3.1.本地模式
+
+```shell
+cp etc/hadoop/*.xml input/
+bin/hadoop jar share/hadoop/mapreduce/hadoop-  grep input/ output 
+
+
+```
+
+
+
+`jps` java的查看进程，需要安装jdk
 
 
 

@@ -1,5 +1,7 @@
 
 
+
+
 ## 一、滚动条
 
 #### 1.1.`Easy Scroll`
@@ -386,3 +388,70 @@ $.each(json,function(key){
 });
 ```
 
+# 九、js模板引擎
+
+```js
+var TemplateEngine = function (html, options) {
+    var re = /<%([^%>]+)?%>/g, reExp = /(^( )?(if|for|else|switch|case|break|{|}))(.*)?/g, code = 'var r=[];\n',
+        cursor = 0, match;
+    var add = function (line, js) {
+        js ? (code += line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
+        (code += line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
+        return add;
+    }
+    while (match = re.exec(html)) {
+        add(html.slice(cursor, match.index))(match[1], true);
+        cursor = match.index + match[0].length;
+    }
+    add(html.substr(cursor, html.length - cursor));
+    code += 'return r.join("");';
+    return new Function(code.replace(/[\r\t\n]/g, '')).apply(options);
+}
+```
+
+```js
+var template =
+    'My skills:' +
+    '<%if(this.showSkills) {%>' +
+    '<%for(var index in this.skills) {%>' +
+    '<a href="#"><%this.skills[index]%></a>' +
+    '<%}%>' +
+    '<%} else {%>' +
+    '<p>none</p>' +
+    '<%}%>';
+console.log(TemplateEngine(template, {
+    skills: ["js", "html", "css"],
+    showSkills: true
+}));
+```
+
+[参见于](https://juejin.im/post/5c0e5042f265da61524d3a43)
+
+
+
+# 十、`iframe`
+
+- `contentWindow`返回`<iframe>`的window对象，可以通过该window对象访问iframe的文档和内部DOM
+- 
+
+## 10.1.`iframe`高度自适应子页面的高度
+
+```js
+
+```
+
+
+
+`document.documentElement.scrollWidth`获取高度的真实值
+
+
+
+
+
+# 十一、图片压缩
+
+- `canvas.getContext(contextType, contextAttributes);`返回[`canvas`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/canvas) 的上下文
+
+```
+
+```
