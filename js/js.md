@@ -452,6 +452,195 @@ console.log(TemplateEngine(template, {
 
 - `canvas.getContext(contextType, contextAttributes);`返回[`canvas`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/canvas) 的上下文
 
+```js
+/**
+ * 通过url加载图片对象
+ * @param url 图片的url
+ * @param callback  回调函数
+ */
+function urltoImage(url, callback) {
+    var img = new Image();
+    img.src = url;
+    img.onload = function () {
+        callback(img);
+    }
+}
+
+/**
+ * 将Image对象转化为Canvas对象
+ * @param image
+ * @returns {HTMLElement}
+ */
+function imageToCanvas(image) {
+    var cvs = document.createElement("canvas");
+    var ctx = cvs.getContext('2d');//获取canvas的上下文
+    cvs.width = image.width;
+    cvs.height = image.height;
+    ctx.drawImage(image, 0, 0, cvs.width, cvs.height);
+    return cvs;
+}
+
+/**
+ * 将Canvas对象压缩为Blob对象
+ * @param canvas
+ * @param quality 压缩的质量0-1
+ * @param callback 回调函数
+ */
+function canvasResizetoFile(canvas, quality, callback) {
+    canvas.toBlob(function (blob) {
+        callback(blob);
+    }, 'image/jpeg', quality);
+}
+
+/**
+ * Canvas对象压缩为dataURL字符串
+ * @param canvas
+ * @param quality 压缩质量0-1
+ * @returns {string}
+ */
+function canvasResizetoDataURL(canvas, quality) {
+    return canvas.toDataURL('image/jpeg', quality);
+}
+
+/**
+ * 将 File（Blob）类型文件转变为dataURL字符串
+ * @param file        File（Blob）类型文件
+ * @param callback   回调函数
+ */
+function filetoDataURL(file, callback) {
+    var reader = new FileReader();
+    reader.onloadend = function (e) {
+        callback(e.target.result);
+    };
+    reader.readAsDataURL(file);
+}
+
+/**
+ * 将dataURL字符串转变为Image类型文件
+ * @param dataurl  dataURL字符串
+ * @param callback 回调函数
+ */
+function dataURLtoImage(dataurl, callback) {
+    var img = new Image();
+    img.onload = function () {
+        callback(img);
+    };
+    img.src = dataurl;
+}
+
+/**
+ * 将一串dataURL字符串转变为Blob类型对象
+ * @param dataurl  dataURL字符串
+ * @returns {Blob}
+ */
+function dataURLtoFile(dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type: mime});
+}
+
+
+/**
+ * 压缩file对象后返回file对象
+ * @param file
+ * @param quality  压缩质量
+ * @param callback
+ */
+function fileResizetoFile(file,quality,callback){
+    filetoDataURL (file,function(dataurl){
+        dataURLtoImage(dataurl,function(image){
+            canvasResizetoFile(imagetoCanvas(image),quality,callback);
+        })
+    })
+}
 ```
 
+# 十二、剪切板操作
+
+## 12.1.复制、剪切、粘贴的事件
+
+- `copy`复制操作时触发
+
+- `cut`剪切操作时触发
+
+- `paste`粘贴时触发
+
+- 上面每个事件都有一个`before`事件，分别是
+
+  - `beforecopy`
+  - `beforecut`
+  - `beforepaste`
+
+  - 一般不使用，因为不同浏览器触发条件不一致
+
+```js
+document.body.oncopy = e => {
+    // 监听全局复制 做点什么
+}
+// 还有这种写法：
+document.addEventListener("copy", e => {
+    // 监听全局复制 做点什么
+});
+
+//也可以为某些dom单独添加剪切板事件
+let test1 = document.querySelector('#test1');
+test1.oncopy = e => {
+    // 监听test1发生的复制事件 做点什么
+    // test1发生的复制事件会触发回调，其他地方不会触发回调
+}
 ```
+
+## 12.2.`clipboardData`
+
+`clipboardData`用于访问和修改剪切板中的数据，兼容性：
+
+- 在IE中`clipboardData`是window对象的属性
+- 在`Chrome`、`Safari`和`Firefox`中，`clipboardData`对象是相应的`event`对象的属性
+
+```js
+document.body.oncopy = e => {
+    //使用时兼容性处理
+    let clipboardData = (e.clipboardData || window.clipboardData); 
+    // 获取clipboardData对象 + do something
+}
+```
+
+`clipboardData`的方法：
+
+- `getData()`获取剪切板的数据，`getData('text')`设置要取得数据的格式
+  - 在chorme上只有`paste`粘贴的时候才能用`getData()`访问到数据
+
+```js
+//在chorme下：
+document.body.onpaste = e => {
+    let clipboardData = (e.clipboardData || window.clipboardData); // 兼容处理
+    //clipboardData.getData('text')只能获取粘贴时的数据
+    console.log('要粘贴的数据', clipboardData.getData('text')); 
+}
+
+document.body.oncopy = e => {
+    //window.getSelection(0).toString() 获取复制和剪切的数据
+    console.log('被复制的数据:', window.getSelection(0).toString());
+}
+
+```
+
+- `setData()`设置剪切板的数据，`setData('text',放在剪切板的文本)`
+- `clearData()`?
+
+## 12.3.实现类知乎/掘金复制大段文本添加版权信息
+
+
+
+
+
+## 12.1掘金、知乎复制大段文本如何不显示版权信息
+
+```js
+document.oncopy = 
+    event => event.clipboardData.setData('text',window.getSelection(0).toString());
+```
+
