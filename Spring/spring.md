@@ -1,6 +1,6 @@
-### 一、Spring概念 
+# 一、Spring概念 
 
-#### 1.1.Spring的模块划分
+## 1.1.Spring的模块划分
 
 ![spring overview](E:\typora\images\spring-overview.png) 
 
@@ -32,21 +32,21 @@
 
 
 
-#### 1.2.IOC（控制反转）
+## 1.2.IOC（控制反转）
 
 
 
-#### 1.3.DI(依赖注入)
+## 1.3.DI(依赖注入)
 
 
 
-#### 1.4.AOP（面向切面编程）
+## 1.4.AOP（面向切面编程）
 
 
 
-### 二、Spring配置文件
+# 二、Spring配置文件
 
-#### 2.1.配置文件的头部
+## 2.1.配置文件的头部
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -74,7 +74,7 @@
        ">
 ```
 
-#### 2.2.`classpath:`与`classpath*:`的区别
+## 2.2.`classpath:`与`classpath*:`的区别
 
 `classpath:`与`classpath*:`都是从类路径(WEB-INF/class)下加载资源文件
 
@@ -128,7 +128,7 @@ public interface ResourcePatternResolver extends ResourceLoader {
 
 
 
-#### 2.3.在路径上使用通配符`*`进行模糊查找 
+## 2.3.在路径上使用通配符`*`进行模糊查找 
 
 Srping匹配资源路径时支持Ant模式通配符匹配，Spring提供AntPathMatcher来进行Ant风格的路径匹配。 
 
@@ -145,9 +145,9 @@ Srping匹配资源路径时支持Ant模式通配符匹配，Spring提供AntPathM
 * [*]匹配零个或多个字符
 
 
-### 三、创建bean的方式
+# 三、创建bean的方式
 
-#### 3.1.配置文件创建`<bean>`
+## 3.1.配置文件创建`<bean>`
 
 ```xml
 <!--class:bean全类名，通过反射的方式在IOC容器创建bean,要求必须提供无参构造器
@@ -155,7 +155,7 @@ Srping匹配资源路径时支持Ant模式通配符匹配，Spring提供AntPathM
 <bean id="emp" class="com.xy.pojo.Emp"></bean>
 ```
 
-#### 3.2.通过静态工厂方法配置bean
+## 3.2.通过静态工厂方法配置bean
 
 静态工厂方法不需要创建工厂本身，直接创建Cars的bean对象
 
@@ -232,7 +232,7 @@ public class CarFactory {
 </bean>
 ```
 
-#### 3.3.通过实例工厂方法配置bean
+## 3.3.通过实例工厂方法配置bean
 
 需要先创建工厂的bean对象，再调用工厂方法返回Cars的bean对象
 
@@ -311,7 +311,7 @@ public class InstanceCarFactory {
 </bean>
 ```
 
-#### 3.4.`FactoryBean`配置bean
+## 3.4.`FactoryBean`配置bean
 
 若配置的bean需要用到spring中其他的bean时，可使用此方式配置
 
@@ -372,7 +372,7 @@ public class CarFactoryBean implements FactoryBean<Cars> {
 </bean>
 ```
 
-#### 3.5.基于注解配置bean
+## 3.5.基于注解配置bean
 
 命名规则：`<context:component-scan>`扫描组件时，默认的命名规则是类名首字母小写。
 
@@ -412,7 +412,7 @@ public class UserServiceImpl implements UserService {
 </context:component-scan>
 ```
 
-##### 3.5.1.过滤的方式如下：
+### 3.5.1.过滤的方式如下：
 
 | `FilterType`                 | 描述                    |
 | ---------------------------- | ----------------------- |
@@ -430,7 +430,7 @@ public class UserServiceImpl implements UserService {
 </context:component-scan>
 ```
 
-#### 3.6.组件的装配
+## 3.6.组件的装配
 
 Spring提供一个后置处理器`AutowiredAnnotationBeanPostProcessor`实现自动装配
 
@@ -440,7 +440,7 @@ Spring提供一个后置处理器`AutowiredAnnotationBeanPostProcessor`实现自
 | `@Autowired` | 可放在普通字段、构造方法、一切据用参数的方法`setter`上 |
 | `@Resource`  | 没有required属性                                       |
 
-##### 3.6.1.`@Autowired`
+### 3.6.1.`@Autowired`
 
 `@Autowired`装配时，先判断该类型的bean的个数:
 
@@ -501,7 +501,7 @@ public class UserServiceImpl implements UserService {
 * 集合：Spring读取集合的类型，然后装配与之兼容的bean
 * Map: 将bean的名称作为key,将bean作为value进行装配
 
-#### 
+## 
 
 
 
@@ -509,7 +509,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-### 四、IOC容器
+# 四、IOC容器
 
 IOC容器在读取bean配置并实例化之前，需先对IOC容器实例化，实例化的方式：
 
@@ -526,9 +526,9 @@ IOC容器在初始化上下文的时候，就实例化所有的单实例bean
 
 
 
-### 五、依赖注入的方式
+# 五、依赖注入的方式
 
-#### 5.1.属性注入
+## 5.1.属性注入
 
 属性注入就是通过setter方法注入属性,最常用的方式
 
@@ -538,7 +538,7 @@ IOC容器在初始化上下文的时候，就实例化所有的单实例bean
 </bean>
 ```
 
-#### 5.2.构造器注入
+## 5.2.构造器注入
 
 ```xml
 <!--name:参数的名称
@@ -559,11 +559,11 @@ IOC容器在初始化上下文的时候，就实例化所有的单实例bean
  }
 ```
 
-#### 5.3.工厂方法注入
+## 5.3.工厂方法注入
 
 
 
-#### 5.4.注入字面值
+## 5.4.注入字面值
 
 - 字面值(可用字符串表示的值)可通过`<value>`标签或`value`属性注入;
 - 基本数据类型及其包装类型、String等类型可使用字面值的方式注入;
@@ -580,7 +580,7 @@ IOC容器在初始化上下文的时候，就实例化所有的单实例bean
 
 注意：`<![CDATA[]]>`只能在标签中使用，不能用于属性中
 
-#### 5.5.注入pojo
+## 5.5.注入pojo
 
 注入pojo对象，与其他的pojo建立关系
 
@@ -611,7 +611,7 @@ IOC容器在初始化上下文的时候，就实例化所有的单实例bean
 </bean>
 ```
 
-#### 5.6.注入null
+## 5.6.注入null
 
 `<null/>`表示null值，但是注入null的意义不大，因为不注入值时就默认为null;
 
@@ -623,7 +623,7 @@ IOC容器在初始化上下文的时候，就实例化所有的单实例bean
 </bean>
 ```
 
-#### 5.7.级联属性注入
+## 5.7.级联属性注入
 
 ```xml
 <bean id="dept" class="com.xy.pojo.Dept"></bean>
@@ -637,7 +637,7 @@ IOC容器在初始化上下文的时候，就实例化所有的单实例bean
 
 此处的dept.name不能直接创建dept对象，故需要先创建dept对象并注入在emp中，才能使用级联属性赋值;
 
-#### 5.8.集合属性的注入
+## 5.8.集合属性的注入
 
 list属性值的注入
 
@@ -697,7 +697,7 @@ properties属性值的注入
     </bean>
 ```
 
-#### 5.9.配置独立的集合bean
+## 5.9.配置独立的集合bean
 
 1. 需要导入util名称空间
 
@@ -725,7 +725,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/util
 </bean>
 ```
 
-#### 5.10.`p`命名空间属性赋值
+## 5.10.`p`命名空间属性赋值
 
 1. 导入p命名空间
 
@@ -739,7 +739,7 @@ xmlns:p="http://www.springframework.org/schema/p"
 <bean id="dept" class="com.xy.pojo.Dept" p:deptname="土木学院" p:emps-ref="emp"></bean>
 ```
 
-#### 5.11.泛型依赖注入`spring4.x`
+## 5.11.泛型依赖注入`spring4.x`
 
 ```java
 public class User {
@@ -796,7 +796,7 @@ insert ...
 com.xy.dao.UserDao@769a1df5
 ```
 
-### 六、自动装配
+# 六、自动装配
 
 IOC能自动装配bean,只需要自定自动装配的模式，自动装配的模式如下：
 
@@ -804,7 +804,7 @@ IOC能自动装配bean,只需要自定自动装配的模式，自动装配的模
 * `byName`:根据名称自动装配，目标的名称必须与属性名相同;
 * `constructor`:构造器自动装配，当Bean存在多个构造器时，会很复杂不推荐使用;
 
-#### 6.1.`byName`
+## 6.1.`byName`
 
 ```java
 public class UserDao {
@@ -838,7 +838,7 @@ public class UserController {
 <bean id="userController" class="com.xy.controller.UserController" autowire="byName"></bean>
 ```
 
-#### 6.2.`byType`
+## 6.2.`byType`
 
 ```xml
 <bean id="userDao" class="com.xy.dao.UserDao"></bean>
@@ -846,16 +846,16 @@ public class UserController {
 <bean id="userController" class="com.xy.controller.UserController" autowire="byType"></bean>
 ```
 
-#### 6.3.自动装配的缺点
+## 6.3.自动装配的缺点
 
 * 设置了`autowire`自动装配的属性，所有的属性值都会自动装配，不能指定个别属性自动装配;
 * 两种装配方式不能同时使用
 
 
 
-### 七、bean之间的关系
+# 七、bean之间的关系
 
-#### 7.1.继承
+## 7.1.继承
 
 * parent继承bean的配置，子bean可覆盖父bean的配置
 * 父bean可以作为一个配置模板，也可以是一个bean实例
@@ -874,7 +874,7 @@ public class UserController {
 
 注意：不是所有的属性都被继承，如abstract就不会被继承
 
-#### 7.2.依赖
+## 7.2.依赖
 
 ```xml
 <bean id="car" class="com.xy.pojo.Car" p:company="大众"></bean>
@@ -883,14 +883,14 @@ public class UserController {
 <bean id="person" class="com.xy.pojo.Person" p:age="20" p:name="小米" p:car-ref="car" depends-on="car"></bean>
 ```
 
-### 八、bean的作用域
+# 八、bean的作用域
 
 默认的作用域是` scope="singleton"`,作用域分类：
 
 * `singleton`在IOC容器创建的时候初始bean，在容器的整个生命周期值创建一个bean
 * `prototype`在获取的时候创建bean，每次的获取的都是一个新的bean
 
-### 九、引入外部属性文件
+# 九、引入外部属性文件
 
 Spring提供了一个BeanFactory的后置处理器`PropertyPlaceholderConfigurer`加载外部的属性文件
 
@@ -916,7 +916,7 @@ Spring提供了一个BeanFactory的后置处理器`PropertyPlaceholderConfigurer
 </bean>
 ```
 
-### 十、SpEL表达式
+# 十、SpEL表达式
 
 SpEL可以为bean的属性动态赋值
 
@@ -925,31 +925,31 @@ SpEL可以为bean的属性动态赋值
 * 比较运算：`<, >, ==, <=, >=, lt, gt, eq, le, ge `
 * 连接字符串`+`
 
-#### 10.1.引用其它的对象
+## 10.1.引用其它的对象
 
 ```xml
 <property name="car" value="#{car}"/>
 ```
 
-#### 10.2.引用其它对象的属性
+## 10.2.引用其它对象的属性
 
 ```xml
 <property name="city" value="#{address.city}"/>
 ```
 
-#### 10.3.调用方法
+## 10.3.调用方法
 
 ```xml
 
 ```
 
-#### 10.4.链式调用
+## 10.4.链式调用
 
 ```xml
 
 ```
 
-#### 10.5.调用静态方法或静态属性
+## 10.5.调用静态方法或静态属性
 
 ```xml
 <bean id="car" class="com.xy.pojo.Car">
@@ -960,11 +960,11 @@ SpEL可以为bean的属性动态赋值
 </bean>
 ```
 
-#### 10.6.逻辑运算and, or, not, | 
+## 10.6.逻辑运算and, or, not, | 
 
 
 
-#### 10.7.正则表达式（matches）
+## 10.7.正则表达式（matches）
 
 
 
@@ -995,7 +995,7 @@ SpEL可以为bean的属性动态赋值
 </bean>
 ```
 
-### 十一、bean的生命周期
+# 十一、bean的生命周期
 
 Spring提供一个后置处理器`BeanPostProcessor`，允许在调用初始化方法``init()`的前后对bean进行操作;后置处理器是对IOC容器的所有bean进行逐一扫描处理;
 
@@ -1125,7 +1125,7 @@ Cars{brand='Auid'}
 destroy...
 ```
 
-### 十二、AOP
+# 十二、AOP
 
 * 切面(Aspect):横切关注点(跨域应用程序多个模块的功能)被模块化的特殊对象
 * 通知(Advice):切面必须完成的工作
@@ -1134,7 +1134,7 @@ destroy...
 * 连接点(Joinpoint):程序执行的某个特定位置,如某个方法执行前、执行后或抛出异常后等; 
 * 切点(Pointcut):每个类都有多个连接点,它使用类和方法作为连接点的查询条件,`Pointcut`接口描述切点
 
-#### 12.1.动态代理实现日志
+## 12.1.动态代理实现日志
 
 ```java
 public class User {
@@ -1278,7 +1278,7 @@ public void test09() {
 }
 ```
 
-#### 12.2.`AspectJ`实现日志基于注解
+## 12.2.`AspectJ`实现日志基于注解
 
 AspectJ最流行的AOP框架
 
@@ -1399,7 +1399,7 @@ public void test08() {
 }
 ```
 
-#### 12.3.`AspectJ`支持的通知类型
+## 12.3.`AspectJ`支持的通知类型
 
 | 通知类型          | 描述                                           |
 | ----------------- | ---------------------------------------------- |
@@ -1495,7 +1495,7 @@ public class LoggingAspect {
 }
 ```
 
-#### 12.4.通知执行的位置
+## 12.4.通知执行的位置
 
 ```java
 InvocationHandler handler = new InvocationHandler() {
@@ -1515,9 +1515,9 @@ InvocationHandler handler = new InvocationHandler() {
 };
 ```
 
-#### 12.5.`pointCut()`
+## 12.5.`pointCut()`
 
-##### 12.5.1.`pointCut()`切点的配置规则
+### 12.5.1.`pointCut()`切点的配置规则
 
 ```java
 @Before("execution(public Integer com.xy.serivce.UserService.insert())")
@@ -1532,7 +1532,7 @@ InvocationHandler handler = new InvocationHandler() {
 
 `[..]`表示任意参数
 
-##### 12.5.2.抽取公共的切点方法
+### 12.5.2.抽取公共的切点方法
 
 ```java
 @Order(1)
@@ -1567,7 +1567,7 @@ public class LoggingAspect {
 
 * 不同的包下：`com.xy.common.LoggingAspect.pointcut()`
 
-#### 12.6.切面的优先级
+## 12.6.切面的优先级
 
 `@Order(1)`设置切面的优先级，值越小优先级越高
 
@@ -1579,7 +1579,7 @@ public class LoggingAspect {
 }
 ```
 
-#### 12.7.`AspectJ`实现日志基于XML
+## 12.7.`AspectJ`实现日志基于XML
 
 ```java
 public class User {
@@ -1725,7 +1725,7 @@ public class LoggingAspectXml {
 </beans>
 ```
 
-#### 12.8.为一个切面设置多个切点
+## 12.8.为一个切面设置多个切点
 
 可以使用`&&、||、!、and、or`等
 
@@ -1733,9 +1733,9 @@ public class LoggingAspectXml {
 
 
 
-### 十三、`JdbcTempalte`
+# 十三、`JdbcTempalte`
 
-#### 13.1.配置`JdbcTemplate`
+## 13.1.配置`JdbcTemplate`
 
 ```xml
 <!--加载配置文件jdbc.properties-->
@@ -1755,7 +1755,7 @@ public class LoggingAspectXml {
 </bean>
 ```
 
-#### 13.2.常用方法的使用
+## 13.2.常用方法的使用
 
 ```java
 @Before
@@ -1813,7 +1813,7 @@ public void queryForObjectTest2() {
 }
 ```
 
-#### 13.3.在项目中的使用
+## 13.3.在项目中的使用
 
 方式一：直接注入JdbcTemplate
 
@@ -1884,7 +1884,7 @@ public class DeptDao extends JdbcDaoSupport {
 </bean>
 ```
 
-#### 13.4.具名参数
+## 13.4.具名参数
 
 ```xml
 <!--没有无参构造器-->
@@ -1930,22 +1930,22 @@ public void testNamedParameterJdbcTemplate2(){
 }
 ```
 
-### 十四、事务管理
+# 十四、事务管理
 
-#### 14.1.事务的四个属性（ACID）
+## 14.1.事务的四个属性（ACID）
 
 * 原子性`atomicity`：事务是一个原子操作，有一系列动作组成。务的原子性确保动作要么全部完成，要么全不起作用;
 * 一致性`consistency`:一旦事务动作完成，事务就提交。数据和资源处于满足业务规则的一致状态中;
 * 隔离性`isolation`：可能许多事务会同时处理相同的数据，因此每个事务都应该与其他事务隔开，防止数据损坏;
 * 持久性`durability`：一旦事务完成，无论发生什么系统错误，它的结果都不应该受影响。通常情况下，事务的结果被写入到持久化存储器中;
 
-#### 14.2.事务管理器的实现
+## 14.2.事务管理器的实现
 
 事务的管理器的顶层接口`PlatformTransactionManager`
 
 ![1532437449857](E:\typora\images\1532437449857.png)
 
-#### 14.3.声明式事务
+## 14.3.声明式事务
 
 ```xml
 <!--配置事务管理器-->
@@ -1977,7 +1977,7 @@ public Integer insert() {
 }
 ```
 
-#### 14.4.事务的传播行为
+## 14.4.事务的传播行为
 
 事务传播行为：当一个事务被另一个事务调用时，必须指定事务应该如何传播；`REQUIRED`默认行为
 
@@ -2005,7 +2005,7 @@ public Integer insert() {
 
 ```
 
-#### 14.5.并发事务所导致的问题
+## 14.5.并发事务所导致的问题
 
 | 问题类型   | 描述                                                         |
 | ---------- | ------------------------------------------------------------ |
@@ -2013,7 +2013,7 @@ public Integer insert() {
 | 不可重复读 | 对于两个事物 T1、T2, T1读取了一个字段, 然后 T2 更新了该字段. <br />之后, T1再次读取同一个字段, 值就不同了 |
 | 幻读       | 对于两个事物 T1、T2, T1从一个表中读取了一个字段, 然后 T2 在该表中插入了一些新的行.<br />之后, 如果 T1 再次读取同一个表, 就会多出几行 |
 
-#### 14.6.隔离级别
+## 14.6.隔离级别
 
 | 隔离级别           | 描述     |
 | ------------------ | -------- |
@@ -2023,7 +2023,7 @@ public Integer insert() {
 | `REPEATABLE_READ`  | 可重复读 |
 | `SERIALIZABLE`     | 序列化   |
 
-#### 14.7.设置回滚的异常
+## 14.7.设置回滚的异常
 
 spring声明式事务默认对所有的运行时异常进行回滚
 
@@ -2043,7 +2043,7 @@ public Integer insert() {
 }
 ```
 
-#### 14.8.基于XML配置声明式事务
+## 14.8.基于XML配置声明式事务
 
 ```xml
 <!--配置事务管理器-->
@@ -2075,5 +2075,5 @@ public Integer insert() {
 </aop:config>
 ```
 
-
+[https://segmentfault.com/a/1190000013341344](https://segmentfault.com/a/1190000013341344)
 

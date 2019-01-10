@@ -1,4 +1,4 @@
-### 一、注解
+# 一、注解
 
 | 注解                 | 描述                                         |
 | -------------------- | -------------------------------------------- |
@@ -12,7 +12,7 @@
 | ``                   |                                              |
 |                      |                                              |
 
-#### 1.1.``@Target``
+## 1.1.``@Target``
 
 `@Target`设置注解作用范围，即可标注的位置，通过`ElementType`设置：
 
@@ -37,7 +37,7 @@ public @interface SuppressWarnings {
 | `TYPE_PARAMETER`           | 类型参数声明 `@since 1.8`            |
 | `TYPE_USE`                 | 使用的类型 `@since 1.8`              |
 
-#### 1.2.``@Retention``
+## 1.2.``@Retention``
 
 `@Retention`设置需要在什么级别保存该注解信息 ，通过`RetentionPolicy`设置：
 
@@ -47,7 +47,7 @@ public @interface SuppressWarnings {
 | `CLASS`               | 注解在`class`文件中可用，但会被`VM`丢弃                      |
 | `RUNTIME`             | `VM`将在运行期间保留注解，因此可以通过反射机制读取注解的信息 |
 
-#### 1.4.``@SuppressWarnings`
+## 1.4.``@SuppressWarnings`
 
 | 取值                          | 描述                                                         |
 | ----------------------------- | ------------------------------------------------------------ |

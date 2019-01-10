@@ -2,9 +2,9 @@
 
 
 
-## 一、滚动条
+# 一、滚动条
 
-#### 1.1.`Easy Scroll`
+## 1.1.`Easy Scroll`
 
 1. 添加 `CSS `和 `JQUERY `文件 
 
@@ -57,7 +57,7 @@
 
 
 
-#### 1.2.自定义滚动条
+## 1.2.自定义滚动条
 
 
 
@@ -65,7 +65,7 @@
 
 
 
-## 二、跨域请求
+# 二、跨域请求
 
 | 概念     | 描述                                                         |
 | -------- | :----------------------------------------------------------- |
@@ -76,12 +76,12 @@
 
 注意：跨域的安全限制都是对浏览器端来说的，服务器端是不存在跨域安全限制的 。
 
-#### 2.1.不受同源策略限制 
+## 2.1.不受同源策略限制 
 
 * 页面中的链接，重定向以及表单提交是不会受到同源策略限制的 
 * 跨域资源的引入是可以的。但是`js`不能读写加载的内容。如嵌入到页面中的`<script src="..."></script>，<img>，<link>，<iframe>(即拥有src属性的标签)`等 
 
-#### 2.2. 图片`ping`
+## 2.2. 图片`ping`
 
 图片可以从任何`URL`中加载，所以将`img`的`src`设置成其他域的`URL`，即可以实现简单的跨域 ,可以使用`onload`和`onerror`事件来确定是否接受到了响应 。
 
@@ -99,7 +99,7 @@ img.onload=function(){
 
 注意：使用图片`ping`跨域只能发送`get`请求，并且不能访问响应的文本（单向请求），只能监听是否响应而已，可以用来追踪广告点击 。
 
-#### 2.3.`jsonp`
+## 2.3.`jsonp`
 
 
 
@@ -111,7 +111,7 @@ img.onload=function(){
 - 不能注册`success`、`error`等事件监听函数，不能很容易的确定`JSONP`请求是否失败
 - `JSONP`是从其他域中加载代码执行，容易受到跨站请求伪造的攻击，其安全性无法确保
 
-#### 2.4.`CORS`
+## 2.4.`CORS`
 
 `Cross-Origin Resource Sharing（CORS）`跨域资源共享是一份浏览器技术的规范 
 
@@ -119,17 +119,17 @@ img.onload=function(){
 
 
 
-#### 2.5.`window.name+iframe`
+## 2.5.`window.name+iframe`
 
 
 
-#### 2.6.`window.postMessage()`
+## 2.6.`window.postMessage()`
 
 
 
-## 三、日期处理
+# 三、日期处理
 
-#### 3.1. 日期格式化
+## 3.1. 日期格式化
 
 ```js
 Date.prototype.format = function(fmt) { 
@@ -158,7 +158,7 @@ Date.prototype.format = function(fmt) {
 var time1 = new Date().format("yyyy-MM-dd hh:mm:ss");
 ```
 
-#### 3.2. 计算两个日期之间的天数
+## 3.2. 计算两个日期之间的天数
 
 ```js
 // 给日期类对象添加日期差方法，返回日期与diff参数日期的时间差，单位为天
@@ -175,11 +175,11 @@ var date = new Date('2013/04/08 12:43:45');
 var diff = now.diff(date);
 ```
 
-## 四、操作伪元素
+# 四、操作伪元素
 
 由于伪元素是在CSS渲染中操作元素，不受文档约束，也不影响文档本身，只影响最终样式。这些添加的内容不会出现在DOM中，仅仅是在CSS渲染层中加入。它不存在于文档中，所以JS无法直接操作它。而jQuery的选择器都是基于DOM元素的，因此也并不能直接操作伪元素。
 
-#### 4.1.获取伪元素的属性值
+## 4.1.获取伪元素的属性值
 
 ```js
  window.getComputedStyle(element[, pseudoElement]);
@@ -202,7 +202,7 @@ var diff = now.diff(date);
 
 getPropertyValue()和直接使用键值都是
 
-## 五、POST提交
+# 五、POST提交
 
 `window.open()`打开窗口时，post提交请求
 
@@ -243,9 +243,9 @@ function openPostWindow(url, param, title) {
 }
 ```
 
-## 六、对象之间的转化
+# 六、对象之间的转化
 
-### 6.1.json与js对象的转化
+## 6.1.json与js对象的转化
 
 1. js转json
 
@@ -270,7 +270,7 @@ console.log(eval('('+json+')'));//json转js
 console.log($.parseJSON(json)); //使用jquery转化
 ```
 
-### 6.2.jquery与dom对象转化
+## 6.2.jquery与dom对象转化
 
 ```html
 <div id="main"></div>
@@ -294,7 +294,7 @@ var m = document.getElementById("main");//dom对象
 console.log($(m));
 ```
 
-### 6.3.dom与字符串的转化
+## 6.3.dom与字符串的转化
 
 1. dom转字符串
 
@@ -322,13 +322,13 @@ var dom= parseDom('<div id="main">你好</div>');
 console.log(dom);
 ```
 
-## 七、`iframe`
+# 七、`iframe`
 
 ```html
 <iframe id="ifm" name="ifm" src="img/(36).jpg" frameborder="0"></iframe>
 ```
 
-### 7.1.iframe操作子页面
+## 7.1.iframe操作子页面
 
 获取`iframe`的window和docment对象
 
@@ -351,7 +351,7 @@ console.log(ifmDocment.head);
 console.log(ifmDocment.body);
 ```
 
-### 7.2.iframe操作父页面
+## 7.2.iframe操作父页面
 
 ```javascript
 //返回自身iframe的引用
@@ -362,11 +362,11 @@ console.log(ifmWindow.top);
 console.log(ifmWindow.parent);
 ```
 
-### 7.3.iframe轮询
+## 7.3.iframe轮询
 
-## 八、JSON数据处理
+# 八、JSON数据处理
 
-### 8.1.获取json的键值
+## 8.1.获取json的键值
 
 ```js
 var json = {"yuj210":102902,"acc001":82923};
@@ -643,4 +643,37 @@ document.body.oncopy = e => {
 document.oncopy = 
     event => event.clipboardData.setData('text',window.getSelection(0).toString());
 ```
+
+# 十三、计算文本框的剩余字数
+
+```html
+<ta:panel id="pnl5" key="绩效目标<span style='color:red;'>(剩余字数<span class='surplus'>5000</span>)</span>">
+```
+
+```js
+//计算剩余字数
+function fnSurplusWords(eleId, pnelId) {
+    var ele = document.getElementById(eleId);
+    var total = +($('#' + pnelId + ' .panel-title .surplus').text());
+    setSurplusWords(ele, pnelId, total);
+    if ('oninput' in ele) {
+        ele.addEventListener('input', function (ev) {
+            setSurplusWords(ele, pnelId, total);
+        });
+    } else if ('onpropertychange' in ele) {
+        ele.onpropertychange = setSurplusWords(ele, pnelId, total);
+    }
+}
+
+function setSurplusWords(ele, pnelId, total) {
+    var len = total - $(ele).val().length;
+    if (len < 0) {
+        len = 0;
+        $(ele).val($(ele).val().substr(0, total));
+    }
+    $('#' + pnelId + ' .panel-title .surplus').html(len);
+}
+```
+
+# 十四、滚动穿透
 
