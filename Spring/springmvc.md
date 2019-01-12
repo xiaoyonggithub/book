@@ -1,12 +1,12 @@
-## 一、构建springmvc项目
+# 一、构建springmvc项目
 
-### 1.1.依赖的jar
+## 1.1.依赖的jar
 
 ```xml
 
 ```
 
-### 1.2.配置springmvc.xml
+## 1.2.配置springmvc.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -40,7 +40,7 @@
 
 ```
 
-### 1.3.配置web.xml
+## 1.3.配置web.xml
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -100,19 +100,18 @@
 
 
 
-## 二、常用注解
+# 二、常用注解
 
-### 2.1.`@RequestMapping`
+## 2.1.`@RequestMapping`
 
-@RequestMapping可以修改方法和类，设置请求映射的路径;
+`@RequestMapping`可以设置在方法和类上，设置请求映射的路径;
 
 * 通过URL的方式映射请求
 
 ```java
 @RequestMapping("/userController")
 @Controller
-public class UserController{
-    
+public class UserController{ 
     @RequestMapping(/get)
     public User get(){
         
@@ -155,7 +154,6 @@ public String login(){
 ```java
 @RequestMapping("/*/login")
 public String login(){
-
     return "";
 }
 ```
@@ -164,9 +162,9 @@ public String login(){
 <a href="admin/login">登录</a>
 ```
 
-### 2.2.`@PathVariable`
+## 2.2.`@PathVariable`
 
-@PathVariable映射URL绑定的占位符到目标方法的参数中，是Spring3.0后新增的功能
+`@PathVariable`映射URL绑定的占位符到目标方法的参数中，是Spring3.0后新增的功能
 
 ```java
 @RequestMapping("/login/{username}")
@@ -180,9 +178,12 @@ public String login(@PathVariable("username") String username,Model model){
 <a href="${pageContext.request.contextPath}/login/zhangsan">登录</a>
 ```
 
-### 2.3.`@RequestParam`
+## 2.3.`@RequestParam`
 
 @RequestParam请求参数的绑定
+
+- `required`设置参数是否必须 
+- `defaultValue`设置请求参数默认值
 
 ```html\
 <a href="${pageContext.request.contextPath}/login?username=zhangsan&password=1234">登录</a>
@@ -207,9 +208,12 @@ public String register(@RequestParam(value = "password",required = false,default
 }
 ```
 
-### 2.4.`@RequestHeader`
+## 2.4.`@RequestHeader`
 
 @RequestHeader设置请求头参数
+
+- `required`设置参数是否必须 
+- `defaultValue`设置请求参数默认值
 
 ```html
 <a href="${pageContext.request.contextPath}/register?Accept-Language = zh_CN">注册</a>
@@ -224,9 +228,9 @@ public String register(@RequestHeader("Accept-Language") String al, Model model)
 }
 ```
 
-### 2.5.`@CookieValue`
+## 2.5.`@CookieValue`
 
-@CookieValue绑定Cookie值
+`@CookieValue`绑定`Cookie`值
 
 ```html
 <a href="${pageContext.request.contextPath}/register">注册</a>
@@ -241,11 +245,11 @@ public String register(@CookieValue("JSESSIONID") String sessionId, Model model)
 }
 ```
 
-### 2.6.`@SessionAttribute`
+## 2.6.`@SessionAttribute`
 
 
 
-### 2.7.`@SessionAttributes`
+## 2.7.`@SessionAttributes`
 
 @SessionAttributes 将值放在session域中，即可以通过属性名指定放入的属性(value)，也可以通过模型属性的对象类型指定放入的属性(type),只能作用在类上面
 
@@ -265,7 +269,7 @@ public class EmpController {
 }
 ```
 
-### 2.8.`@ModelAttribute`
+## 2.8.`@ModelAttribute`
 
 @ModelAttribute可以修改方法；也可以修饰目标方法的POJO类型的入参，value指定查找的key
 
@@ -289,7 +293,7 @@ public String updateUser(@ModelAttribute("user") User user){
 }
 ```
 
-#### 2.8.1.运行流程：
+## 2.8.1.运行流程：
 
 1. 执行@ModelAttribute标注的方法，从数据库中取出对象，将值放入到Map中（键：user）
 2. SpringMVC 从Map值取出User对象,并把表单的请求参数赋值给该User对象的对应属性
@@ -297,13 +301,13 @@ public String updateUser(@ModelAttribute("user") User user){
 
 效果：修改数据时，没有传入需要修改的值时，默认取数据库中原来的值
 
-#### 2.8.2.源码分析
+## 2.8.2.源码分析
 
 
 
 
 
-#### 2.8.3.SpringMVC确定目标方法POJO类型参数的过程
+## 2.8.3.SpringMVC确定目标方法POJO类型参数的过程
 
 1. 确定一个key
    * 若目标方法POJO类型参数没有使用@ModelAttribute修饰，则key为POJO类名首字母小写
@@ -316,7 +320,7 @@ public String updateUser(@ModelAttribute("user") User user){
    * 若没有标注@SessionAttributes注解或@SessionAttributes注解的value中不包含key,则通过反射创建POJO类型的参数，传入目标方法的入参
 4. SpringMVC 会将key和value（POJO类型的对象）保存到implicitModel中，进而保存到request中。
 
-### 2.9.`@InitBinder`
+## 2.9.`@InitBinder`
 
 `@InitBinder`标注在方法上，对WebDataBinder进行初始化
 
@@ -334,26 +338,26 @@ public void initBinder(WebDataBinder binder){
 }
 ```
 
-### 2.10.`@NumberFormat`
+## 2.10.`@NumberFormat`
 
 `NumberFormatAnnotationFormatterFactory`支持`@NumberFormat`
 
 
 
-### 2.11.`@DateTimeFormat`
+## 2.11.`@DateTimeFormat`
 
 `JodaDateTimeFormatAnnotationFormatterFactory`支持`@DateTimeFormat`
 
 
 
-## 三、`Rest`
+# 三、`Rest`
 
 * `GET`:获取资源
 * `POST`:新建资源
 * `PUT`:更新资源
 * `DELETE`:删除资源
 
-### 3.1.POST请求转REST风格的请求
+## 3.1.POST请求转REST风格的请求
 
 由于浏览器的form表单只支持GTE和POST请求，`Hidd方法enHttpMethodFilter`支持这些请求转换为标准的http方法，从而支持`GET,POST,PUT,DELETE`请求
 
@@ -374,7 +378,7 @@ public void initBinder(WebDataBinder binder){
 
 ```
 
-### 3.2.处理静态资源
+## 3.2.处理静态资源
 
 问题：
 
@@ -400,7 +404,7 @@ public void initBinder(WebDataBinder binder){
 <mvc:default-servlet-handler default-servlet-name="default"/>
 ```
 
-### 3.3.REST风格的CRUD
+## 3.3.REST风格的CRUD
 
 1.springmvc的配置文件springnvc.xml
 
@@ -635,9 +639,9 @@ public class EmpController {
 </html>
 ```
 
-## 四、参数的绑定
+# 四、参数的绑定
 
-### 4.1.`@RequestParam`绑定参数
+## 4.1.`@RequestParam`绑定参数
 
 ```java
 @RequestMapping("/login")
@@ -648,7 +652,9 @@ public String login(@RequestParam("username") String username,@RequestParam(valu
 }
 ```
 
-### 4.2.绑定POJO参数
+## 4.2.绑定POJO参数
+
+- 请求参数与`POJO`属性名自动匹配，自动为对象填充属性值，支持级联属性
 
 ```html
 <form action="${pageContext.request.contextPath}/register" method="post">
@@ -689,7 +695,7 @@ public String register(User user, Model model){
 }
 ```
 
-### 4.3.设置SerlvetAPI类型的参数
+## 4.3.设置`SerlvetAPI`类型的参数
 
 通过AnnotationMethodHandlerAdapter.resolveStandardArgument()进行解析，支持的SerlvetAPI类型有：
 
@@ -718,11 +724,15 @@ public String register(HttpServletRequest request, HttpServletResponse response,
 }
 ```
 
-## 五、模型数据的设置
 
-### 5.1.`Model/Map`
 
-实际上最后传入的是`org.springframework.validation.support.BindingAwareModelMap`
+
+
+# 五、模型数据的设置
+
+## 5.1.`Model/Map`
+
+实际上最后传入的是`org.springframework.validation.support.BindingAwareModelMap`，所以可以传入`Map`或`Model`类型
 
 ![1532879216001](E:\typora\images\1532879216001.png)
 
@@ -744,9 +754,10 @@ public String register(User user,Model model){
 }
 ```
 
-### 5.2.`ModelAndView`
+## 5.2.`ModelAndView`
 
-ModelAndView既包含视图信息，也包含模型数据
+-  `ModelAndView`既包含视图信息，也包含模型数据
+- `ModelAndView`会把`Model`中的数据放入到`request`中
 
 ```java
 @RequestMapping("/register")
@@ -758,7 +769,7 @@ public ModelAndView register(User user,HttpServletRequest request){
 }
 ```
 
-### 5.3.`HttpServletRequest`
+## 5.3.`HttpServletRequest`
 
 ```java
 @RequestMapping("/register")
@@ -768,9 +779,12 @@ public String register(User user,HttpServletRequest request){
 }
 ```
 
-### 5.4.`@SessionAttributes`
+## 5.4.`@SessionAttributes`
 
-@SessionAttributes 将值放在session域中，即可以通过属性名指定放入的属性(value)，也可以通过模型属性的对象类型指定放入的属性(type),只能作用在类上面
+- 多个请求之间共享某个模型数据，可以使用`@SessionAttributes`
+
+- `@SessionAttributes`可以通过属性名指定放入的属性(value)，也可以通过模型属性的对象类型指定放入的属性(type)，它会将满足的条件的值放入到`session`中
+- 只能标注在类上面
 
 ```java
 @Controller
@@ -788,11 +802,95 @@ public class EmpController {
 }
 ```
 
+## 5.5.`@ModelAttribute`
 
+- `@ModelAttribute`入参标注该注解，入参对象就会放入数据模型中
+- `@ModelAttribute`标记的方法会在每个目标方法执行前执行
 
-## 六、视图解析器
+```java
+//修改前获取数据库的数据
+@ModelAttribute
+public void get(@RequestParam(value = "empno",required = false) Integer empno, Map<String,Object> map){
+    if(empno != null){
+        //此时Map的键要与目标方法入参类型首字母小写
+        map.put("emp",empService.selectById(empno));
+    }
+}
+//修改信息
+@RequestMapping(value = "/emp",method = RequestMethod.PUT)
+public String update(Emp emp){
+    empService.updateById(emp);
+    return "redirect:emps";
+}
+```
 
-### 6.1.配置直接转发
+- `@ModelAttribute`可以修饰可以来修饰目标方法POJO 类型的入参, 其value属性值有如下的作用:
+  1). SpringMVC会使用value属性值在implicitModel中查找对应的对象, 若存在则会直接传入到目标方法的入参中.
+  2). SpringMVC会value为key, POJO类型的对象为value, 存入到request中. 
+
+```java
+@ModelAttribute
+public void get(@RequestParam(value = "empno",required = false) Integer empno, Map<String,Object> map){
+    if(empno != null){
+        //此时Map的键要与目标方法入参类型@ModelAttribute("user")设置的一致
+        map.put("user",empService.selectById(empno));
+    }
+}
+@RequestMapping(value = "/emp",method = RequestMethod.PUT)
+public String update(@ModelAttribute("user") Emp emp){
+    empService.updateById(emp);
+    return "redirect:emps";
+}
+```
+
+- 执行流程
+  - 执行`@ModelAttribute`标注的方法，并将对象放入Map中
+  - 从Map中取出emp对象，并将表单的目标参数赋值给emp对象
+  - 将emp传入目标方法的参数
+
+```java
+
+```
+
+### 5.5.1.源码分析
+
+- 调用`@ModelAttribute`标注的方法，实际是把`Map`中的数据放入到`implicitModel`中 
+
+- 解析请求处理器的目标参数，实际上该目标参数来自与`WebDataBinder`对象的`target`属性
+
+  1. `创建`WebDataBinder`对象
+
+  - 确定`objectName`属性
+    - 若传入的`attrName`属性值为`""`，则`objectName`为类名首字母小写
+    - 若目标目标方法的`POJO`属性使用`@ModelAttribute`修饰，则`attrName`值为`@ModelAttribute`的`value`属性值
+  - 确定`target`属性
+    - 首先在`implicitModel `中查找 `attrName `对应的属性值，若存在就ok
+    - 若不存在，则验证当前 `Handler `是否使用了` @SessionAttributes `进行修饰，若使用了，则尝试从 `Session `中获取 `attrName `所对应的属性值，若 `session `中没有对应的属性值，则抛出了异常
+    - 若 `Handler `没有使用` @SessionAttributes `进行修饰, 或` @SessionAttributes` 中没有使用 `value `值指定的 `key`和 `attrName `相匹配，则通过反射创建了 `POJO `对象
+
+  2. `SpringMVC `把表单的请求参数赋给了 `WebDataBinder `的 `target `对应的属性
+  3. `SpringMVC `会把 `WebDataBinder `的 `attrName `和 `target `给到 `implicitModel`，近而传`request `域对象中
+  4. 把 `WebDataBinder `的 `target `作为参数传递给目标方法的入参
+
+## 5.6.`SpringMVC `确定目标方法 `POJO `类型入参的过程
+
+1. 确定一个key:
+  1). 若目标方法的POJO类型的参数没有使用@ModelAttribute作为修饰， 则key为POJO类名第一个字母的小写
+  2). 若使用了@ModelAttribute来修饰， 则key为@ModelAttribute注解的value属性值.
+2. 在implicitModel中查找key对应的对象， 若存在， 则作为入参传入
+   1). 若在@ModelAttribute标记的方法中在 Map 中保存过， 且key和`(1.确定一个 key)`确定的key一致， 则会获取到.
+3. 若 implicitModel中不存在key对应的对象， 则检查当前的Handler是否使用@SessionAttributes 注解修饰，若使用了该注解， 且@SessionAttributes注解的value属性值中包含了key， 则会 HttpSession中来获取key所对应的 alue值， 若存在则直接传入到目标方法的入参中. 若不存在则将抛出异常.
+4. 若Handler没有标识@SessionAttributes 注解或@SessionAttributes注解的value值中不包含 key， 则会通过反射来创建POJO类型的参数， 传入为目标方法的参数
+5. SpringMVC会把key和POJO类型的对象保存到mplicitModel中， 进而会保存到request中. 
+
+# 六、视图与视图解析器
+
+- 请求方法执行完成后，最终返回一个`ModelAndView`对象。无论方法返回的是`String、View、ModelMap`等那种类型，`SpringMVC`内部都会将其装配成`ModelAndView`对象返回
+- `SpringMVC`通过视图解析器`ViewResolver`等到最终的视图，视图可以是`JSP、Excel、JFreeChart`等各种视图
+- 视图的作用是渲染模型数据，将模型中的数据以某种形式呈现给客户
+- 视图对象有视图解析器负责实例化，由于视图没有状态，所有视图是线程安全的
+
+## 6.1.配置直接转发
 
 ```xml
 <!--配置直接转发的页面，无需在经过Handler-->
@@ -801,7 +899,7 @@ public class EmpController {
 <mvc:annotation-driven></mvc:annotation-driven>
 ```
 
-### 6.2.自定义视图
+## 6.2.自定义视图
 
 ```xml
 <!-- 视图解析器 -->
@@ -852,15 +950,65 @@ public String testView(){
 }
 ```
 
-### 6.3.自定义Excel视图
+## 6.3.自定义Excel视图
+
+
+
+## 6.4.常用的视图实现类
+
+- URL资源视图
+  - `InternalResourceView`:JSP及其其它资源封装的视图，默认使用的视图实现类
+  - `JstlView`：若JSP文件中使用了JSTL国际化标签的功能，则需要使用该视图类
+- 文档视图
+  - `AbstractExcelView`:Excel文档视图的抽象类，该类基于POI构建Excel文档
+  - `AbstractPdfView`:PDF文档视图的抽象类，该类基于iText构建PDF文档
+- 报表视图，使用`JasperReports`报表技术的视图
+  - `ConfiguableJsperReportsView`
+  - `JasperReportsCsvView`
+  - `JasperReportsMultiFormatView`
+- JOSN视图
+  - `MappingJacksonJsonView`将模型数据提高Jackson开源框架ObjetcMapper以Json方式输出
+
+## 6.5.视图解析器
+
+- springmvc为逻辑视图名解析提供的不同策略，可以在SpringWeb上下文配置多种解析策略，并指定解析的先后顺序；每一种映射策略对应一个具体的视图解析器实现类
+- 视图解析的作用：将逻辑视图解析为一个具体的视图对象
+- 所有的视图解析器都必须实现`ViewResolver`接口
+
+### 6.5.1.常用的视图解析器实现类
+
+- 解析为Bean的名称
+  - `BeanNameViewResolver`:将逻辑视图名解析Wie一个Bean，Bean的id为逻辑视图名
+
+- 解析为URL文件
+
+  - `InternalResourceViewResolver`:将视图名解析为一个URL文件，一般使用该解析器将视图名映射为一个保存在WEB-INF目录下的程序文件(如JSP)
+
+  ```xml
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+      <property name="prefix" value="/WEB-INF/pages/"></property>
+      <property name="suffix" value=".jsp"></property>
+  </bean>
+  ```
+
+  - `JasperReportViewResolver`:JspaerReports是一个基于Java的开源报表工具，该解析器件视图解析为报表文件对应的URL
+
+- 模板文件解析
+
+  - `FreeMarkerViewResoler`:解析基于FreeMarker模板技术的模板文件
+  - `VelocityViewResolver`:解析基于Velovity模板技术的模板文件
+  - `VelocityLayoutViewResolver`:解析基于Velovity模板技术的模板文件
+
+- 可以使用一种或多种视图解析器，使用多种视图解析器时，可以通过`order`指定视图解析器的先后顺序，`order`越小优先级越高（每个视图解析器都实现了Ordered接口并开放了一个order属性）
+- SpringMVC会按视图解析器的优先顺序对逻辑视图名进行解析，直到解析成功并返回视图对象，否则抛出`ServletException`异常
 
 
 
 
 
-## 七、重定向
+# 七、重定向
 
-### 7.1.`forward`
+## 7.1.`forward`
 
 返回字符串包含前缀`forward：`进行转发操作
 
@@ -871,7 +1019,7 @@ public String register(Map<String,Object> map){
 }
 ```
 
-### 7.2.`redirect`
+## 7.2.`redirect`
 
 返回字符串包含前缀`redirect：`进行重定向操作
 
@@ -884,7 +1032,7 @@ public String register(Map<String,Object> map){
 
 
 
-## 八、Spring的表单标签
+# 八、Spring的表单标签
 
 ```jsp
 <%@ taglib prefix="fm" uri="http://www.springframework.org/tags/form" %>
@@ -917,23 +1065,18 @@ public String register(Map<String,Object> map){
 
 
 
-## 九、数据绑定
+# 九、数据绑定
 
-### 9.1.数据绑定的流程
+## 9.1.数据绑定的流程
 
-1. Spring MVC 主框架将 ServletRequest • 对象及目标方
-  法的入参实例传递给 WebDataBinderFactory 实例，以创
-  建 DataBinder 实例对象
-2. DataBinder 调用装配在 Spring MVC 上下文中的 •
-  ConversionService 组件进行数据类型转换、数据格式
-  化工作。将 Servlet 中的请求信息填充到入参对象中
-3. 调用 Validator 组件对已经绑定了请求消息的入参• 对象
-  进行数据合法性校验，并最终生成数据绑定结果
-  BindingData 对象
-4. Spring MVC 抽取 BindingResult 中的入参对象和校• 验
-  误对象，将它们赋给处理方法的响应入参	
+1. SpringMVC主框架将ServletRequest对象及目标方法的入参实例传递给 WebDataBinderFactory 实例，以创建 DataBinder 实例对象
+2. DataBinder 调用装配在 Spring MVC 上下文中的 ConversionService 组件进行数据类型转换、数据格式
+    化工作。将 Servlet 中的请求信息填充到入参对象中
+3. 调用 Validator 组件对已经绑定了请求消息的入参对象进行数据合法性校验，并最终生成数据绑定结果
+    BindingData 对象
+4. Spring MVC 抽取 BindingResult 中的入参对象和校验误对象，将它们赋给处理方法的响应入参	
 
-### 9.2.自定义类型转化器
+## 9.2.自定义类型转化器
 
 ```xml
 <mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
@@ -1010,7 +1153,7 @@ Converter的实现类
 
 FactoryBean的实现类
 
-### 9.3.数据类型格式化
+## 9.3.数据类型格式化
 
 ```xml
 <mvc:annotation-driven></mvc:annotation-driven>
@@ -1021,7 +1164,7 @@ FactoryBean的实现类
 private Date hiredate;
 ```
 
-### 9.4.数据类型转化的流程
+## 9.4.数据类型转化的流程
 
 
 
@@ -1029,7 +1172,7 @@ private Date hiredate;
 
 
 
-## 十、`<mvc:annotation-driven>`
+# 十、`<mvc:annotation-driven>`
 
 `<mvc:annotation-driven>`会自动注册`RequestMappingHandlerMapping`、`RequestMappingHandlerAdapter`、
 
@@ -1039,3 +1182,7 @@ private Date hiredate;
 * 支持@NumberFormat、@DateTimeFormat的注解完成数据格式化
 * 支持@Valid注解对JavaBean实例进行JSR303验证
 * 支持@RequestBody和@ResponseBody注解
+
+
+
+# 十一、国际化
