@@ -41,22 +41,42 @@
 | ` :before `       | 在元素之前添加内容                                           |
 | ` :after `        | 在元素之后添加内容                                           |
 | ` :placeholder `  | 匹配占位符的文本，只有元素设置了placeholder属性时，该伪元素才能生效 |
-| ` :selection `    | CSS伪元素应用于文档中被用户高亮的部分（比如使用鼠标或其他选择设备选中的部分） |
+| ` ::selection `   | CSS伪元素应用于文档中被用户高亮的部分（比如使用鼠标或其他选择设备选中的部分） |
 | ` ::backdrop`     | 用于改变全屏模式下的背景颜色，全屏模式的默认颜色为黑色。<br/>该伪元素只支持双冒号的形式(处于试验阶段) |
 
 ## 1.4.元素默认样式
 
 - `h1,h2,h3,h4,h5,h6`都有默认的margin值
 
+```css
+h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+```
+
 - `div`元素没有任何语义，且没有没有默认样式，主要用于页面布局
-
 - `span`元素没有任何语义，也没有默认样式，主要用于选中文字，然后为文字设置样式
-
-- `<a>`
+- `<a>`的默认样式
 
 ```css
-a{
-    text-decoration:underline;/*下划线*/
+a:-webkit-any-link {
+    color: -webkit-link;
+    cursor: pointer;
+    text-decoration: underline;
 }
 ```
 

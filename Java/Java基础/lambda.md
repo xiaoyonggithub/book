@@ -276,10 +276,6 @@ System.out.println(function.apply(10));
 
 
 
-
-
-
-
 # 二、输入参数
 
 - `lambda`的输入参数在lambda运算符的左边
@@ -551,4 +547,4 @@ public void test08() {
 
 
 
-	
+​	

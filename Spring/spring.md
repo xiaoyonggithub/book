@@ -137,7 +137,6 @@ Srping匹配资源路径时支持Ant模式通配符匹配，Spring提供AntPathM
 ```
 
 * [**]匹配零个或多个目录
-
   * [**/]表示任意目录
 
 * [?]匹配一个字符
@@ -442,7 +441,7 @@ Spring提供一个后置处理器`AutowiredAnnotationBeanPostProcessor`实现自
 
 ### 3.6.1.`@Autowired`
 
-`@Autowired`装配时，先判断该类型的bean的个数:
+`@Autowired`装配时，是根据类型装配的，先判断该类型的bean的个数:
 
 * 若只有一个bean就根据类型装配
 * 若存在多个bean就根据名称（id）装配
@@ -468,7 +467,7 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-* 若存在多个bean且名称有相同的就需要指定要装配那个bean
+* 若存在多个bean且名称有相同的就需要指定要装配那个bean，与` @Qualifier`配合使用
 
 ```java
 @Service
@@ -498,12 +497,69 @@ public class UserServiceImpl implements UserService {
 `@Autowired`也可以放在数据、集合和Map属性上
 
 * 数组：将所有匹配的bean的装配进数组
-* 集合：Spring读取集合的类型，然后装配与之兼容的bean
+* 集合：Spring读取集合的类型，然后装配与之匹配的bean
+
 * Map: 将bean的名称作为key,将bean作为value进行装配
 
-## 
+```java
+public interface Service {
+}
+@Service
+public class EmpService implements Service {
+}
+@Service
+public class UserService implements Service {
+
+}
+```
+
+```java
+@Configuration
+@ComponentScan("com.example.demo.autowired.impl")
+public class AutowiredConfig {
+
+    @Autowired
+    private List<Service> list;
+    @Autowired
+    private Map<String, Service> maps;
+
+    public void outputResult() {
+        list.stream().forEach(System.out::println);
+        System.out.println("----------------------");
+        Set<Map.Entry<String, Service>> entries = maps.entrySet();
+        entries.stream().map(Map.Entry::getKey).forEach(System.out::println);
+        entries.stream().map(x -> x.getValue()).forEach(System.out::println);
+    }
+}
+```
+
+```java
+com.example.demo.autowired.impl.EmpService@62fad19
+com.example.demo.autowired.impl.UserService@47dbb1e2
+----------------------
+empService
+userService
+com.example.demo.autowired.impl.EmpService@62fad19
+com.example.demo.autowired.impl.UserService@47dbb1e2
+```
 
 
+
+### 3.6.2.`@Autowired、@Resource、@Inject`的区别
+
+- `@Autowired`:Spring提供的注解
+  - 通过`AutowiredAnnotationBeanPostProcessor`实现依赖注入的
+  - 根据**类型**进行自动装配的；若根据ID装配，则需要与`@Qualifier`配合使用（自动注入的策略就从 byType 转变成 byName ）
+  - 可设置为`required=false`时，没找到bean时不报错
+  - `@Autowired`可设置在变量、setter方法、构造函数上；`@Qualifier`的标注对象是成员变量、方法**入参**、构造函数**入参**
+- `@Resource`:JSR-330提供的注解
+  - 通过`javax.annotation`实现注入
+  - 根据名称（ID）进行自动装配，`name`设置指定名称
+  - 可作用在变量、setter方法
+- `@Inject`:JSR-250提供的注解
+  - 通过`javax.inject.Inject`实现注入
+  - 根据类型自动装配；若需要按ID进行装配，需与`@Named`配合使用（**自动注入的策略就从 byType 转变成 byName 了**）
+  - 可设置在变量、setter方法、构造函数上
 
 
 
@@ -798,7 +854,7 @@ com.xy.dao.UserDao@769a1df5
 
 # 六、自动装配
 
-IOC能自动装配bean,只需要自定自动装配的模式，自动装配的模式如下：
+IOC能自动装配bean,只需要自定义自动装配的模式，自动装配的模式如下：
 
 * `byType`:根据类型自动装配，缺点是有多个目标对象的bean时不知道装配那个;
 * `byName`:根据名称自动装配，目标的名称必须与属性名相同;
@@ -885,10 +941,19 @@ public class UserController {
 
 # 八、bean的作用域
 
-默认的作用域是` scope="singleton"`,作用域分类：
+`@Scope`默认的作用域是` scope="singleton"`，作用域分类：
 
 * `singleton`在IOC容器创建的时候初始bean，在容器的整个生命周期值创建一个bean
+
 * `prototype`在获取的时候创建bean，每次的获取的都是一个新的bean
+
+* `request`：web项目中，给每个http request新建一个实例
+
+* `session`：web项目中，给每个http session新建一个实例
+
+* `globalSession`:只在`portal`应用中有效，给每个gloabl http session新建一个实例
+
+  
 
 # 九、引入外部属性文件
 
@@ -918,7 +983,7 @@ Spring提供了一个BeanFactory的后置处理器`PropertyPlaceholderConfigurer
 
 # 十、SpEL表达式
 
-SpEL可以为bean的属性动态赋值
+SpEL可以为bean的属性动态赋值，支持在注解或xml中使用表达书
 
 * 算数运算：`+, -, *, /, %, ^ `
 
@@ -960,15 +1025,11 @@ SpEL可以为bean的属性动态赋值
 </bean>
 ```
 
-## 10.6.逻辑运算and, or, not, | 
+## 10.6.逻辑运算`and, or, not, |` 
 
 
 
 ## 10.7.正则表达式（matches）
-
-
-
-
 
 ```xml
 <bean id="address" class="com.xy.pojo.Address">
@@ -995,9 +1056,13 @@ SpEL可以为bean的属性动态赋值
 </bean>
 ```
 
+
+
+
+
 # 十一、bean的生命周期
 
-Spring提供一个后置处理器`BeanPostProcessor`，允许在调用初始化方法``init()`的前后对bean进行操作;后置处理器是对IOC容器的所有bean进行逐一扫描处理;
+Spring提供一个后置处理器`BeanPostProcessor`，允许在调用初始化方法`init()`的前后对bean进行操作;后置处理器是对IOC容器的所有bean进行逐一扫描处理;
 
 bean生命周期的管理过程如下：
 
@@ -1282,10 +1347,14 @@ public void test09() {
 
 AspectJ最流行的AOP框架
 
-```xml
-<context:component-scan base-package="com.xy"></context:component-scan>
-<!--使AspectJ注解生效，为匹配的类自动生成代理对象-->
-<aop:aspectj-autoproxy/>
+```java
+@Configuration
+@ComponentScan("com.xy")
+@EnableAspectJAutoProxy
+public class AopConfig {
+
+    
+}
 ```
 
 ```java
@@ -1399,6 +1468,8 @@ public void test08() {
 }
 ```
 
+> 注意：切面类只针对在IOC容器中的类有效
+
 ## 12.3.`AspectJ`支持的通知类型
 
 | 通知类型          | 描述                                           |
@@ -1412,7 +1483,7 @@ public void test08() {
 注意：在后置通知中不能访问方法的执行结果，返回通知可以访问到方法的执行结果;
 
 ```java
-@Aspect
+@Aspect //声明该类为一个切面类
 @Component
 public class LoggingAspect {
 
@@ -1564,7 +1635,6 @@ public class LoggingAspect {
 注意：一个切面引用其他切面的切点
 
 * 同一包下：`LoggingAspect.pointcut()`
-
 * 不同的包下：`com.xy.common.LoggingAspect.pointcut()`
 
 ## 12.6.切面的优先级
@@ -1636,12 +1706,14 @@ public class LoggingAspectXml {
         System.out.println("The Method ["+methodName+"("+Arrays.asList(args)+")] end");
     }
 
+    //joinPoint必须是第一个参数，result接收返回值
     public void afterReturning(JoinPoint joinPoint,Object result){
-        String methodName = joinPoint.getSignature().getName();
+        String methodName = joinPoint.getSignature().getName(); 
         Object[] args = joinPoint.getArgs();
         System.out.println("The Method ["+methodName+"("+Arrays.asList(args)+")] return is " + result);
     }
 
+    //ex接收异常
     public void afterThrowing(JoinPoint joinPoint,NullPointerException ex){
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
@@ -1728,6 +1800,54 @@ public class LoggingAspectXml {
 ## 12.8.为一个切面设置多个切点
 
 可以使用`&&、||、!、and、or`等
+
+
+
+## 12.9.`AOP`原理
+
+`@EnableAspectJAutoProxy`
+
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Import({AspectJAutoProxyRegistrar.class})
+public @interface EnableAspectJAutoProxy {
+    boolean proxyTargetClass() default false;
+
+    boolean exposeProxy() default false;
+}
+```
+
+```java
+//ImportBeanDefinitionRegistrar用于下容器中注册自定义组件
+
+class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
+    AspectJAutoProxyRegistrar() {
+    }
+
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(registry);
+        AnnotationAttributes enableAspectJAutoProxy = AnnotationConfigUtils.attributesFor(importingClassMetadata, EnableAspectJAutoProxy.class);
+        if (enableAspectJAutoProxy != null) {
+            if (enableAspectJAutoProxy.getBoolean("proxyTargetClass")) {
+                AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
+            }
+
+            if (enableAspectJAutoProxy.getBoolean("exposeProxy")) {
+                AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);
+            }
+        }
+
+    }
+}
+```
+
+
+
+
+
+
 
 
 

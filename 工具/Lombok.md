@@ -22,7 +22,7 @@ Setting –> 选择Plugins选项 –> 选择Browse repositories –> 搜索lombo
 
 ### 1.3.注解使用
 
-1. `@NonNull`设置在属性上，用于属性的非空检查，会默认是生成一个无参构造
+1. `@NonNull`设置在属性上，用于属性的非空检查，会默认是生成一个无参构造；若被注解的对象是null，直接会抛出NPE
 
    ```java
    @NonNull

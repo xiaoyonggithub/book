@@ -47,7 +47,15 @@ public @interface SuppressWarnings {
 | `CLASS`               | 注解在`class`文件中可用，但会被`VM`丢弃                      |
 | `RUNTIME`             | `VM`将在运行期间保留注解，因此可以通过反射机制读取注解的信息 |
 
-## 1.4.``@SuppressWarnings`
+## 1.3.`@Repeatable`
+
+`@Repeatable`表明标记的注解可以多次应用
+
+
+
+## 1.4.`@SuppressWarnings`
+
+`@SuppressWarnings`用于抑制编译器产生警告信息
 
 | 取值                          | 描述                                                         |
 | ----------------------------- | ------------------------------------------------------------ |
@@ -71,4 +79,74 @@ public @interface SuppressWarnings {
 | ` unqualified-field-access  ` | 为了抑制与现场访问相关的警告                                 |
 | ` unused `                    | 要抑制与未使用代码相关的警告，去除感叹号                     |
 | ` path `                      | 在类路径、源文件路径等中有不存在的路径时的警告;              |
+
+## 1.5.`@Documented`
+
+`@Documented` 注解表明，无论何时使用指定的注释，都应该使用Javadoc工具对这些元素进行文档化
+
+```java
+@Retention(RetentionPolicy.CLASS)
+@Documented
+public @interface Metadata{
+}
+```
+
+使用`@Metadata`注解时，会使用Javadoc工具对这些元素进行文档化
+
+## 1.6.`@Inherited`
+
+`@Inherited` 允许子类继承父类的注解，不是子注解类型继承符父注解类型
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+@Documented
+@Inherited  //允许子类继承父类的注解
+public @interface SuperAnnotation {
+}
+```
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+public @interface SubAnnotation {
+
+}
+```
+
+```java
+@SuperAnnotation
+public class Super {
+
+}
+```
+
+```java
+@SubAnnotation
+public class Sub extends Super{
+}
+```
+
+```java
+public static void main(String[] args) {
+    Annotation[] annotations = Super.class.getAnnotations();
+    Arrays.stream(annotations).forEach(System.out::println);
+    System.out.println("-----------------------------");
+    Annotation[] anns= Sub.class.getAnnotations();
+    Arrays.stream(anns).forEach(System.out::println);
+}
+```
+
+```java
+@com.example.demo.annotation.SuperAnnotation()
+-----------------------------
+@com.example.demo.annotation.SuperAnnotation()
+@com.example.demo.annotation.SubAnnotation()
+//子类Sub继承了父类Super的注解类型
+```
+
+## 1.7.`@Deprecated`
+
+`@Deprecated`表示方法或类不再建议使用，在新版本中有其他方法或类可以代替这个使用，以后的版本也不会再更新这个方法或类
 

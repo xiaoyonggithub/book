@@ -1,4 +1,4 @@
-#### 一、`spring`的注解
+# 一、`spring`的注解
 
 | 注解              | 描述                                           |
 | ----------------- | ---------------------------------------------- |
@@ -19,7 +19,7 @@
 
 > 注意：`@Controller、@Service、@Repository`注解的元注解就是`@Component`
 
-#### 1.1.`@ComponentScan`
+## 1.1.`@ComponentScan`
 
 ```java
 @Retention(RetentionPolicy.RUNTIME)
@@ -66,7 +66,7 @@ public @interface ComponentScan {
 | `includeFilters` | 设置扫描时只包含的组件                 |
 | `excludeFilters` | 设置扫描时排除的组件                   |
 
-##### 1.1.1.`excludeFilters`
+### 1.1.1.`excludeFilters`
 
 `excludeFilters`设置扫描时排除那些组件
 
@@ -77,7 +77,7 @@ public @interface ComponentScan {
 })
 ```
 
-##### 1.1.2.`includeFilters`
+### 1.1.2.`includeFilters`
 
 `includeFilters`设置扫描时值包含哪些组件
 
@@ -90,7 +90,7 @@ public @interface ComponentScan {
 },useDefaultFilters = false)
 ```
 
-##### 1.1.3.`FilterType`  过滤规则
+### 1.1.3.`FilterType`  过滤规则
 
 | `FilterType`                 | 描述                    |
 | ---------------------------- | ----------------------- |
@@ -100,7 +100,7 @@ public @interface ComponentScan {
 | `FilterType.REGEX`           | 使用正则表达式过滤      |
 | `FilterType.CUSTOM`          | 使用自定规则过滤        |
 
-##### 1.1.4.使用自定义规则过滤
+### 1.1.4.使用自定义规则过滤
 
 ```java
 /**
@@ -152,7 +152,7 @@ public void test(){
 }
 ```
 
-#### 1.2.`@Scope`
+## 1.2.`@Scope`
 
 | `@Scope`的作用范围 | 描述                                   |
 | ------------------ | -------------------------------------- |
@@ -164,7 +164,7 @@ public void test(){
 * `sigleton`：在`ioc`容器创建的时候就创建对象，并放入容器
 * `prototype`：在获取对象的时候创建，每获取一次就创建一次。
 
-#### 1.3.`@Lazy`
+## 1.3.`@Lazy`
 
 `@Lazy`设置对象创建懒加载
 
@@ -178,11 +178,11 @@ public Person person(){
 
 * `singleton`：在容器启动的时候不创建对象，在第一次获取的创建。
 
-#### 1.4.`@Conditonal`
+## 1.4.`@Conditonal`
 
-`@Conditional`按条件注册`bean`,满足条件的才注册；该注解可以放在方法上，也可以放在类上。
+`@Conditional`按条件注册`bean`，满足条件的才注册；该注解可以放在方法上，也可以放在类上。
 
-##### 1.4.1.获取运行环境
+### 1.4.1.获取运行环境
 
 ```java
 //获取运行的环境
@@ -191,7 +191,7 @@ String os = environment.getProperty("os.name");
 System.out.println(os);
 ```
 
-##### 1.4.2.自定义条件
+### 1.4.2.自定义条件
 
 ```java
 //判断是否是Windows系统
@@ -258,9 +258,9 @@ public Person person02(){
 }
 ```
 
-#### 1.5.`@Import`
+## 1.5.`@Import`
 
-##### 1.5.1.给容器注册组件的方式
+### 1.5.1.给容器注册组件的方式
 
 * 包扫描+组件标注注解`(@Controller/@Repository/@Service/@Component)`【自己定义的类】
 * `@Bean+new Person()`【导入第三方包中的组件】
@@ -290,7 +290,7 @@ public class MainConfig {
 
 * 使用`Spring`提供`FactoryBean(工厂bean)`
 
-##### 1.5.2.自定义导入选择器
+### 1.5.2.自定义导入选择器
 
 ```java
 public class MyImportSelector implements ImportSelector {
@@ -330,7 +330,7 @@ public class MainConfig {
 }
 ```
 
-##### 1.5.3.自定义`ImportBeanDefinitionRegistrar`
+### 1.5.3.自定义`ImportBeanDefinitionRegistrar`
 
 ```java
 public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
@@ -361,7 +361,7 @@ public class MainConfig {
 }
 ```
 
-##### 1.5.4.`FactoryBean`注册`Bean`
+### 1.5.4.`FactoryBean`注册`Bean`
 
 ```java
 public class Color {
@@ -430,14 +430,14 @@ public interface BeanFactory {
 }
 ```
 
-#### 1.6.`@Value`
+## 1.6.`@Value`
 
 * 基本数值
 * `SpEl,#{}`
 * `${}`，取出配置文件中的值，即取运行环境变量的值
 * 
 
-#### 1.7.`@RequestMapping`
+## 1.7.`@RequestMapping`
 
 设置控制器（`Controller`）可以处理那些`URL`请求：
 
@@ -451,9 +451,19 @@ public interface BeanFactory {
 
 
 
-### 二、`Bean`的生命周期
+## 1.8.定义组合注解
 
-#### 2.1.自定义初始化和销毁方法
+
+
+
+
+## 1.9.`@Repeatable`
+
+
+
+# 二、`Bean`的生命周期
+
+## 2.1.自定义初始化和销毁方法
 
 初始化方法在对象创建完成并赋值完成之后，调用初始化方法。
 
@@ -462,14 +472,14 @@ public interface BeanFactory {
 * 单实例：容器关闭的时候执行
 * 多实例：容器不会管理销毁方法
 
-##### 2.1.1.在配置文件中的指定
+### 2.1.1.在配置文件中的指定
 
 ```xml
 <bean id="bookService" init-method="" destory-method="">
 </bean>
 ```
 
-##### 2.1.2.`@Bean`指定初始化和销毁方法
+### 2.1.2.`@Bean`指定初始化和销毁方法
 
 ```java
 public class Car {
@@ -519,7 +529,7 @@ IOC容器的创建...
 Car...destory()
 ```
 
-##### 2.1.3.实现接口的方式定义初始化和销毁方法
+### 2.1.3.实现接口的方式定义初始化和销毁方法
 
 ```java
 public class Cat implements InitializingBean,DisposableBean {
@@ -568,7 +578,7 @@ IOC容器的创建...
 Cat...destroy()
 ```
 
-##### 2.1.4.`JS250`的注解定义初始化和销毁方法
+### 2.1.4.`JS250`的注解定义初始化和销毁方法
 
 ```java
 public class Cat {
@@ -618,7 +628,7 @@ IOC容器的创建...
 Cat...@PreDestroy
 ```
 
-##### 2.1.5.`BeanPostProcessor`后置处理器
+### 2.1.5.`BeanPostProcessor`后置处理器
 
 ```java
 @Component
@@ -698,5 +708,5 @@ IOC容器的创建...
 Cat...@PreDestroy
 ```
 
-##### 2.1.6.`BeanPostProcessor`的原理(源码)分析
+### 2.1.6.`BeanPostProcessor`的原理(源码)分析
 

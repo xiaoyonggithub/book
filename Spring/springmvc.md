@@ -36,6 +36,16 @@
     
     <!--处理静态资源 -->
     <mvc:default-servlet-handler/>
+    
+    <!-- 配置国际化资源文件 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="i18n"></property>	
+	</bean>
+	
+	<!-- 配置直接转发的页面 -->
+	<!-- 可以直接相应转发的页面, 而无需再经过 Handler 的方法.  -->
+	<mvc:view-controller path="/success" view-name="success"/>
 </beans>
 
 ```
@@ -180,7 +190,7 @@ public String login(@PathVariable("username") String username,Model model){
 
 ## 2.3.`@RequestParam`
 
-@RequestParam请求参数的绑定
+`@RequestParam`请求参数的绑定
 
 - `required`设置参数是否必须 
 - `defaultValue`设置请求参数默认值
@@ -293,7 +303,7 @@ public String updateUser(@ModelAttribute("user") User user){
 }
 ```
 
-## 2.8.1.运行流程：
+### 2.8.1.运行流程：
 
 1. 执行@ModelAttribute标注的方法，从数据库中取出对象，将值放入到Map中（键：user）
 2. SpringMVC 从Map值取出User对象,并把表单的请求参数赋值给该User对象的对应属性
@@ -301,13 +311,13 @@ public String updateUser(@ModelAttribute("user") User user){
 
 效果：修改数据时，没有传入需要修改的值时，默认取数据库中原来的值
 
-## 2.8.2.源码分析
+### 2.8.2.源码分析
 
 
 
 
 
-## 2.8.3.SpringMVC确定目标方法POJO类型参数的过程
+### 2.8.3.SpringMVC确定目标方法POJO类型参数的过程
 
 1. 确定一个key
    * 若目标方法POJO类型参数没有使用@ModelAttribute修饰，则key为POJO类名首字母小写
@@ -324,7 +334,7 @@ public String updateUser(@ModelAttribute("user") User user){
 
 `@InitBinder`标注在方法上，对WebDataBinder进行初始化
 
-* WebDataBinder是DataBinder的子类，作用是完成单个字段到JavaBean属性的绑定
+* WebDataBinder是DataBinder的子类，作用是完成表单字段到JavaBean属性的绑定
 * initBinder()方法的没有返回值
 * initBinder()方法的参数一般是WebDataBinder
 
@@ -342,11 +352,34 @@ public void initBinder(WebDataBinder binder){
 
 `NumberFormatAnnotationFormatterFactory`支持`@NumberFormat`
 
+- 将字符串`(1,263,383.2)`转化为数字
+
+```jsp
+<form:input path="salary"/>
+```
+
+```java
+@NumberFormat(pattern="#,###,###.#")
+private Float salary;
+```
+
 
 
 ## 2.11.`@DateTimeFormat`
 
 `JodaDateTimeFormatAnnotationFormatterFactory`支持`@DateTimeFormat`
+
+- 将日期字符串转化为日期
+
+```jsp
+<form:input path="birth"/>
+```
+
+```java
+@Past
+@DateTimeFormat(pattern="yyyy-MM-dd")
+private Date birth;
+```
 
 
 
@@ -639,6 +672,49 @@ public class EmpController {
 </html>
 ```
 
+7.web.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+
+	<!-- 配置 SpringMVC 的 DispatcherServlet -->
+	<!-- The front controller of this Spring Web application, responsible for handling all application requests -->
+	<servlet>
+		<servlet-name>springDispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springmvc.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- Map all requests to the DispatcherServlet for handling -->
+	<servlet-mapping>
+		<servlet-name>springDispatcherServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 配置 HiddenHttpMethodFilter: 把 POST 请求转为 DELETE、PUT 请求 -->
+	<filter>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+</web-app>
+```
+
+
+
 # 四、参数的绑定
 
 ## 4.1.`@RequestParam`绑定参数
@@ -875,8 +951,8 @@ public String update(@ModelAttribute("user") Emp emp){
 ## 5.6.`SpringMVC `确定目标方法 `POJO `类型入参的过程
 
 1. 确定一个key:
-  1). 若目标方法的POJO类型的参数没有使用@ModelAttribute作为修饰， 则key为POJO类名第一个字母的小写
-  2). 若使用了@ModelAttribute来修饰， 则key为@ModelAttribute注解的value属性值.
+    1). 若目标方法的POJO类型的参数没有使用@ModelAttribute作为修饰， 则key为POJO类名第一个字母的小写
+    2). 若使用了@ModelAttribute来修饰， 则key为@ModelAttribute注解的value属性值.
 2. 在implicitModel中查找key对应的对象， 若存在， 则作为入参传入
    1). 若在@ModelAttribute标记的方法中在 Map 中保存过， 且key和`(1.确定一个 key)`确定的key一致， 则会获取到.
 3. 若 implicitModel中不存在key对应的对象， 则检查当前的Handler是否使用@SessionAttributes 注解修饰，若使用了该注解， 且@SessionAttributes注解的value属性值中包含了key， 则会 HttpSession中来获取key所对应的 alue值， 若存在则直接传入到目标方法的入参中. 若不存在则将抛出异常.
@@ -901,13 +977,14 @@ public String update(@ModelAttribute("user") Emp emp){
 
 ## 6.2.自定义视图
 
+- `order`设置视图优先级，值越小优先级越高
+
 ```xml
 <!-- 视图解析器 -->
 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix" value="/WEB-INF/pages/"></property>
     <property name="suffix" value=".jsp"></property>
 </bean>
-
 <!--配置BeanNameViewResolver视图解析：根据视图名称解析视图-->
 <bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
     <!--设置视图的优先级，值越小优先级越高；常用的视图解析器的优先级低，即其他视图解析器解析不了，再使用常用的视图解析器解析-->
@@ -918,7 +995,7 @@ public String update(@ModelAttribute("user") Emp emp){
 ```java
 @Component
 public class HelloView implements View{
-
+    
     /**
      * 设置返回的文件类型
      * @return
@@ -927,7 +1004,7 @@ public class HelloView implements View{
     public String getContentType() {
         return "text/html";
     }
-
+    
     /**
      * 渲染视图
      * @param model
@@ -946,11 +1023,33 @@ public class HelloView implements View{
 @RequestMapping("/testView")
 public String testView(){
     System.out.println("testView");
+    //helloView根据BeanNameResolver解析视图
     return "helloView";
 }
 ```
 
 ## 6.3.自定义Excel视图
+
+```java
+public class MyExcelView extends AbstractExcelView {
+    /**
+     * 
+     * @param map
+     * @param hssfWorkbook
+     * @param httpServletRequest
+     * @param httpServletResponse
+     * @throws Exception
+     */
+    @Override
+    protected void buildExcelDocument(Map<String, Object> map, HSSFWorkbook hssfWorkbook, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+....        
+    }
+}
+```
+
+
+
+
 
 
 
@@ -978,6 +1077,7 @@ public String testView(){
 ### 6.5.1.常用的视图解析器实现类
 
 - 解析为Bean的名称
+
   - `BeanNameViewResolver`:将逻辑视图名解析Wie一个Bean，Bean的id为逻辑视图名
 
 - 解析为URL文件
@@ -1034,33 +1134,101 @@ public String register(Map<String,Object> map){
 
 # 八、Spring的表单标签
 
+- 引入标签
+
 ```jsp
 <%@ taglib prefix="fm" uri="http://www.springframework.org/tags/form" %>
 ```
 
+- `<fm:form>`
+- `<fm:input path=''>`:path属性对应`<input>`标签的name属性值，支持级联属性
+
+```jsp
+<form:input path="user.email"/>
+```
+
+- `<fm:rediobutton>`:构建一个单选按钮，当表单的属性值与value值相等时选中
+
+```jsp
+<fm:radiobutton path="gender" value="1"/>女
+<fm:radiobutton path="gender" value="2"/>男
+```
+
+- `<fm:radiobuttons>`:构建多个单选按钮
+  - `items`:可以是一个list、String[]、Map
+  - `itemValue`:指定radio的value
+  - `itemLabel`:指定radio的label
+  - `delimiter`:设置多个单选按钮时的分隔符
+
+```jsp
+<% 
+   Map<String, String> genders = new HashMap();
+   genders.put("1", "Male");
+   genders.put("0", "Female");
+   request.setAttribute("genders", genders);
+%>
+<fm:radiobuttons path="gender" items="${genders }" delimiter="<br>"/>
+```
+
+- `<fm:select>`：下拉框
+
+```jsp
+<form:select path="department.id" items="${departments }" itemLabel="departmentName" itemValue="id"></form:select>
+```
+
+- `<fm:option>`:下拉选项组件
+- `<fm:password>`
+- `<fm:errors>`:显示表单组件或数据校验对应的错误信息
+
+```jsp
+<%--显示所有错误信息--%>
+<fm:errors path="*"/>
+<%--显示表单所有以user开头属性的错误信息--%>
+<fm:errors path="user*"/>
+<%--显示表单指定的属性的username错误信息--%>
+<fm:errors path="username"/>
+```
+
+- `<fm:hidden>`:与`<input type='hidden'>`对应
+- `<fm:textarea>`
+
+- `<fm:checkbox>`:复选框组件，用于构建单个复选框
+- `<fm:checkboxs>`:构建多个复选框
+
+> 注意:
+> 可以通过modelAttribute属性指定绑定的模型属性，若没有指定该属性，则默认从request域对象中读取command的表单bean如果该属性值也不存在，则会发生错误
+
+```java
+@RequestMapping(value="/user", method=RequestMethod.GET)
+public String input(Map<String, Object> map){
+    //spring标签进入时就会去对应属性的，即使初次进入没有值，也需要返回一个空对象
+    map.put("user", new User());
+    return "input";
+}
+```
+
 ```jsp
 <fm:form method="post" modelAttribute="user" action="${pageContext.request.contextPath}/user/useraddsave" >
-    <fm:errors path="userCode"></fm:errors>
-    用户编码 ：<fm:input path="userCode" /><br/>
-    <fm:errors path="userName"></fm:errors>
-    用户名称 ：<fm:input path="userName"/><br/>
-    <fm:errors path="userPassword"></fm:errors>
-    用户密码 ：<fm:password path="userPassword"/><br>
-    用户地址 ：<fm:input path="address" /><br>
-    用户电话 ： <fm:input path="phone"/><br>
-    <fm:errors path="birthday"></fm:errors>
-    用户生日 ：<fm:input path="birthday" /><br>
+<fm:errors path="userCode"></fm:errors>
+用户编码 ：<fm:input path="userCode" /><br/>
+<fm:errors path="userName"></fm:errors>
+用户名称 ：<fm:input path="userName"/><br/>
+<fm:errors path="userPassword"></fm:errors>
+用户密码 ：<fm:password path="userPassword"/><br>
+用户地址 ：<fm:input path="address" /><br>
+用户电话 ： <fm:input path="phone"/><br>
+<fm:errors path="birthday"></fm:errors>
+用户生日 ：<fm:input path="birthday" /><br>
 
-    用户性别： <fm:radiobutton path="gender" value="1"/>女
-    		 <fm:radiobutton path="gender" value="2"/>男<br>		
-    用户角色 ：<br>
-    <fm:radiobutton path="userRole" value="101" />OrdinaryUser 
-    <fm:radiobutton path="userRole" value="110"/>Administrator<br>
-    <fm:radiobutton path="userRole" value="111"/>Manager 
-    <fm:radiobutton path="userRole" value="100"/>tour<br>
-    <input type="submit" name="保存"/>
-    <input type="reset" value="重置"/>
-
+用户性别： <fm:radiobutton path="gender" value="1"/>女
+<fm:radiobutton path="gender" value="2"/>男<br>		
+用户角色 ：<br>
+<fm:radiobutton path="userRole" value="101" />OrdinaryUser 
+<fm:radiobutton path="userRole" value="110"/>Administrator<br>
+<fm:radiobutton path="userRole" value="111"/>Manager 
+<fm:radiobutton path="userRole" value="100"/>tour<br>
+<input type="submit" name="保存"/>
+<input type="reset" value="重置"/>
 ```
 
 
@@ -1069,12 +1237,14 @@ public String register(Map<String,Object> map){
 
 ## 9.1.数据绑定的流程
 
-1. SpringMVC主框架将ServletRequest对象及目标方法的入参实例传递给 WebDataBinderFactory 实例，以创建 DataBinder 实例对象
-2. DataBinder 调用装配在 Spring MVC 上下文中的 ConversionService 组件进行数据类型转换、数据格式
-    化工作。将 Servlet 中的请求信息填充到入参对象中
-3. 调用 Validator 组件对已经绑定了请求消息的入参对象进行数据合法性校验，并最终生成数据绑定结果
-    BindingData 对象
-4. Spring MVC 抽取 BindingResult 中的入参对象和校验误对象，将它们赋给处理方法的响应入参	
+1. SpringMVC主框架将ServletRequest对象及目标方法的入参实例传递给WebDataBinderFactory实例，以创建DataBinder实例对象
+2. DataBinder调用装配在SpringMVC上下文中的ConversionService组件进行数据类型转换、数据格式
+    化工作。将Servlet中的请求信息填充到入参对象中
+3. 调用Validator组件对已经绑定了请求消息的入参对象进行数据合法性校验，并最终生成数据绑定结果
+    BindingData对象
+4. SpringMVC抽取BindingResult中的入参对象和校验误对象，将它们赋给处理方法的响应入参	
+
+![1547393386315](../images/1547393386315.png)
 
 ## 9.2.自定义类型转化器
 
@@ -1164,7 +1334,358 @@ FactoryBean的实现类
 private Date hiredate;
 ```
 
+
+
+> 既可以添加自定义的类型转化器，也可以格式化功能
+
+```xml
+<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>	
+
+<bean id="conversionService"
+      class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+    <property name="converters">
+        <set>
+            <ref bean="employeeConverter"/>
+        </set>
+    </property>	
+</bean>
+```
+
+
+
 ## 9.4.数据类型转化的流程
+
+
+
+
+
+## 9.5.内置的数据类型转化器
+
+- `ObjectToStringConverter`:Boolean -> String
+- `CharacterToNumberFactory`:Character -> Number
+- `ObjectToStringConverter`:Character -> String
+- `EnumToStringCoverter`:Enum -> String
+- `NumberToCharacterConverter`:Number -> Character
+- `NumberToNUmberConverterFactory`:Number -> Number
+- `ObjectToStringConverter`：Number -> String
+- `StringToBooleanConverter`:String -> Boolean
+- `StringToCharacterCoverter`:String -> Character
+- `StringToEnumCoverterFactory`:String -> Enum
+- `StringToNumberCoverterFactory`:String -> Number
+- `StringToLoacleCoverter`:String -> Locale
+- `StringToProperties`:String -> Properties
+- `StringToUUIDConverter`:String -> UUID
+- `ObjectToStringConverter`:Locale -> String
+- `PropertiesToStringConvter`:Properties -> String 
+- `ObjectToObjectConverter`:UUID -> String
+
+
+
+## 9.6.自定义数据校验的注解
+
+
+
+
+
+## 9.7.格式化错误信息
+
+`BindingResult`验证不通过的结果信息集合
+
+```java
+@RequestMapping(value = "/emp", method = RequestMethod.GET)
+public String input(Map<String, Object> map, BindingResult result) {
+    if (result.getFieldErrorCount() > 0) {
+        for (FieldError fieldError : result.getFieldErrors()) {
+            fieldError.getField();
+            fieldError.getDefaultMessage();
+        }
+    }
+    return "input";
+}
+```
+
+```java
+@RequestMapping(value = "/emp", method = RequestMethod.GET)
+public String input(Map<String, Object> map, Error error) {
+
+    return "input";
+}
+```
+
+## 9.8.数据校验
+
+### 9.8.1.如何校验
+
+- `JSR303`是Java为Bean数据合法性校验提供的标准框架，它已包含在JavaEE6.0中
+- `JSR303`通过在Bean属性上标注注解指定校验规则，并通过标准的验证接口对Bean校验
+
+> `JSR303`校验的注解类型如下：
+
+- `@Null`被注释元素必须为null
+
+- `@NotNull`被注释元素必须不为null
+
+- `@AssertTrue`被注释元素必须为true
+
+- `@AssertFalse`被注释元素必须为false
+
+- `@Min(value)`被注释元素必须为数字，且值必须大于等于最小值
+
+- `@Max(value)`被注释元素必须为数字，且值必须小于等于最大值
+
+- `@DecilmalMin(value)`被注释元素必须为数字，且值必须大于等于最小值
+
+  ```java
+  //大于0.01，不包含0.01
+  @NotNull
+  @DecimalMin(value = "0.01", inclusive = false)
+  private Integer greaterThan;
+  ```
+
+- `@CecilmalMax(value)`被注释元素必须为数字，且值必须小于等于最大值
+
+- `@Size(max,min)`被注释元素必须在指定的范围内
+
+- `@Digits(integer,fraction)`被注释元素必须是一个数字，且其值必须在可接受的范围内
+
+- `@Past`被注释元素必须是一个过去日期
+
+- `@Future`被注释元素必须是一个将来日期
+
+- `@Pattern(value)`被注释元素必须符合指定的正则表达式
+
+> `Hibernate Validator`是`JSR303`的一个参考实现，除了支持标准的校验注解，也支持如下扩展注解：
+
+- `@Eamil`被注释元素必须是电子邮箱
+- `@Length`被注释元素必须是字符串，且字符串长度必须在指定范围内
+- `@NotEmpty`被注释元素必须是字符串，且字符串不能为空
+- `@NotBlank(message =)`验证字符串非null,且长度必须大于0
+- `@Range`被注释的元素必须在合适的范围内
+
+>`Spring4.0`拥有自己独立的数据校验框架，同时也支持`JSR303`标准校验框架；
+>
+>`Spring`的`LocalValidatorFactoryBean`既实现了Spring的`Validator`接口，也实现了`JSR303`的`Validator`接口；故只要在Spring容器中定义了`LocalValidatorFactoryBean`，就可以直接使用注解驱动的方式校验数据了；`<mvc:annotation-driven>`配置会默认装配一个`LocalValidatorFactoryBean`；
+
+- 在处理方法的入参时标注`@Valid`注解，可使`SpringMVC`在完成数据绑定后执行数据校验
+
+```java
+
+```
+
+- 注意：`Spring`本身没有提供`JSR303`的实现，故使用`JSR303`需要导入实现者的`jar`
+
+```xml
+<dependency>
+   <groupId>org.hibernate</groupId>
+   <artifactId>hibernate-validator</artifactId>
+   <version>6.0.14.Final</version>
+</dependency>
+```
+
+> 注意：需要校验的bean与绑定的错误结果对象要成对出现，之间不能有其他参数
+
+```java
+public String save(@Valid Employee employee, Error error,
+                   @Valid Department department, Error dError) {
+    return "success";
+}
+```
+
+### 9.8.2.错误消息如何国际化
+
+- 每个属性在数据绑定和数据校验发生错误时，都会生成一个对应的`FieldError`对象
+- 当一个属性校验失败后，校验框架会为该属性生成4个消息代码，这些代码以校验注解类型为前缀，结合modelAttribute、属性名及其属性类型名生成多个对应的消息代码；如User类的password属性使用@Pattern注解时，生成的错误代码如下：
+  - Pattern.user.password
+  - Pattern.password
+  - Pattern.java.lang.String
+  - Pattern
+- `SpringMVC`显示错误消息时，会查看`WEB`上下文是否装配了对应的国际化消息
+  - 若有，就使用国际化消息
+  - 若没有，则使用默认的错误消息
+
+```xml
+<!-- 配置国际化资源文件 -->
+<bean id="messageSource"
+      class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="i18n"></property>
+</bean>
+```
+
+`i18n.properties`:
+
+```properties
+NotEmpty.employee.lastName=^^LastName不能为空.
+Email.employee.email=Email地址不合法
+Past.employee.birth=Birth不能是一个将来的时间.
+typeMismatch.employee.birth=Birth不是一个日期. 
+```
+
+- 数据在类型转化或数据格式转化时发生错误，或该有的参数不存在，以及调用处理方法发生错误时，也会在隐含模型中创建错误消息；其对应的错误代码如下：
+  - `required`:设置参数是否必须，如`@RequiredParam("user")`
+  - `typeMismatch`:数据绑定时，发生数据类型不匹配
+  - `methodInvocation`:调用处理方法时发生错误
+
+
+
+
+
+### 9.8.3.自定义数据校验的注解
+
+
+
+### 9.8.4.`Hibernate Validator`
+
+`Hibernate Validator`校验模式
+
+- 普通模式(默认模式)：会校验完所有属性后，才返回所有校验失败信息
+
+- 快速失败返回模式：只要有一个校验失败，就立即返回
+
+```java
+//配置hibernate Validator为快速失败返回模式
+@Configuration
+public class ValidatorConfiguration {
+    @Bean
+    public Validator validator(){
+        ValidatorFactory validatorFactory = Validation.byProvider( HibernateValidator.class )
+            .configure()
+            .addProperty( "hibernate.validator.fail_fast", "true" )
+            .buildValidatorFactory();
+        Validator validator = validatorFactory.getValidator();
+
+        return validator;
+    }
+}
+```
+
+#### 1、请求参数校验
+
+
+
+#### 2、`GET`参数校验
+
+`GET`参数校验即`@RequestParam`参数校验
+
+
+
+
+
+#### 3、`model`校验
+
+
+
+#### 4、对象级联校验
+
+
+
+#### 5、分组校验
+
+
+
+#### 6、自定义验证器
+
+
+
+
+
+参考：[https://www.cnblogs.com/mr-yang-localhost/p/7812038.html](https://www.cnblogs.com/mr-yang-localhost/p/7812038.html)
+
+
+
+## 9.9.返回`JSON`
+
+```java
+@ResponseBody
+@RequestMapping("/testJson")
+public Collection<Employee> testJson() {
+    return employeeDao.getAll();
+}
+```
+
+`HttpMessageConverter<T>`是spring3.0新增的一个接口，负责将请求信息转化为一个对象（类型为T），并将对象输出为响应信息；方法如下：
+
+- `boolean canRead(Class<?> var1, MediaType var2)`指定转化器可以读取的对象类型；即转化器是否可将请求信息转化为clazz类型的对象，同时指定支持的MIME类型`(text/html,application/json)`
+- `boolean canWrite(Class<?> var1, MediaType var2)`指定转化器是否可将clazz类型的对象写入到响应流中，MediaType设置响应流支持的媒体类型
+- `List<MediaType> getSupportedMediaTypes()`获取该转化器支持的媒体类型
+- `T read(Class<? extends T> var1, HttpInputMessage var2)`将请求信息转化为T类型的对象
+- `void write(T var1, MediaType var2, HttpOutputMessage var3)`将T类型的对象写入到响应流中，并指定响应的媒体类型
+
+![1547734774611](../images/1547734774611.png)
+
+>`HttpMessageConverter<T>`的实现类
+
+![1547734838529](../images/1547734838529.png)
+
+- `FormHttpMessageConverter`:将表单中数据读取到`MultiValueMap`中
+  - `XmlAwareFormHttpMessageConverter`:对`FormHttpMessageConverter`的扩展，当部分表单数据为xml时，可使用该转化器读取
+  - `AllEncompassingFormHttpMessageConverter`:
+- `AbstractHttpMessageConverter`:
+  - `SourceHttpMessageConverter`:读写`javax.xml.transform.Source`类型的数据
+  - `ByteArrayHttpMessageConverter`:读写二进制数据
+  - `ResourceHttpMessageConverter`:读写`org.springframework.core.io.Resource`对象
+  - `AbstractXmlHttpMessageConverter`:
+    - `AbstractXmlHttpMessageConverter`
+      - `Jaxb2CollectionHttpMessageConverter`
+      - `Jaxb2RootElementHttpMessageConverter`
+    - `MarshallingHttpMessageConverter`：通过spring的
+  - `MappingJacksonHttpMessageConverter`:利用`Jackson`开源包的`ObjectMapper`读取JSON
+  - `MappingJackson2HttpMessageConverter`：
+  - `ObjectToStringHttpMessageConverter`
+  - `AbstractWireFeedHttpMessageConverter`
+    - `RssChannelHttpMessageConverter`：读写RSS种子信息
+    - `AtomFeedHttpMessageConverter`：读写RSS种子信息
+  - `StringHttpMessageConverter`:将请求信息转化为字符串
+- `BufferedImageHttpMessageConverter`:对象`BufferedImage对象`
+- `GenericHttpMessageConverter`:
+  - `Jaxb2CollectionHttpMessageConverter`
+  - `MappingJacksonHttpMessageConverter`
+  - `MappingJackson2HttpMessageConverter`
+
+> `DipatcherServlet`默认装配`RequestMappingHandlerAdapter`；而`RequestMappingHandlerAdapter`会默认装配如下的`HttpMessageConverter`实现：
+>
+> - `ByteArrayHttpMessageConverter`
+> - `StringHttpMessageConverter`
+> - `ResourceHttpMessageConverter`
+> - `SourceHttpMessageConverter`
+> - `AllEncompassingFormHttpMessageConverter`
+> - `Jaxb2RootElementHttpMessageConverter`
+>
+> 若添加了`jackson.jar`包后会自动装配`MappingJackson2HttpMessageConverter`
+
+>`HttpMessageConverter`用于将请求信息转化绑定到目标方法入参，或将响应结果转化为对应的响应信息；spring 提供了如下方式：
+
+- `@RequestBody`、`@ResponseBody`对象处理方法标注
+- `HttpEntity<T>`、`ResponseEntity<T>`作为处理方法的入参或返回值
+
+当spring使用到了`@RequestBody`、`@ResponseBody`、`HttpEntity<T>`、`ResponseEntity<T>`时，如何匹配到`HttpMessageConverter`
+
+- 首先根据请求头或响应头的`Accept`属性选择匹配的`HttpMessageConverter`实现类，若找不到
+- 然后会根据参数类型或泛型类型的过滤匹配`HttpMessageConverter`实现类，若还找不到可用的`HttpMessageConverter`就会报错
+
+> `@RequestBody`和`@ResponseBody`、`HttpEntity<T>`和`ResponseEntity<T>`不需要成对出现
+
+```java
+@RequestMapping("/downloadFile")
+public ResponseEntity<byte[]> downloadFile(HttpSession session) throws IOException {
+    //内容
+    byte[] body = null;
+    ServletContext servletContext = session.getServletContext();
+    InputStream in = servletContext.getResourceAsStream("/files/abc.txt");
+    body = new byte[in.available()];
+    in.read(body);
+
+    //设置头信息
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Disposition", "attachment;filename=abc.txt");
+	//设置请求的状态
+    HttpStatus statusCode = HttpStatus.OK;
+
+    ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(body, headers, statusCode);
+    return response;
+}
+```
+
+
 
 
 
@@ -1186,3 +1707,113 @@ private Date hiredate;
 
 
 # 十一、国际化
+
+## 11.1.国际化的问题
+
+```
+关于国际化问题:
+1. 在页面上能够根据浏览器语言设置的情况对文本(不是内容), 时间, 数值进行本地化处理
+2. 可以在 bean 中获取国际化资源文件 Locale 对应的消息
+3. 可以通过超链接切换 Locale, 而不再依赖于浏览器的语言设置情况
+
+解决方案:
+1. 使用 JSTL 的 fmt 标签
+2. 在 bean 中注入 ResourceBundleMessageSource 的示例, 使用其对应的 getMessage 方法即可
+3. 配置 LocalResolver 和 LocaleChangeInterceptor
+```
+
+```xml
+<!-- 配置国际化资源文件 -->
+<bean id="messageSource"
+      class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="i18n"></property>	
+</bean>
+
+<!-- 配置 SessionLocalResolver -->
+<bean id="localeResolver"
+      class="org.springframework.web.servlet.i18n.SessionLocaleResolver"></bean>
+
+<mvc:interceptors>
+    <!-- 配置 LocaleChanceInterceptor -->
+    <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"></bean>
+</mvc:interceptors>
+
+<!-- 配置直接转发的页面，此时需要配置mvc:annotation-driven，原来的映射请求才会生效 -->
+<!-- 可以直接相应转发的页面, 而无需再经过 Handler 的方法.  -->
+<mvc:view-controller path="/success" view-name="success"/>
+
+<!-- 在实际开发中通常都需配置 mvc:annotation-driven 标签 -->
+<mvc:annotation-driven></mvc:annotation-driven>
+```
+
+```html
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:message key="i18n.username"></fmt:message>
+<fmt:message key="i18n.password"></fmt:message>
+```
+
+> `i18n.properties`
+
+```properties
+i18n.user=User
+i18n.password=Password
+```
+
+> `i18n_en_US.properties`
+
+```properties
+i18n.user=User
+i18n.password=Password
+```
+
+> `i18_zh_CN.properties`
+
+```java
+i18n.user=用户名
+i18n.password=密码
+```
+
+```java
+@Autowired
+private ResourceBundleMessageSource messageSource;
+
+@RequestMapping("/i18n")
+public String i18n(Locale locale) {
+    String val = messageSource.getMessage("i18n.user", null, locale);
+    System.out.println(val);
+    return "i18n";
+}
+```
+
+```html
+<a href="i18n?locale=zh_CH">中文</a>
+<a href="i18n?locale=en_US">英文</a>
+```
+
+## 11.2.工作原理
+
+![1547738414381](../images/1547738414381.png)
+
+
+
+# 十二、文件上传
+
+`MultipartResolver`
+
+
+
+
+
+# 十三、MVC
+
+`MVC：Model+View+Controller`(数据模型 + 视图 + 控制器)，MVC只存在在三层架构的展示层
+
+- `M`数据模型
+- `V`视图页面（如`JSP、freemarker、Velocaity、Thymeleaf、Tile`）
+- `C`控制器（`@Controller`标注的类）
+
+三层架构：`Presentattion tier + Application tier + Data tier`(展示层 + 应用层 + 数据访问层)
+
+- 应用层`Service`
+- 数据访问层`Dao`
+

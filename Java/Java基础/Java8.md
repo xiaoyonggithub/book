@@ -536,6 +536,51 @@ public String getGodnessName(Optional<NewMan> man){
 }
 ```
 
+
+
+```java
+Passenger passenger = SomeMehtod.getPassenger();
+if(passenger != null && passenger.getCert() != null 
+   && passenger.getCert().getPersonalInfo != null){   
+    return passenger.getCert().getPersonalInfo().getName();
+}
+else return "default name";
+
+//有更差的实践是写成下面的多重嵌套if模式，这样在真实情况下很容易缩进七八层，甚至十几层，代码可读性基本上就没了。
+if(passenger != null){
+    if (passenger.getCert() != null){
+        if(passenger.getCert().getPersonalInfo() != null){
+             return passenger.getCert().getPersonalInfo().getName();
+        }else return "default name"
+    }
+}
+
+//还有更差的实践，比如生成很多只用一次的中间对象。对了，就是把 Cert，PersonalInfo 再都new出来。代码太难看，就不补全了。
+```
+
+```java
+Passenger passenger = SomeMehtod.getPassenger();
+return Optional.ofNullable(passenger)
+               .map(Passenger::getCert)
+               .map(Cert::getPersonalInfo)
+               .map(PersonalInfo::getName)
+               .orElse("default name");
+```
+
+```java
+//需要抛出一个空指针异常而不是返回默认值
+Passenger passenger = SomeMehtod.getPassenger();
+return Optional.ofNullable(passenger)
+               .map(Passenger::getCert)
+               .map(Cert::getPersonalInfo)
+               .map(PersonalInfo::getName)
+               .orElesThrow(NullPointerException::new)
+```
+
+
+
+
+
 # 三、接口
 
 ## 3.1.接口的默认方法

@@ -273,4 +273,89 @@ tr:hover{
 ## 2.1.`table`固定列和表头
 
 -  实现`table`固定列和表头，中间可横向滚动
-- 高度自适应等
+-  高度自适应等
+
+
+
+
+
+# 三、`Web Components`
+
+- 一种标准化的非侵入的方式封装一个组件，每个组件能组织好它自身的 HTML 结构、CSS 样式、JavaScript 代码，并且不会干扰页面上的其他代码著作权归作者所有。
+
+```html
+<template>
+  <h1>This won't display!</h1>
+  <script>alert("this won't alert!");</script>
+</template>
+document.body.appendChild(template.content.cloneNode(true));
+```
+
+
+
+
+
+
+
+## 3.1.`shadow DOM`
+
+- `shadow DOM`:开发者能通过 shadow DOM 在文档流中创建一些完全独立于其他元素的子 DOM 树（sub-DOM trees），由此我们可以封装一个具有独立功能的组件，并且可以保证不会在不无意中干扰到其它 DOM 元素
+  - shadow DOM 和标准的 DOM 一样，可以设置它的样式，也可以用 JavaScript 操作它的行为著作权归作者所有
+  - 主文档流和基于 shadow DOM 创建的独立组件之间的互不干扰，所以组件的复用也就变得异常简单方便
+
+- 一组JavaScript API，用于将封装的“影子”DOM树附加到元素（与主文档DOM分开呈现）并控制其关联的功能
+
+
+
+## 3.2.`Custom elements`
+
+- 一组JavaScript API，允许您定义custom elements及其行为，然后可以在您的用户界面中按照需要使用它们
+
+```js
+class GreetingElement extends HTMLElement {
+  constructor() {
+    super();
+    this._name = 'Stranger';
+  }
+  connectedCallback() {
+    this.addEventListener(
+      'click', e => alert(`Hello, ${this._name}!`)
+    );
+  }
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'name') {
+      if (newValue) {
+        this._name = newValue;
+      } else {
+        this._name = 'Stranger';
+      }
+    }
+  }
+}
+GreetingElement.observedAttributes = ['name'];
+customElements.define('hey-there', GreetingElement);
+```
+
+
+
+
+
+
+
+## 3.3.`HTML Templates`
+
+`<template>`和 `<slot>`元素使您可以编写不在呈现页面中显示的标记模板。然后它们可以作为自定义元素结构的基础被多次重用
+
+
+
+## 3.4.`HTML Imports`
+
+一旦定义了自定义组件，最简单的重用它的方法就是使其定义细节保存在一个单独的文件中，然后使用导入机制将其导入到想要实际使用它的页面中
+
+
+
+使用ECMAScript 2015类语法创建一个类，来指定web组件的功能(参阅类获取更多信息)。
+使用CustomElementRegistry.define()方法注册您的新自定义元素 ，并向其传递要定义的元素名称、指定元素功能的类以及可选的，其所继承自的元素。
+如果需要的话，使用Element.attachShadow()方法将一个shadow DOM附加到自定义元素上。使用通常的DOM方法向shadow DOM中添加子元素、事件监听器等等。
+如果需要的话，使用<template> 和 <slot>方法定义一个HTML模板。再次使用常规DOM方法克隆模板并将其附加到您的shadow DOM中。
+在页面任何您喜欢的位置使用自定义元素，就像使用常规HTML元素那样。
