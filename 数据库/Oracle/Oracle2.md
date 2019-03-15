@@ -77,7 +77,7 @@ select * from all_tab_comments where table_name = 'AA10';
 select * from user_col_comments where table_name = 'AA10';
 select * from all_col_comments where table_name = 'AA10';
 ```
->注意：`user_col_commnets`是当前用户列的说明，`all_col_comments`是系统所有用户的列说明
+>注意：`user_col_commnets`是当前用户下表的列说明，`all_col_comments`是当前用户所有可见表的列说明
 
 5. 删除表级说明
 ```sql
@@ -96,14 +96,16 @@ comment on column aa10.aaa100 is '';
 # 4.1. 复制表格数据
 1. 目标表已经存在
 ```sql
-insert into aa10_dest(aaa100,aaa101,aaa102,aaa103) select aaa100,aaa101,aaa102,aaa103 from aa10;
+--复制表中的数据到相应的目标表字段中
+insert into aa10_dest(aaa100,aaa101,aaa102,aaa103) 
+select aaa100,aaa101,aaa102,aaa103 from aa10;
 ```
->复制表中的数据到相应的目标表字段中
-
 ***
 2. 目标表不存在
 ```sql
-create table aa10_dest as select aaa100,aaa101,aaa102,aaa103 from aa10;
+create table aa10_dest 
+as
+select aaa100,aaa101,aaa102,aaa103 from aa10;
 ```
 >复制了指定字段及其数据，先复制表结构，再复制表数据
 ```sql
@@ -814,7 +816,7 @@ alter sequence sequence_name
 
     coluumn_name ,
     ...
-  )
+    )
 ```
 >不建议修改序列，因为序列的值是连续的，修改后容易导致值的混乱。
 >不建议修改数据库对象，因为可能导致对象值或结构的异常
@@ -1220,6 +1222,8 @@ select tablespace_name ,sum(bytes) / 1024 / 1024 as MB　from dba_data_files gro
 `oracle`数据备份的方式有：数据泵导出备份、热备份、冷备份
 数据泵导出备份属于**逻辑备份**
 热备份、冷备份属于**物理备份**
+
+
 
 
 # `Oracle`卸载

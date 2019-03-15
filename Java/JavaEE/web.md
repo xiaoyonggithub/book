@@ -6,3 +6,29 @@
 
 ```
 
+
+
+
+
+# 二、内置对象
+
+## 2.1.`JSP`的内置对象
+
+- `appliction`
+- `session`
+- `request`
+- `response`
+- `out`
+- `config`
+- `pagecontext`
+- `page`
+- `excption`
+
+
+
+## 2.2.`appliction、session、request`的区别
+
+
+
+
+

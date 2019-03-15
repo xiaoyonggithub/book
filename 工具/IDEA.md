@@ -234,6 +234,9 @@ $params$
 * `for(User user : users)`只需输入`user.for+Tab`
 * 要输入`Date birthday = user.getBirthday();`只需输入`user.getBirthday().var+Tab`即可
 
+4. `Ctrl + O`快速生成要实现的方法
+5. `Ctrl + Alt + T` 使选中的代码，由什么包围（try..catch）
+
 ## 3.4.编辑
 1. `Ctrl+W`自动按语法选中代码
 2. `Ctrl+Shift+W`自动按语法反向选中代码
@@ -482,6 +485,16 @@ https://zhuanlan.zhihu.com/p/35241754
 将日志的mybatis脚本转化为可执行的sql语句		
 
 ## 8.15.[`Translation`](http://yiiguxing.github.io/TranslationPlugin/start.html)
+
+
+
+## 8.16.`Jrebel`
+
+```js
+//激活的服务器地址
+http://139.199.89.239:1008/88414687-3b91-4286-89ba-2dc813b107ce
+http://jrebel.autoseasy.cn/xixihaha/b188b653-31f0-44ca-bbef-2eb5e58daf2b
+```
 
 
 

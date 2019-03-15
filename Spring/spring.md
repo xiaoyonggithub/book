@@ -2052,6 +2052,8 @@ public void testNamedParameterJdbcTemplate2(){
 
 # 十四、事务管理
 
+`Spring`并不会直接管理事务，而是提供了事务管理器，将事务管理的职责委托给`JPA JDBC JTA DataSourceTransaction JMSTransactionManager` 等框架提供的事务来实现
+
 ## 14.1.事务的四个属性（ACID）
 
 * 原子性`atomicity`：事务是一个原子操作，有一系列动作组成。务的原子性确保动作要么全部完成，要么全不起作用;
@@ -2064,6 +2066,69 @@ public void testNamedParameterJdbcTemplate2(){
 事务的管理器的顶层接口`PlatformTransactionManager`
 
 ![1532437449857](E:\typora\images\1532437449857.png)
+
+`TransactionDefinition`包含事务的定义
+
+```java
+public interface TransactionDefinition {
+    //传播机制
+    int PROPAGATION_REQUIRED = 0;
+    int PROPAGATION_SUPPORTS = 1;
+    int PROPAGATION_MANDATORY = 2;
+    int PROPAGATION_REQUIRES_NEW = 3;
+    int PROPAGATION_NOT_SUPPORTED = 4;
+    int PROPAGATION_NEVER = 5;
+    int PROPAGATION_NESTED = 6;
+    //隔离级别
+    int ISOLATION_DEFAULT = -1;
+    int ISOLATION_READ_UNCOMMITTED = 1;
+    int ISOLATION_READ_COMMITTED = 2;
+    int ISOLATION_REPEATABLE_READ = 4;
+    int ISOLATION_SERIALIZABLE = 8;
+    int TIMEOUT_DEFAULT = -1;
+	//获取传播机制
+    int getPropagationBehavior();
+	//获取隔离级别
+    int getIsolationLevel();
+
+    int getTimeout();
+	
+    boolean isReadOnly();
+
+    String getName();
+}
+```
+
+`TransactionStatus`事务的状态
+
+```java
+public interface TransactionStatus extends SavepointManager, Flushable {
+    boolean isNewTransaction();
+
+    boolean hasSavepoint();
+
+    void setRollbackOnly();
+
+    boolean isRollbackOnly();
+
+    void flush();
+
+    boolean isCompleted();
+}
+```
+
+`Spring`的事务管理
+
+```java
+DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+TransactionStatus status = transactionManager.getTransaction(definition);
+try{
+    //业务代码
+    transactionManager.commit(status);
+}catch (Exception e){
+    transactionManager.rollback(status);
+}
+```
 
 ## 14.3.声明式事务
 

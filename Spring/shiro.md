@@ -1,8 +1,8 @@
-## 一、`Shiro`
+# 一、`Shiro`
 
 Apache Shiro是Java的一个安全（权限）框架
 
-### 1.1.`Shiro`的功能点
+## 1.1.`Shiro`的功能点
 
 - `Authentication`:认证
 - `Authorization`:授权
@@ -17,7 +17,7 @@ Apache Shiro是Java的一个安全（权限）框架
 
 ![](E:\typora\images\ShiroFeatures.png)
 
-### 1.2.`Shiro`的组件
+## 1.2.`Shiro`的组件
 
 - `Subject`:当前用户
 - `SecurityManager`:
@@ -25,7 +25,7 @@ Apache Shiro是Java的一个安全（权限）框架
 
 ![](E:\typora\images\ShiroBasicArchitecture.png)
 
-### 1.3.`Shiro`的架构
+## 1.3.`Shiro`的架构
 
 ![](E:\typora\images\ShiroArchitecture.png)
 
@@ -33,13 +33,13 @@ Apache Shiro是Java的一个安全（权限）框架
 
 
 
-## 二、配置文件
+# 二、配置文件
 
 
 
-## 三、整合
+# 三、整合
 
-### 3.1.`spring`与`shiro`整合
+## 3.1.`spring`与`shiro`整合
 
 1. 依赖的jar 
 

@@ -1,24 +1,5 @@
 # 一、`spring`的注解
 
-| 注解              | 描述                                           |
-| ----------------- | ---------------------------------------------- |
-| `@Configuration`  | 标注一个类为配置类                             |
-| `@Bean`           | 标注为`bean`，注册`bean`                       |
-| `@Controller`     | 标注在`Controller`上，注册`bean`               |
-| `@Service`        | 标注在`Service`上，注册`bean`                  |
-| `@Repository`     | 标注在`Dao`上，注册`bean`                      |
-| `@ComponentScan`  | 扫描所有的`bean`并注入到容器中，可设置扫描规则 |
-| `@Scope`          | 设置`bean`的作用范围                           |
-| `@Lazy`           | 懒加载                                         |
-| `@Conditional`    | 按添加注册`bean`                               |
-| `@Import`         | 注容器册                                       |
-| `@value`          | 给属性赋值                                     |
-| `@RequestMapping` | 指定控制器可以处理那些`URL`请求                |
-| ``                |                                                |
-| ``                |                                                |
-
-> 注意：`@Controller、@Service、@Repository`注解的元注解就是`@Component`
-
 ## 1.1.`@ComponentScan`
 
 ```java

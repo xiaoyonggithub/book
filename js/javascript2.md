@@ -2,13 +2,13 @@
 
 ## 7.1.创建正则表达式
 
-1. 语法：var reg = new RegExp("正则表达式","模式");
+1. 语法：`var reg = new RegExp("正则表达式","模式");`
 
 - 匹配模式
   - `i` 忽略大小写
   - `g` 全局匹配模式
 
-1. 使用字面量创建正则表达式
+2. 使用字面量创建正则表达式
 
 ```javascript
 var reg = /正则表达式/模式;
@@ -51,17 +51,17 @@ var reg = /\./;  //表示.
 
 ## 7.3.正则函数
 
-1. reg.test(str),测试str是否符合正则表达式
-2. str.split(reg);按正则匹配拆分字符
-3. str.search(reg);按正则匹配搜索是否包含指定字符，只能匹配第一个（即使指定了全局g）
-4. str.match(reg);从字符串中提取正则匹配的字符
+1. `reg.test(str);`测试`str`是否符合正则表达式
+2. `str.split(reg);`按正则匹配拆分字符
+3. `str.search(reg);`按正则匹配搜索是否包含指定字符，只能匹配第一个（即使指定了全局g）
+4. `str.match(reg);`从字符串中提取正则匹配的字符
 
 ```javascript
 str.match(/[A-z]/gi); //表示提取所有的匹配的字符，默认只能提取第一个字符
 //返回数组
 ```
 
-1. str.replace(reg,newstr);按正则匹配替换字符
+5. `str.replace(reg,newstr);`按正则匹配替换字符
 
 ```javascript
 str.replace(/a-z/gi,""); //删除字符串中的字母
@@ -85,7 +85,7 @@ str.replace(/a-z/gi,""); //删除字符串中的字母
 | 属性节点 |   属性名   |    `2`     |   属性值    |
 | 文本节点 |  `#text`   |    `3`     |  文本内容   |
 
-- 文档节点的对象`(docment)`是window的属性
+- 文档节点的对象`(docment)`是`window`的属性
 
 ## 8.2.事件
 
@@ -116,7 +116,7 @@ window.onload = function(){
 
 2. `addEventListener`
 
-`addEventListener`可以为一个元素同时绑定多个事件，按绑定的先后顺序执行，IE8不支持
+`addEventListener`可以为一个元素同时绑定多个事件，按绑定的先后顺序执行，`IE8`不支持
 
 ```js
 //第三个参数表示是否在捕获阶段触发事件
@@ -125,7 +125,7 @@ outer.addEventListener('click', function(){
 }, false);
 ```
 
-`attachEvent`在IE8使用此方法绑定函数，也可绑定多个事件，但是后绑定的先执行
+`attachEvent`在`IE8`使用此方法绑定函数，也可绑定多个事件，但是后绑定的先执行
 
 ```js
 //注意绑定的事件要加上on
@@ -134,11 +134,9 @@ outer.attachEvent('onclick',function(){
 });
 ```
 
-注意：`addEventListener`中的this是绑定事件的对象，而`attachEvent`中的this是window对象
+注意：`addEventListener`中的`this`是绑定事件的对象，而`attachEvent`中的`this`是`window`对象
 
-
-
-> 兼容IE8的事件绑定方法、
+> 兼容IE8的事件绑定方法
 
 ```js
 //obj 要绑定的元素
@@ -159,7 +157,7 @@ function bind(obj,eventStr,callback){
 
 3.`removeEventListener`
 
-`removeEventListener`取消`addEventListener`绑定的事件，removeEventListener的第二个参数必须是removeEventListener的回调函数，否则取消不到
+`removeEventListener`取消`addEventListener`绑定的事件，`removeEventListener`的第二个参数必须是`removeEventListener`的回调函数，否则取消不到
 
 ```js
 //obj 事件绑定的元素
@@ -178,7 +176,7 @@ function removeEvent(obj,eventStr,callback){
 }
 ```
 
-
+---
 
 ### 8.2.2.事件对象
 
@@ -194,7 +192,7 @@ ele.onmousemove = function(e){
 }
 ```
 
-在IE8中不是将事件对象传递响应函数的，而是作为window的一个属性
+在`IE8`中不是将事件对象传递响应函数的，而是作为`window`的一个属性
 
 ```js
 //在IE8中
@@ -1083,6 +1081,12 @@ history.forward();//前进
 history.go(2);//跳转到指定页面，整数向前跳转几个页面，负数向后跳转几个页面
 ```
 
+`history.back()`返回上一页原页面，表单中的内容会保留
+
+`history.go(-1)`返回上一页原页面，表单中的内容不会保留
+
+
+
 
 
 ## 10.5.`Screen`
@@ -1148,6 +1152,100 @@ function hasClass(ele,classname){
 ```
 
 ## 11.3.二级菜单的实现
+
+
+
+## 11.4.函数节流
+
+```java
+/*节流函数，通过控制每次事件执行的时间间隔控制短时间多次执行方法
+handler:要执行的方法
+wait：每次点击事件执行的时间间隔(毫秒)
+*/
+function throttle(handler, wait) {
+    var lastTime = 0;
+    return function () {
+    
+        var nowTime = new Date().getTime();
+ 
+        if (nowTime - lastTime > wait) {
+            handler.apply(this, arguments);
+            lastTime = nowTime;
+        }
+    }
+}
+ 
+// 提交方法
+function ajaxForm(e) {
+    console.log(e.target)
+    console.log('执行提交操作', new Date().getTime())
+}
+ 
+var subBtn = document.getElementById('submit');
+subBtn.addEventListener('click', throttle(ajaxForm, 1000), false)
+```
+
+```js
+var _timer = {};
+/**
+ * 节流函数
+ * @param id 唯一标识
+ * @param fn 执行的函数
+ * @param wait 等待执行的时间
+ * @returns {number}
+ */
+function delay_till_last(id, fn, wait) {
+    //重置标识
+    if (_timer[id]) {
+        window.clearTimeout(_timer[id]);
+        delete _timer[id];
+    }
+
+    return _timer[id] = window.setTimeout(function () {
+        fn();
+        delete _timer[id];
+    }, wait);
+}
+```
+
+```js
+$dom.on('click', function() {
+    delay_till_last('id', function() {//注意 id 是唯一的
+        //响应事件
+    }, 300);
+});
+```
+
+## 11.5.函数防抖
+
+```js
+/*防抖函数，通过推迟每次事件执行的时间来减少不必要的查询
+handler:要执行的方法
+delay：每次事件执行的推迟时间(毫秒)
+*/
+function debounce(handler, delay) {
+    var timer;
+    return function () {
+        var self = this, arg = arguments;
+ 
+        clearTimeout(timer);
+ 
+        timer = setTimeout(function () {
+            handler.apply(self, arg)
+        }, delay)
+    }
+}
+ 
+function showAll(e) {
+    console.log(e.target)
+    console.log('执行查询操作', new Date().getTime())
+}
+ 
+var searchInput = document.getElementById('search');
+searchInput.addEventListener('keyup', debounce(showAll, 500), false)
+```
+
+
 
 
 

@@ -915,7 +915,7 @@ public class SSMTest {
 
 
 
-### 十、`MyBayis`的问题
+### 十、`MyBatis`的问题
 
 1. 在IDEA中使用包扫描配置异常的解决方法：在pom.xml文件中加入如下配置
 

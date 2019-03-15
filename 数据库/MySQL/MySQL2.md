@@ -1,6 +1,6 @@
-## 一、变量
+# 一、变量
 
-### 1.1.定义变量
+## 1.1.定义变量
 
 ```mysql
 -- 局部变量
@@ -25,13 +25,13 @@ select @name:=password from user limit 0,1;
 -- 从数据表中获取一条记录password字段的值给@name变量。在执行后输出到查询结果集上面。
 ```
 
-#### 1.1.1.局部变量和用户变量的区别
+### 1.1.1.局部变量和用户变量的区别
 
 局部变量（`declare声明的变量`）都不被初始化为`null`，只在`begin/end`块中有效。
 
 用户变量（`@申明的变量`）在一个会话只会初始化一次，相当于该会话内的全局变量。
 
-#### 1.1.2.系统变量
+### 1.1.2.系统变量
 
 系统变量又分为全局变量与会话变量 ：
 
@@ -69,7 +69,7 @@ set @@global.sort_buffer_size = 40000;
 
 > 注意：`local`是 `session`的近义词，可以使用`local`替代`session`；没有指定`session`或`global`时，默认当做`session`处理
 
-### 1.2.变量赋值
+## 1.2.变量赋值
 
 ```mysql
 set parameter_name  = value,[parameter_name  = value...]
@@ -89,9 +89,9 @@ declare v_menuname varchar(30);
 select menuid,menuname into v_menuid,v_menuname from tamenu where menuid = '1';
 ```
 
-## 二、条件和循环语句
+# 二、条件和循环语句
 
-### 2.1.条件语句
+## 2.1.条件语句
 
 ```mysql
 IF expression THEN commands  
@@ -153,7 +153,7 @@ from test t
 order by result asc
 ```
 
-### 2.2.循环语句
+## 2.2.循环语句
 
 ```mysql
 [label:] LOOP  
@@ -205,7 +205,7 @@ END LOOP loop1;
 
 
 
-## 三、自定义函数
+# 三、自定义函数
 
 `delimiter`就是告诉`mysql`解释器，该命令已经结束，可以执行命令了（在命令行模式下 ）。
 
@@ -235,7 +235,7 @@ mysql> END IF;
 mysql> END;//  
 ```
 
-### 2.1.函数的语法
+## 2.1.函数的语法
 
 ```sql
 create function function_name([parameter_name type...])
@@ -245,9 +245,9 @@ begin
 end
 ```
 
-## 四、树形结构
+# 四、树形结构
 
-###  4.1.查询某一节点的下一级节点
+##  4.1.查询某一节点的下一级节点
 
 ```mysql
 select 
@@ -260,7 +260,7 @@ inner join tamenu b on a.pmenuid = b.menuid  -- b为父节点信息
 where b.menuname = '银海软件';
 ```
 
-### 4.2.查询某一节点的上一个节点
+## 4.2.查询某一节点的上一个节点
 
 ```mysql
 select 
@@ -273,13 +273,13 @@ inner join tamenu b on a.pmenuid = b.menuid  -- b为父节点信息
 where a.menuname = '大屏管理';
 ```
 
-### 4.3.查询某一节点的所有上级节点
+## 4.3.查询某一节点的所有上级节点
 
 
 
-### 4.4.查询某一节点的所有下级节点
+## 4.4.查询某一节点的所有下级节点
 
-#### 4.4.1.自定义函数
+### 4.4.1.自定义函数
 
 ```mysql
 create function getChildList(rootId int)
@@ -315,7 +315,7 @@ where find_in_set(menuid,getChildList(118455));
 优点: 简单，方便，没有递归调用层次深度的限制 (`max_sp_recursion_depth`,最大`255`) ；
 缺点：长度受限，虽然可以扩大` RETURNS varchar(1000)`，但总是有最大限制的。
 
-#### 4.4.2.**利用临时表和过程递归** 
+### 4.4.2.**利用临时表和过程递归** 
 
 ```mysql
 drop procedure if exists getChildList;
@@ -381,9 +381,9 @@ SET GLOBAL max_sp_recursion_depth=20;
 SELECT @@max_sp_recursion_depth;
 ```
 
-## 五、索引
+# 五、索引
 
-### 5.1.索引加速检索
+## 5.1.索引加速检索
 
 > 问题：使用索引为什么可加快数据库的检索速度?
 

@@ -175,11 +175,11 @@ public static Worker createWorker5(Worker worker) {
 
 # 二、读取属性文件（Properties）
 
-`ResourceBundle`和`Properties`都能读取属性文件,它们的区别：
+`ResourceBundle`和`Properties`都能读取属性文件，它们的区别：
 
-* `Properties`继承于`Hashtable`,是基于输入流从属性文件中读取键值对，load()加载资源完毕后，就与输入流脱离了关系，但是不会自动关闭输入流，需手动关闭;
-* `ResourceBundle`是基于类读取属性文件，即将属性文件当作类，因此属性文件必须放在包中，使用属性文件的全限定类名指定文件的位置;
-* 属性文件采用ISO-8859-1编码方式，该编码方式不支持中文，中文字符将被转化为Unicode编码方式显示;
+* `Properties`继承于`Hashtable`，是基于输入流从属性文件中读取键值对，load()加载资源完毕后，就与输入流脱离了关系，但是不会自动关闭输入流，需手动关闭；
+* `ResourceBundle`是基于类读取属性文件，即将属性文件当作类，因此属性文件必须放在包中，使用属性文件的全限定类名指定文件的位置；
+* 属性文件采用`ISO-8859-1`编码方式，该编码方式不支持中文，中文字符将被转化为`Unicode`编码方式显示；
 
 # 三、匿名内部类
 
@@ -233,6 +233,94 @@ System.out.println(list); //[12, 13, aaa, bbb, ccc]
 
 
 
+## 4.3.禁止`foreach`循环里进行元素的`remove/add`操作
+
+```java
+//正确写法
+List<String> list = new ArrayList<String>() {{
+    add("Hello");
+    add("hello");
+    add("HollisChuang");
+    add("H");
+}};
+for (int i = 0; i < list.size(); i++) {
+    String str = list.get(i);
+    if ("hello".equals(str)) {
+        list.remove(str);
+    }
+}
+System.out.println(list);
+```
+
+```java
+//正确写法
+List<String> list = new ArrayList<String>() {{
+    add("Hello");
+    add("hello");
+    add("HelloWorld");
+    add("H");
+}};
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()){
+    String next = iterator.next();
+    if("HelloWorld".equals(next)){
+        iterator.remove();
+    }
+}
+System.out.println(list);
+```
+
+```java
+//错误写法
+List<String> list = new ArrayList<String>() {{
+    add("Hollis");
+    add("hollis");
+    add("HollisChuang");
+    add("H");
+}};
+for (String str : list) {
+    if ("hollis".equals(str)) {
+        list.remove(str);//remove()只修改了modCount的值，没有修改expectedModCount
+    }
+}
+System.out.println(list);
+```
+
+此时会抛出`java.util.ConcurrentModificationException`异常，出现这个异常是因为触发了一个Java集合的错误检测机制——`fail-fast`(快速失败，它是Java集合的一种错误检测机制，当多个线程对集合（非fail-safe的集合类）进行结构上的改变的操作时，可能触发该机制；单线程违反了规则，也可能触发该机制)，原理：
+
+- 增强for循环是Java的一个语法糖，编译后的源码
+
+```java
+Iterator iterator = userNames.iterator();
+do{
+    if(!iterator.hasNext())
+        break;
+    String userName = (String)iterator.next(); //此处抛出异常，在调用checkForComodification()时
+    if(userName.equals("Hollis"))
+        userNames.remove(userName);
+} while(true);
+System.out.println(userNames);
+```
+
+```java
+final void checkForComodification() {
+    //modCount是ArrayList中的一个成员变量，表示该集合实际被修改的次数
+    //expectedModCount是ArrayList中的一个内部类Itr(Itr是一个Iterator的实现,ArrayList.iterator()方法可以获取到的迭代器就是Itr类的实例)中的成员变量，表示这个迭代器期望该集合被修改的次数，在ArrayList.iterator方法被调用的时候初始化的，且只有通过迭代器对集合进行操作，该值才会改变
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+}
+```
+
+## 4.4.`Quene`
+
+
+
+
+
+
+
+
+
 
 
 # 五、关键字
@@ -248,7 +336,7 @@ obj instanceof class
 * 若obj是class的一个实例且obj!=null,则返回true
 * 若obj不是class的一个实例或obj==null,则返回false
 
-### 5.1.1.instanceof在编译状态和运行状态的区别
+### 5.1.1.`instanceof`在编译状态和运行状态的区别
 
 > 编译状态
 
@@ -269,8 +357,6 @@ class是obj对象的父类和自身类时返回true
 ## 5.4.`synchronized`
 
 
-
-## 
 
 
 

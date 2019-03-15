@@ -1,6 +1,6 @@
-## 一、复制表或数据
+# 一、复制表或数据
 
-1、只复制表结构
+## 1.1.只复制表结构
 
 ```sql
 create table users_tmp
@@ -28,51 +28,49 @@ CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name
 SELECT ...   (Some valid select or union statement)
 ```
 
-2、复制表结构及其数据
+### 1.1.2.复制表结构及其数据
 
-```sqll
+```sql
 create table users_tmp
 as
 select * from users;
 ```
 
-3、两个表结构相同，复制表格的数据
+### 1.1.3.两个表结构相同，复制表格的数据
 
 ```sql
 insert into users_tmp
 select * from users;
 ```
 
-4、两个表的结构不同，复制部分列的数据
+### 1.1.4.两个表的结构不同，复制部分列的数据
 
 ```sql
 insert into users_tmp(name,age)
 select name,age from users;
 ```
 
-5、查看创建表的语句
+### 1.1.5.查看创建表的语句
 
 ```sql
 show create table table_name;
 --此时可以通过创建语句来复制表
 ```
 
-6、不同数据库之间复制表
+### 1.1.6.不同数据库之间复制表
 
 ```sql
 insert into db1.users      --数据库db1
 select * from db2.users;   --数据库db2
 ```
 
-7、复制数据库
+### 1.1.7.复制数据库
 
 
 
+# 二、导入导出
 
-
-## 二、导入导出
-
-1、导出数据库
+## 2.1.导出数据库
 
 ```sql
 --导出SQL文件,显式输入密码
@@ -88,10 +86,10 @@ mysqldump -uroot -p database_name>database_name.sql  --回车后输入密码
 
 ```dos
 --导入SQL脚本
-mysqldump -urrot -p --opt databse_name > database_name.sql
+mysqldump -uroot -p --opt databse_name > database_name.sql
 ```
 
-2、导入数据库
+## 2.2.导入数据库
 
 ```sql
 --1.连接数据库
@@ -113,7 +111,7 @@ mylsql -uroot -ppassword --default-character-set=utf-8 database_name < f:\databa
 mylsql -uroot -p --default-character-set=utf-8 database_name < f:\database_name.sql 
 ```
 
-3、跨主机之间备份数据库
+## 2.3.跨主机之间备份数据库
 
 ```dos
 --将主机（host1）中的数据库（sourceDb）备份到主机（host2）中的数据库（targetDb）,数据库targetDb需要已经存在
@@ -121,7 +119,7 @@ mysqldump --host=192.168.1.32 --opt sourceDb | mysql --host=192.168.1.24 -C targ
 --（-C）表示主机之间数据传输使用数据压缩
 ```
 
-4、只备份表结构
+## 2.4.只备份表结构
 
 ```dos
 --(--databases)指示主机上要备份的数据库
@@ -130,22 +128,22 @@ mysqldump --no-data --databases database1 database2 > test.sql
 mysqldump --no-data --all-database > test.sql
 ```
 
-5、导出指定的表
+## 2.5.导出指定的表
 
 ```sql
 
 ```
 
-6、执行`sql`脚本
+## 2.6.执行`sql`脚本
 
 ```sql
 source f:/file_name.sql
 \. f:/file_name.sql
 ```
 
-## 三、mysqldump
+# 三、`mysqldump`
 
-1、mysqldump的选项
+## 3.1.`mysqldump`的选项
 
 * `--help`;帮助语句
 
@@ -236,7 +234,7 @@ source f:/file_name.sql
   ```
 
 
-## 四、密码
+# 四、密码
 
 ```sql
 taskkill /f /im mysqld-nt.exe
@@ -244,7 +242,7 @@ taskkill /f /im mysqld-nt.exe
 
 
 
-## 五、cmd
+# 五、`cmd`
 
 1. 启动`mysql`服务
 
@@ -265,7 +263,7 @@ net stop mysql
 
 4. `shift`+右键，快速打开`cmd`窗口
 
-## 六、数据字典
+# 六、数据字典
 
  1、查看数据库的版本
 
@@ -422,7 +420,7 @@ show global status;
 
 
 
-## 七、 `MYSQL`的`show`命令
+# 七、 `MYSQL`的`show`命令
 
 ```sql
 --查看数据库
@@ -504,7 +502,7 @@ set session sort_buffer_size=7000000;
 --注意：修改全局变量或会话级变量，在重启服务器后都会失效；若需在重启的时候载入，需要修改配置文件
 ```
 
-### 7.1.查看定义的过程
+## 7.1.查看定义的过程
 
 ```sql
 select `name` from mysql.proc where db = 'chat_system' and `type` = 'PROCEDURE';
@@ -513,7 +511,7 @@ show procedure status;
 show create procedure createChildList;
 ```
 
-### 7.2.查看定义的函数
+## 7.2.查看定义的函数
 
 ```sql
 select * from mysql.proc where db = 'chat_system' and `type` = 'FUNCTION';
@@ -526,7 +524,7 @@ show create function getChildList;
 
 
 
-## 八 、系统数据库
+# 八 、系统数据库
 
 * `information_schema`: 信息数据库，保存着关于MySQL服务器所维护的所有其他数据库的信息，61个表，提供了访问数据库元数据（元数据是关于数据的数据，如数据库名或表名，列的数据类型，或访问权限等）的方式
 
@@ -537,7 +535,7 @@ show create function getChildList;
 * `sys`: 1个表，100个视图
 
 
-### 8.1.`information_schema`
+## 8.1.`information_schema`
 
 ```sql
 --查看进程列表
@@ -622,9 +620,9 @@ select * from setup_timers;
 
 
 
-## 九、参数
+# 九、参数
 
-### 9.1. 修改参数值
+## 9.1. 修改参数值
 
 ```sql
 --show variables 命令查看当前参数的值,like 'pattern'用于模式匹配，查找指定的参数
@@ -670,9 +668,9 @@ global_instrumentation
 
 ```
 
-## 十、函数
+# 十、函数
 
-#### 10.1.`uuid()`
+## 10.1.`uuid()`
 
 ```sql
 --生成uuid,59563f66-696c-11e8-9636-00ffa13e13e9
@@ -681,7 +679,7 @@ select uuid();
 select replace(uuid(),'-','');
 ```
 
-#### 10.2.`ifnull()`
+## 10.2.`ifnull()`
 
 ```sql
 --if(exp1,exp2) 若exp1不为空，值为exp1；若exp1为空，值为exp2；
@@ -689,7 +687,7 @@ select ifnull(1,0);      --1
 select ifnull(null,1);   --1
 ```
 
-#### 10.3.`isnull()`
+## 10.3.`isnull()`
 
 ```sql
 --isnull(exp) 若exp==null，返回1;若exp!=null,返回0
@@ -697,7 +695,7 @@ select isnull(2);   --0
 select isnull(1/0); --1
 ```
 
-#### 10.4.`nullif()`
+## 10.4.`nullif()`
 
 ```sql
 --nullif(exp1,exp2) 若exp1==exp2,返回null;若exp1!=exp2，返回exp1
@@ -705,14 +703,14 @@ select nullif(1,1); --null
 select nullif(1,2);  --1
 ```
 
-#### 10.5.`if()`
+## 10.5.`if()`
 
 ```sql
 --if(condition,exp1,exp2);若condition=true,取exp1;若condition=false,取exp1;
 select * from users order by if(ISNULL(idcard),1,0) 
 ```
 
-#### 10.6.数学函数
+## 10.6.数学函数
 
 ```sql
 --abs();绝对值
@@ -731,14 +729,14 @@ select geiling(2.312);  --3
 select round(3.5522);  --4
 ```
 
-#### 10.7.`ascii(str)`
+## 10.7.`ascii(str)`
 
 ```sql
 --ascii(str);返回str最左边字符的ascii代码值;若str='',返回0;若str=null,返回null
 select ascii('2');  --50
 ```
 
-#### 10.8.`concat(str1,str2,...)`
+## 10.8.`concat(str1,str2,...)`
 
 ```sql
 --concat(str1,str2,...);若有一个参数为null,就返回null;
@@ -747,7 +745,7 @@ select concat('My','S','QL');   --MySQL
 select concat('My',null,'QL');  --null
 ```
 
-##### 10.8.1.`concat_ws(separator,str1,str2,...)`
+### 10.8.1.`concat_ws(separator,str1,str2,...)`
 
 ```sql
 -- concat_ws(concat with separator)可指定连接符的连接函数
@@ -758,7 +756,7 @@ select concat_ws(null,'My','S','QL');   -- null
 select concat_ws('~','My',null,'QL');   -- null
 ```
 
-##### 10.8.2.`group_concat()`
+### 10.8.2.`group_concat()`
 
 ```sql
 -- 查询某一分组下的某一字段的所有的取值
@@ -779,7 +777,7 @@ group by pmenuid;
 
 
 
-#### 10.9.`locate(substr,str)`
+## 10.9.`locate(substr,str)`
 
 ```sql
 --locate(substr,str);返回子串substr在字符串str中第一次出现的位置;若子串substr不在str里,返回0
@@ -787,42 +785,42 @@ select locate('bar','foorbar');   --5
 select locate('xbar','foorbar');  --0
 ```
 
-#### 10.10.`instr(str,substr)`
+## 10.10.`instr(str,substr)`
 
 ```sql
 --instr(str,substr);返回子串substr在字符串str中第一次出现的位置;若子串substr不在str里,返回0
 select instr('foorbar','bar');   --5
 ```
 
-#### 10.11.`left(str,len)`
+## 10.11.`left(str,len)`
 
 ```sql
 --left(str,len);截取字符串str最左侧的len个字符
 select left('forbarbar',5);  --forba
 ```
 
-#### 10.12.`right(str,len)`
+## 10.12.`right(str,len)`
 
 ```sql
 --right(str,len);截取字符串str最右侧的len个字符
 select right('forbarbar',5); --arbar
 ```
 
-#### 10.13.`substring(str,pos)`
+## 10.13.`substring(str,pos)`
 
 ```sql
 --substring(str,pos);返回字符串str中[pos-length]的字符
 select substring('helloworld',5); --oworld
 ```
 
-#### 10.14.`trim(str)`
+## 10.14.`trim(str)`
 
 ```sql
 --trim(str);去除所有的前后空格
 select trim('  bar  ');
 ```
 
-#### 10.15.`ltrim(str)`
+## 10.15.`ltrim(str)`
 
 ```sql
 --ltrim(str);去除前置空格
@@ -1194,14 +1192,14 @@ select * from tamenu where find_in_set(2,pmenuid);
 select * from tamenu where pmenuid = '2';
 ```
 
-#### 10.58.`found_rows()`
+## 10.58.`found_rows()`
 
 ```mysql
 -- 获取上一个select语句查询到的行数；
 select found_rows();
 ```
 
-#### 10.59.`row_count()`
+## 10.59.`row_count()`
 
 ```sql
 -- 获取上一条update， insert ，delete 影响的行数
@@ -1210,7 +1208,7 @@ select row_count();
 
 注意： ``found_rows()`和`row_count()`要在同一事务中才有效。
 
-#### 10.60.`substring_index(str, delim, count)`
+## 10.60.`substring_index(str, delim, count)`
 
 ```mysql
 -- substring_index(str, delim, count)：字符串截取
@@ -1224,11 +1222,11 @@ select substring_index('aa.bb.cc.dd', '.', -3);  -- bb.cc.dd
 
 
 
-### 十一、临时表
+# 十一、临时表
 
 临时表的只在当前会话有效，当会话结束后就自动删除表和释放相应的空间。因此可以在不同的会话中创建同名的临时表。
 
-#### 11.1.临时表的限制条件
+## 11.1.临时表的限制条件
 
 * 临时表只在`memory、myisam、merge和innodb`上使用，不支持`mysql cluster`簇
 * `show tables`不会列出临时表，且`information_schema`中也不存在临时表；
@@ -1268,7 +1266,7 @@ inner join tmp_menu b on a.menuid = b.menuid
 * 同一临时表在储存函数和过程中也不能出现多次
 * 不同的临时表可以出现在同一个语句中
 
-#### 11.2.创建临时表
+## 11.2.创建临时表
 
 ```mysql
 create temporary table if not exists chat_system.tmp_menu(
@@ -1278,13 +1276,13 @@ create temporary table if not exists chat_system.tmp_menu(
 );
 ```
 
-#### 11.3.删除临时表
+## 11.3.删除临时表
 
 ```mysql
 drop temporary table if exists tmp_menu;
 ```
 
-#### 11.4.临时表的作用
+## 11.4.临时表的作用
 
 * 临时表可对大数据量的表做一个子集，提高查询的速度
 
@@ -1298,22 +1296,22 @@ drop temporary table if exists tmp_menu;
 
 
 
-### 十二、表
+# 十二、表
 
-#### 12.1.重命名
+## 12.1.重命名
 
 ```mysql
 rename table tamenu to menu;
 alter table menu rename tamenu;
 ```
 
-#### 12.2.内存表
+## 12.2.内存表
 
 内存表的的表结构创建在磁盘上，数据存放在内存中；所以`MySQL`重启后，表结构存在，但数据丢失。
 
 内存表的结构存放在磁盘上，扩展名为`.frm `
 
-##### 12.2.1.内存表的创建
+### 12.2.1.内存表的创建
 
 ```mysql
 
@@ -1321,7 +1319,7 @@ alter table menu rename tamenu;
 
 
 
-#### 12.3.内存表与临时表的区别
+## 12.3.内存表与临时表的区别
 
 |          | 内存表                 | 临时表                     |
 | -------- | ---------------------- | -------------------------- |

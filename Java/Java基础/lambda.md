@@ -50,7 +50,7 @@ Comparator<Integer> comparator = (x,y) -> Integer.compare(x,y);
 
 ### 1.1.6.数据类型省略
 
-Lambda 表达式的参数列表的数据类型可以省略不写，因为JVM编译器通过上下文推断出数据类型，即“类型推断”
+Lambda 表达式的参数列表的数据类型可以省略不写，因为JVM编译器通过上下文推断出数据类型，即**类型推断**
 
 注意：添加了数据类型，就需要所有的参数都添加数据类型
 
@@ -66,7 +66,7 @@ Lambda表达式中的参数类型都是由编译器推断得出的，因为javac
 
 ## 1.3.函数式接口
 
-- 函数时接口就是只包含一个抽象方法的接口
+- 函数式接口就是只包含一个抽象方法的接口
 - 可以通过Lambda表达式来创建函数式接口的对象
 - 若Lambda表达式抛出一个受检异常，那么该异常需要在目标接口的抽象方法上进行声明
 - `@FunctionalInterface`修饰接口是一个函数式接口，可检验接口是否是函数式接口；且在javadoc也会声明该接口是函数式接口
@@ -162,7 +162,7 @@ public void test16(){
     String lambdaStr = strHandler("Hello Lambda", str -> str.toLowerCase());
     System.out.println(lambdaStr);
 }
-//处理字符串6
+//处理字符串
 public String strHandler(String str, Function<String,String> fun){
     return fun.apply(str);
 }
@@ -170,7 +170,7 @@ public String strHandler(String str, Function<String,String> fun){
 
 ### 1.4.4.`Predicate<T>`
 
-`Predicate<T>`断定型接口，确定类型为T的对象是否满足某约束，返回boolea值，方法`boolean test(T t)`
+`Predicate<T>`断定型接口，确定类型为T的对象是否满足某约束，返回boolean值，方法`boolean test(T t)`
 
 ```java
 @Test
@@ -272,34 +272,30 @@ System.out.println(function.apply(10));
 
 
 
-
-
-
-
 # 二、输入参数
 
 - `lambda`的输入参数在lambda运算符的左边
 - 参数的个数大于等于0，多个参数之间是有逗号分隔`,`
-- 只有当输入参数为1时，可省略左边的小括号`()`
+- 只有当输入参数只有一个时，可省略左边的小括号`()`
 
 ## 2.1.实例
 
 ```java
-()->Console.WriteLine("This is a Lambda expression.");  
+() -> Console.WriteLine("This is a Lambda expression.");  
 //This is a Lambda expression.
 ```
 
 此时的参数个数为0，不能省略左边的`()`
 
 ```java
-m->m*2;
+m -> m*2;
 //计算2*m的值
 ```
 
 此时参数个数为1，所有可以省略`()`，未省略的表达式`(m)->m*2`
 
 ```java
-(m,n)->m*n;
+(m,n) -> m*n;
 //计算m*n的值
 ```
 
@@ -308,7 +304,7 @@ m->m*2;
 下面式子的右侧就是一个表达式
 
 ```java
-m->m*n;  //计算参数m的平方值
+m -> m*n;  //计算参数m的平方值
 ```
 
 ## 2.3.语句块	

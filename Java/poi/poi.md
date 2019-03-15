@@ -553,3 +553,107 @@ public class ExcelOperationUtil {
 }
 ```
 
+
+
+# 二、`POI-TL`
+
+[]: http://deepoove.com/poi-tl/
+
+
+
+## 2.1.模板内容替换
+
+```java
+//针对表格数据内容的填充
+public class CustomTableRenderPolicy extends AbstractRenderPolicy {
+
+    @Override
+    protected boolean validate(Object data) {
+        return data != null;
+    }
+
+    @Override
+    public void doRender(RunTemplate runTemplate, Object data, XWPFTemplate xwpfTemplate) {
+        NiceXWPFDocument document = xwpfTemplate.getXWPFDocument();
+        XWPFRun run = runTemplate.getRun();
+        //获取表格数据
+        MiniTableRenderData tableData = (MiniTableRenderData) data;
+        List<RowRenderData> datas = tableData.getDatas();
+        //没有数据，清空表格
+        if (data == null || datas == null || datas.size() <= 0) {
+            run.setText("", 0);
+            run.removeTab();
+            XWPFHelper.clearTable(runTemplate.getTagName(), document.getTables(), run);
+            return;
+        }
+        ///获取需要填充数据的表格
+        Map<String, Object> map = XWPFHelper.getTable(runTemplate.getTagName(), document.getTables());
+        XWPFTable table = (XWPFTable) map.get("table");
+        //设置数据填充的开始位置
+        int startRow = 1;
+        int startCell = 0;
+        List<XWPFTableRow> rows = table.getRows();
+        for (int i = 0; i < rows.size(); i++) {
+            XWPFTableRow row = rows.get(i);
+            List<XWPFTableCell> cells = row.getTableCells();
+            for (int j = 0; j < cells.size(); j++) {
+                XWPFTableCell cell = cells.get(j);
+                if (runTemplate.toString().equals(cell.getText())) {
+                    startRow = i;
+                    startCell = j;
+                    break;
+                }
+            }
+        }
+        XWPFTableCell cell = null;
+        XWPFRun r = null;
+        if (table != null) {
+            if (datas.size() > 0) {
+                //数据遍历
+                for (int i = 0; i < datas.size(); i++) {
+                    RowRenderData rowData = datas.get(i);
+                    int size = rowData.size();
+                    if (rowData == null) {
+                        continue;
+                    }
+                    List<TextRenderData> text = rowData.getRowData();
+                    for (int j = startCell; j < startCell + size; j++) {
+                        cell = table.getRow(startRow).getCell(j);
+                        if (cell != null) {
+                            r = XWPFHelper.getRun(cell, run);
+                            //r = cell.getParagraphs().get(0).getRuns().get(0);
+                            r.setText(text.get(j - startCell).getText(), 0);
+                        }
+                    }
+                    if (i != datas.size() - 1) {
+                        table.addRow(table.getRow(startRow), startRow++);
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+```java
+List segments = getFfSegments(param);
+String tmpPath = path + File.separator + UUID.randomUUID() + ".docx";
+File file = new File(tmpPath);
+URL url = new URL(getTemplatePath(ZjglConstants.YAE960_101102));
+InputStream is = url.openStream();
+FileUtils.inputstreamtoFile(is, file);
+data.put("segments", new DocxRenderData(file, segments));
+Configure.ConfigureBuilder builder = Configure.newBuilder();
+builder = builder.addPlugin('&', new CustomTableRenderPolicy());
+Configure configure = builder.buildGramer("${", "}").build();
+url = new URL(templatePath);
+XWPFTemplate doc = XWPFTemplate.compile(url.openStream(), configure).render(handlerClob(data));
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+doc.write(baos);
+byte[] bytes = fileConverterService.CoverFile2Pdf(baos.toByteArray(), "WORD");
+FileUtils.byte2File(bytes, tmpPath);
+File tmpFile = new File(tmpPath);
+List<Map> list = FileStore.fileUpload(tmpFile);
+tmpFile.delete();
+```
+

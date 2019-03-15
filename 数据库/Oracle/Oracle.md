@@ -1,9 +1,14 @@
-### 一、查看Oracle数据库数据量的大小
+# 一、表空间
+
+## 1.1.查看数据库数据量
 
 1、 查看所有表空间及其大小
 
 ```sql
-select tablespace_name,sum(bytes)/1024/1024/1024 as GB from dba_data_files group by tablespace_name;
+select 
+	tablespace_name,sum(bytes)/1024/1024/1024 as GB 
+from dba_data_files 
+group by tablespace_name;
 ```
 
 2、查看所有表空间对应的数据文件
@@ -18,7 +23,9 @@ select tablespace_name,file_name from dba_data_files;
 alter database datafile 'D:\datafile.dbf' resize 1024M;
 ```
 
-### 二、查看用户的状态（是否被锁）
+# 二、用户
+
+## 2.1.查看用户的状态（是否被锁）
 
 1、查看用户状态
 
@@ -26,7 +33,7 @@ alter database datafile 'D:\datafile.dbf' resize 1024M;
 select * from dba_users where username = 'JYRC'
 ```
 
-2、解锁
+2、解锁用户
 
 ```sql
 alter user jyrc account unlock;
@@ -59,9 +66,14 @@ select * from dba_users where username = 'JYRC';
 --2.查看那个IP导致用户被锁，查看$ORACLE_HOME$/network/admin/log/listener.log日志
 --3.查看哪些用户连接了该用户
 --osuser连接(OS)用户信息，username数据库的用户，machine电脑名称
-SELECT osuser, a.username,cpu_time/executions/1000000||'s', sql_fulltext,machine
-from v$session a, v$sqlarea b
-where a.sql_address =b.address order by cpu_time/executions desc; 
+SELECT osuser,
+       a.username,
+       cpu_time / executions / 1000000 || 's',
+       sql_fulltext,
+       machine
+  from v$session a, v$sqlarea b
+ where a.sql_address = b.address
+ order by cpu_time / executions desc;
 ```
 
 7、查看密码的有效期限
@@ -80,7 +92,7 @@ alter system kill session'532,4562'
 
 
 
-### 三、`Oracle`被锁对象
+# 三、`Oracle`被锁对象
 
 1、查看`Oracle`被锁的对象
 
@@ -120,12 +132,13 @@ alter jyrc kill session 'sid,serial';  --不能kill自身
 3、查看`sid`
 
 ```sql
-select * from v$sql vl,v$session vn 
-where vl.address = decode(vn.sql_address,null,prev_sql_addr,vn.sql_address)
-and vn.sid = '';
+select *
+  from v$sql vl, v$session vn
+ where vl.address =decode(vn.sql_address, null, prev_sql_addr, vn.sql_address)
+   and vn.sid = '';
 ```
 
-### 四、定时器JOB
+# 四、定时器JOB
 
 1、定义job 
 
@@ -151,14 +164,16 @@ select * from dba_jobs_running;
 
 ```sql
 exec dbms_job.run(job => &JOBID) ;
+```
 
+```sql
 begin  
-dbms_job.run(job的id);  
-end;  
+    dbms_job.run(job的id);  
+    end;  
 /  
 ```
 
-6、	job_queue_processes工作队列进程
+6、`job_queue_processes`工作队列进程
 
 ```sql
 show parameter job_queue_processes ;  
@@ -170,9 +185,9 @@ alter system set job_queue_processes=100;
 
 
 
-### 五、执行SQL脚本
+# 五、执行`SQL`脚本
 
-1、cmd窗口
+1、`cmd`窗口
 
 ```sql
 @F:ae90.sql
@@ -183,7 +198,7 @@ sqlplus scott/scott@orcl @f:ae90.sql
 
 
 
-### 六、异常
+# 六、异常
 
 1、错误：PL/SQL: ORA-00942: 表或视图不存在
 
@@ -199,37 +214,40 @@ sqlplus scott/scott@orcl @f:ae90.sql
 2、远程连接 ORA-12541:TNS: 无监听程序
 
 * 重新配置一下监听程序
-* ​
 
-### 七、动态执行SQL
+
+
+
+
+# 七、动态执行SQL
 
 1、`EXECUTE IMMEDIATE`
 
 
 
-### 八、数据字典
+# 八、数据字典
 
-* `v$xxx`:,动态数据字典 , 以`v$xxx`开始的数据字典，在数据库中约有150个左右，这些数据字典反映数据库动态运行状况，在不同时间查询会得到不同的结果 
-* `dba_*`:存储数据库结构，查询DBA数据字典可以反映数据库结构设置，管理磁盘空间和表空间、事务与回退段、用户与表空间等信息 ;整个数据库中的对象信息
+* `v$xxx`:动态数据字典，以`v$xxx`开始的数据字典，在数据库中约有150个左右，这些数据字典反映数据库动态运行状况，在不同时间查询会得到不同的结果 
+* `dba_*`:存储数据库结构，查询`DBA`数据字典可以反映数据库结构设置，管理磁盘空间和表空间、事务与回退段、用户与表空间等信息；整个数据库中的对象信息
 
 * `all_*`:用户可以访问的对象信息，即用户自己创建的对象的信息加上其他用户创建的对象但该用户有权访问的信息 
-* `user_*`:用户所拥有的对象信息，即用户自己创建的对象信息;反应用户所创建的实体信息
+* `user_*`:用户所拥有的对象信息，即用户自己创建的对象信息；反应用户所创建的实体信息
 
-1、查看所有的表
+## 8.1.查看所有的表
 
 ```sql
 --查询当前数据库中所有的表（包含系统表）
 select * from dba_tables;
---查看所有用户的表
+--查看用户有权限的所有表
 select * from all_tables;
 --查看当前用户下的所有表
 select * from user_tables;
 ```
 
-2、查询数据库中的用户
+## 8.2.查询数据库中的用户
 
 ```sql
---查询当前用户
+--查询当前使用的用户
 select * from user_users;
 --查询对当前用户可见的所有用户
 select * from all_users;
@@ -237,21 +255,19 @@ select * from all_users;
 select * from dba_users;
 ```
 
-3、查询数据库中的表空间
+## 8.3.查询数据库中的表空间
 
 ```sql
 --查询数据中的所有表空间
 select * from dba_tablespaces;
 ```
 
-4、查询数据库中表空间数据文件信息
-
 ```sql
 --查询表空间数据文件信息
 select * from dba_data_files;
 ```
 
-4、查询索引信息
+## 8.4.查询索引信息
 
 ```sql
 --查询当前用户的所有索引
@@ -262,17 +278,17 @@ select * from all_indexes;
 select * from dba_indexes;
 ```
 
-5、查看约束信息
+## 8.5.查看约束信息
 
 ```sql
--- 查看哪张表存在约束
+-- 查看数据库表上存在约束
 select * from user_constraints;
--- 查看那个列上存在约束
-select * fron user_cons_columns;
+-- 查看列上存在约束
+select * from user_cons_columns;
 --constraint_约束类型，其简写：primary key(P)、foreign key(F)、check(C)、not null(C)、unique(U)
 ```
 
-6、查询注释信息
+## 8.6.查询注释信息
 
 ```sql
 --查询当前用户所有表的注释信息
@@ -290,21 +306,21 @@ select * from all_tab_comments;
 select * from dba_tab_comments;
 ```
 
-7、查询数据库表的字段信息
+## 8.7.查询数据库表的字段信息
 
 ```sql
+--dba_tab_cols / dba_tab_columns 查询当前数据中所有的表及视图结构
+select * from dba_tab_cols;
+select * from dba_tab_columns;
 --all_tab_cols / all_tab_columns 查看对当前用户可见的表及视图结构
 select * from all_tab_cols;
 select * from all_tab_columns;
 --user_tab_cols / user_tab_columns 查看当前用户下的表及视图结构
 select * from user_tab_cols;
 select * from user_tab_columns;
---dba_tab_cols / dba_tab_columns 查询当前数据中所有的表及视图结构
-select * from dba_tab_cols;
-select * from dba_tab_columns;
 ```
 
-8、数据库的权限
+## 8.8.数据库的权限
 
 ```sql
 --数据库的对象权限的授权情况
@@ -334,7 +350,7 @@ select * from session_privs;
 select * from session_roles;
 ```
 
-9、数据库的角色
+## 8.9.数据库的角色
 
 ```sql
 --数据库的所有角色
@@ -348,11 +364,9 @@ select * from role_role_privs where role = upper('dba');
 
 
 
+# 九、表空间
 
-
-### 九、表空间
-
-1、创建表空间
+## 9.1.创建表空间
 
 ```sql
 --创建临时表空间
@@ -374,7 +388,7 @@ maxsize 100m             --表空间的最大容量
 extent management local  --默认的管理方式
 ```
 
-2、删除表空间
+## 9.2.删除表空间
 
 ```sql
 --删除空的表空间，但不删除物理文件
@@ -392,7 +406,7 @@ and       datafile               --删除物理文件
 cascade constraints              --级联删除
 ```
 
-3、查看表空间信息
+## 9.3.查看表空间信息
 
 ```sql
 --查询数据中的所有表空间
@@ -401,7 +415,7 @@ select * from dba_tablespaces;
 select * from dba_data_files;
 ```
 
-4、修改某一数据表的表空间
+## 9.4.修改某一数据表的表空间
 
 ```sql
 --修改某一数据表的表空间
@@ -411,7 +425,7 @@ alter table tb_user move tablespace tablespace_name;
 alter index tb_user_id rebuild tablespace tablespace_name;
 ```
 
-5、扩展表空间
+## 9.5.扩展表空间
 
 ```sql
 --扩充表空间的物理文件
@@ -436,41 +450,74 @@ alter tablespace tablespace_name read only;
 alter tablespace tablespace_name read write;
 ```
 
-6、修改表空间的大小为不限制
+## 9.6.修改表空间的大小为不限制
 
 ```sql
- ALTER USER dealer QUOTA UNLIMITED ON USERS;
+ALTER USER dealer QUOTA UNLIMITED ON USERS;
+```
+
+## 9.7.查看所有表空间及其大小
+
+```sql
+--查看表空间的大小
+select 
+	tablespace_name,sum(bytes)/1024/1024/1024 as GB 
+from dba_data_files 
+group by tablespace_name;
+```
+
+## 9.8.修改表空间的数据文件
+
+```sql
+alter database datafile 'D:\datafile.dbf' resize 1024M;
+```
+
+## 9.9.查看表空间的使用情况
+
+```sql
+select segment_type, owner, 
+       sum(bytes) / 1024 / 1024
+  from dba_segments
+ where tablespace_name = 'DATA'
+ group by segment_type, owner;
 ```
 
 
 
-### 十、复制表
 
-1、复制表结构
+
+# 十、复制表
+
+## 1.1.复制表结构
 
 ```sql
 --复制表结构及其表数据，但不会创建索引
 create table uh10_tmp 
 as
 select * from uh10 where yuh040 = '2';
+
 --只复制表结构
 create table uh10_tmp
 as
 select * from uh10 where 1<>1;
+
 --只复制指定表的指定字段，且不包含数据
 create table uh10_tmp
 as 
 select yuh040,yuh050,yuh051 from uh10 where 1<>1;
+
 --两个表的结构一样，复制表的数据
 insert into uh10_tmp
 select * from uh10;
+
 --两个表的结构不一样，复制部分列
 insert into uh10_tmp(yuh040,yuh050,yuh051,yuh052,yuh053 )
 select yuh040,yuh050,yuh051,yuh052,yuh053 from uh10;
-
 ```
 
-### 十一、触发器
+
+
+# 十一、触发器
 
 触发器就是某个条件成立的时候，触发器里面所定义的语句就会被自动的执行。
 
@@ -478,7 +525,7 @@ select yuh040,yuh050,yuh051,yuh052,yuh053 from uh10;
 
 触发器可以分为语句级触发器和行级触发器 （`for each now`）
 
-#### 11.1.触发器的使用
+## 11.1.触发器的使用
 
 ```plsql
 create [or replace] tigger 触发器名 触发时间 触发事件
@@ -581,14 +628,14 @@ begin
 end;  
 ```
 
-#### 11.2.触发器的限制
+## 11.2.触发器的限制
 
 * 触发器中不能使用事务控制语句：`commit\rollback\savepoint`
 * 由触发器调用的过程和函数与不能包含事务控制语句
 * 触发器中不能使用`LONG、LONG RAW`
 *   触发器内可以参照`LOB `类型列的列值，但不能通过 `:NEW `修改`LOB`列中的数据； 
 
-#### 11.3.触发器前后列的值
+## 11.3.触发器前后列的值
 
 * ` :OLD` 修饰符访问操作完成前列的值 
 * `:NEW `修饰符访问操作完成后列的值 
@@ -598,13 +645,13 @@ end;
 | `:OLD` |  `null`  |  实际值  |  实际值  |
 | `:NOW` |  实际值  |  实际值  |  `null`  |
 
-#### 11.4.触发器的数据字典
+## 11.4.触发器的数据字典
 
 ```sql
 select * from user_triggers;
 ```
 
-#### 11.5.触发器的常用操作
+## 11.5.触发器的常用操作
 
 ```sql
 --设置触发器生效disable
@@ -620,7 +667,7 @@ alter trigger trigger_name compile;
 drop trigger trigger_name;
 ```
 
-#### 11.6.触发器的谓词
+## 11.6.触发器的谓词
 
 * `inserting`：当触发事件是`insert`时，取值`true`，否则`false`
 * `updating`：当触发事件是`udpate`时，取值`true`，否则`false`
@@ -628,7 +675,7 @@ drop trigger trigger_name;
 
 
 
-### 十二、调度作业
+# 十二、调度作业
 
 `dbms_scheduler`包的功能比`dbms_job`包强大很多 ,主要围绕着三个基本概念`schedule，program和job `
 
@@ -636,7 +683,7 @@ drop trigger trigger_name;
 * `program`:表示调度应该做什么事情，是对程序的抽象 
 * `job`:表示按照指定的`schedule`，执行指定`program`，完成用户指定的工作。
 
-#### 12.1.`shcedule`
+## 12.1.`shcedule`
 
 ```sql
 begin
@@ -653,7 +700,7 @@ end;
 /
 ```
 
-#### 12.2.`program`
+## 12.2.`program`
 
 ```sql
  begin
@@ -684,7 +731,7 @@ Ora-27456：程序“ ”的参数并未全部定义；然后再对该program定
 
 
 
-#### 12.3.`job`
+## 12.3.`job`
 
 ```sql
 begin
@@ -713,13 +760,13 @@ end;
 /
 ```
 
-#### 12.4.删除`job`
+## 12.4.删除`job`
 
 ```sql
 exec dbms_scheduler.drop_job(job_name=>'SCOTT.SAM_JOB');
 ```
 
-#### 12.5.`repeat_interval `参数
+## 12.5.`repeat_interval `参数
 
 `repeat_interval `参数支持两种格式
 
@@ -729,7 +776,7 @@ exec dbms_scheduler.drop_job(job_name=>'SCOTT.SAM_JOB');
   * 时间间隔 ：`INTERVAL `，可选
   * 附加的参数 ：用于精确地指定日期和时间，可选
 
-#### 12.6.数据字典
+## 12.6.数据字典
 
 ```sql
 --查看定义的programs
@@ -744,7 +791,7 @@ SELECT * FROM user_scheduler_programs;
 
 
 
-### 十三、命令窗口
+# 十三、命令窗口
 
 1、连接数据库
 
@@ -870,9 +917,9 @@ strat file_name.sql
 
 
 
-### 十四、生成注释
+# 十四、生成注释
 
-##### 14.1.查询注释信息
+### 14.1.查询注释信息
 
 ```sql
 --生成注释sql
@@ -891,14 +938,14 @@ where a.table_name = upper('pre_apasinfo')
 order by column_id;
 ```
 
-##### 14.2`mysql`注释转`oracle`注释
+### 14.2`mysql`注释转`oracle`注释
 
 ```sql
 select concat('comment on column ',lower(table_name),'.',lower(column_name),' is ''',column_comment,''';') from columns where table_name = 'pre_service_material' 
 and table_schema = 'jyrc_zwb';
 ```
 
-##### 14.3. `oracle`注释转`mysql`注释
+### 14.3. `oracle`注释转`mysql`注释
 
 ```sql
 --部分字段类型的转化存在异常
@@ -908,24 +955,24 @@ left join user_col_comments b on a.column_name = b.column_name
 where a.table_name = upper('pre_service') and b.table_name = upper('pre_service'); 
 ```
 
-##### 14.4 数据库之间的迁移或转化可使用`Navicat Premium`或`sqldeveloper`
+### 14.4 数据库之间的迁移或转化可使用`Navicat Premium`或`sqldeveloper`
 
 
 
-### 十五、锁
+# 十五、锁
 
 
 
-### 十六、函数
+# 十六、函数
 
-#### 16.1.`sys_guid() `
+## 16.1.`sys_guid() `
 
 ```sql
 --获取uuid
 select sys_guid() from dual;
 ```
 
-#### 16.2.`clob`的函数
+## 16.2.`clob`的函数
 
 ```sql
 --获取clob字段长度
@@ -953,7 +1000,7 @@ select dbms_lob.substr(clob) from dual;
 
 > ？ `clob`字段的增删改
 
-#### 16.3.统计函数
+## 16.3.统计函数
 
 ```sql
 --数据准备
@@ -992,7 +1039,7 @@ insert into earnings values('201001','金陵','511304','小俐',16,18,16*18);
 insert into earnings values('201001','金陵','511305','雪儿',11,9.88,11*9.88); 
 ```
 
-##### 16.3.1.`rollup /cube`
+### 16.3.1.`rollup /cube`
 
 ```sql
 --对earnmonth,area分组统计（按照earnmonth分组，在earnmonth内部再按area分组）
@@ -1022,7 +1069,7 @@ order by earnmonth,area nulls last;
 
 ![1528794940154](E:\typora\images\1528794940154.png)
 
-##### 16.3.2.`rollup`和`cube`区别
+### 16.3.2.`rollup`和`cube`区别
 
 如果是`ROLLUP(A, B, C)`的话，`GROUP BY`顺序
 
@@ -1046,7 +1093,7 @@ order by earnmonth,area nulls last;
 最后对全表进行GROUP BY操作
 ```
 
-##### 16.3.3.`grouping `
+### 16.3.3.`grouping `
 
 `rollup`和`cube`函数都会对结果集产生`null`，这时候可用`grouping`函数来确认 该记录是由哪个字段得出来的 
 
@@ -1062,7 +1109,7 @@ group by cube(earnmonth,area)
 order by earnmonth,area nulls last;  
 ```
 
-##### 16.3.4.分组排序函数
+### 16.3.4.分组排序函数
 
 ```sql
 -- rank() over()每个分组内单独排序，数据值相同为同一序号，下一个值跳跃式排序
@@ -1100,7 +1147,7 @@ select earnmonth 月份,
 
 ![1529544392907](E:\typora\images\1529544392907.png)
 
-##### 16.3.5.`sum() over()`累计求和
+### 16.3.5.`sum() over()`累计求和
 
 ```sql
 --统计每个月每个区域的收入总和
@@ -1116,7 +1163,7 @@ select earnmonth 月份,
 
 
 
-##### 16.3.6.统计最大最小值平均值
+### 16.3.6.统计最大最小值平均值
 
 ```sql
 --统计每个月每个区域收入的最大值、最小值、平均值和总和
@@ -1145,7 +1192,7 @@ select distinct earnmonth 月份,
 
 ![1528888784016](E:\typora\images\1528888784016.png)
 
-##### 16.3.7.`lead`和`lag`
+### 16.3.7.`lead`和`lag`
 
 ```sql
 --可以访问组内当前行之前的行;
@@ -1166,7 +1213,7 @@ select earnmonth 本月,
 
 ![1529544438236](E:\typora\images\1529544438236.png)
 
-##### 16.3.8.开窗函数
+### 16.3.8.开窗函数
 
 ```sql
 --开窗函数over(),指定了分析函数工作的数据窗口大小
@@ -1174,7 +1221,7 @@ select earnmonth 本月,
 over(partition by xxx order by xxx rows between xxx)
 ```
 
-##### 16.3.9.**求最值对应的其他属性** 
+### 16.3.9.**求最值对应的其他属性** 
 
 ```sql
 --first_value()/last_value(),求最值对应的其他属性
@@ -1242,9 +1289,9 @@ insert into t values('200408',5765,'J', 12680052.38);
 commit;
 ```
 
-#### 1.5.格式化
+## 1.5.格式化
 
-##### 1.5.1.`to_char()`
+### 1.5.1.`to_char()`
 
 - 格式化日期
   - 将日期转化为`2017年12月23日`的格式
@@ -1259,8 +1306,8 @@ commit;
 
   ```sql
   select to_char(45.2,'00000.000') from dual;  -- 00045.200
-  --没有足够的整数位时，输出####
-  select to_char(45.2,'0.0') from dual;        -- ####
+  --没有足够的整数位时，输出##
+  select to_char(45.2,'0.0') from dual;        -- ##
   ```
 
   * 【`9`】：表示一个数值位，当原数值的整数部分没有数字为匹配时，不填充任何字符；但小数部分还是会强制补`0`
@@ -1272,8 +1319,8 @@ commit;
   select to_char(0.452,'999.99999') from dual; --    .45200
   select to_char(0.452,'990.99999') from dual; --   0.45200
   
-  --没有足够的整数位时，输出####
-  select to_char('634.43','9.9') from dual;  --####
+  --没有足够的整数位时，输出##
+  select to_char('634.43','9.9') from dual;  --##
   select to_char('634.43','9999.9') from dual;  --  634.4
   ```
 
@@ -1311,7 +1358,7 @@ commit;
   ```
 
 
-##### 1.5.2.字符串格式化
+### 1.5.2.字符串格式化
 
 * `ltrim()`：去除字符串前面所有空格
 * `rtrim()`：去除字符串后面所有空格
@@ -1320,9 +1367,9 @@ commit;
 * `upper()`：将字符串全部转大写
 * `initcap()`:将字符串首字母转大写
 
-#### 1.6.判空或判断函数
+## 1.6.判空或判断函数
 
-##### 1.6.1.`trunc`
+### 1.6.1.`trunc`
 `trunc()`截取时，不进行四舍五入。
 ```
 select trunc(sysdate,'YYYY') from dual;--2017/1/1
@@ -1331,26 +1378,26 @@ select trunc(sysdate,'MM') from dual;  --2017/12/1
 select trunc(123,-1) from dual;        --120
 select trunc(100.1234,2) from dual;    --100.12
 ```
-##### 1.6.2`nvl` 替换`null`值
+### 1.6.2`nvl` 替换`null`值
 `nvl(exp1,exp2)`如果`exp1`为空，则取`exp2`；否则取`exp1`
 ```sql
 select nvl(comm,0) from emp;
 ```
-##### 1.6.3.`nvl2` 
+### 1.6.3.`nvl2` 
 `nvl2(exp1,exp2,exp3)`
 * 若`exp1 != null`,返回`exp2`
 * 若`exp1 = null`,返回`exp3`
 ```sql
 select nvl2(comm,'有奖励金','无奖励金') from emp;
 ```
-##### 1.6.4.`nullif`
+### 1.6.4.`nullif`
 `nullif(exp1,exp2)`
 * 若`exp1 = exp2`, 返回`null`
 * 若`exp1 != exp2`, 返回 `exp1`
 ```sql
 select nullif(ename,'SMITH') from emp;
 ```
-##### 1.6.5`coalesce` 优先返回不为`null`的值
+### 1.6.5`coalesce` 优先返回不为`null`的值
 `coalesce(expr1，expr2，expr3)`
 * 全为`null`,返回`null`
 * 返回第一个不为`null`的值
@@ -1359,7 +1406,7 @@ select nullif(ename,'SMITH') from emp;
 select coalesce(comm,sal,empno) from emp;
 ```
 
-##### 1.6.6.`deceode` 
+### 1.6.6.`deceode` 
 ```sql
 select 
 --如果condition的值等于search1返回result1,
@@ -1387,7 +1434,7 @@ select
 from emp;
 ```
 
-##### 1.6.7.`case then`
+### 1.6.7.`case then`
 
 ```sql
 case when condition then result
@@ -1413,7 +1460,7 @@ select
 from emp;
 ```
 
-#### 1.7.字符串函数
+## 1.7.字符串函数
 
 * `concat()`：连接字符串
 
@@ -1538,14 +1585,14 @@ select * from emp where regexp_like(empno,'3','i');
 
 
 
-### 十七、`DbLink`同步`clob/blob`
+# 十七、`DbLink`同步`clob/blob`
 
-#### 17.1.`dblink`传输`clob`字段的方案
+## 17.1.`dblink`传输`clob`字段的方案
 
 * 多库交互时，使用`DBLINK`有时会引起`SCN`传播问题 
 * 如要查询`CLOB`字段时，无法直接进行查询，需要做处理才能查询出数据 
 
-##### 17.1.1.使用`to_char()`进行转换
+### 17.1.1.使用`to_char()`进行转换
 
 ```sql
 --若clob的字段的内容不超过4000，可使用to_char()函数进行类型转换
@@ -1556,7 +1603,7 @@ select dbms_lob.substr(clob,4000,1) from history;
 --但数据会丢失一部分
 ```
 
-#### 17.2.在目标库创建临时表
+## 17.2.在目标库创建临时表
 
 ```sql
 --在目标库创建临时表，同步远程库的数据
@@ -1580,7 +1627,7 @@ on commit delete rows
 on commit preserve rows
 ```
 
-#### 17.3.在目标库创建视图
+## 17.3.在目标库创建视图
 
 ```sql
 --创建视图，将clob类型转化为varchar2类型，字符的长度不能超过4000
@@ -1596,9 +1643,9 @@ from history;
 
 
 
-### 十八、排序
+# 十八、排序
 
-#### 18.1.将`null`排序在最后
+## 18.1.将`null`排序在最后
 
 ```sql
 --排序时把null放在最后
@@ -1607,7 +1654,7 @@ order by aae036 desc nulls last
 
 
 
-### 十九、创建临时表
+# 十九、创建临时表
 
 ```sql
 --创建了一个永久的表结构，并没有同步数据
@@ -1641,9 +1688,9 @@ drop table uj21_tmp;
 
 
 
-### 二十、日期
+# 二十、日期
 
-#### 20.1.求某天是星期几
+## 20.1.求某天是星期几
 
 ```sql
 select to_char(sysdate,'day') from dual;   --星期二
@@ -1652,13 +1699,13 @@ select to_char(sysdate,'day','NLS_DATE_LANGUAGE = American') from dual;  --tuesd
 alter session set nls_date_language='AMERICAN';     
 ```
 
-#### 20.2.求日期之间的天数
+## 20.2.求日期之间的天数
 
 ```sql
 select floor(sysdate - to_date('20180618','yyyymmdd')) from dual;  --1
 ```
 
-### 二十一、树形递归查询
+# 二十一、树形递归查询
 
 `start with condition connect by (prior)`对树形结构的数据进行查询 。
 
@@ -1678,7 +1725,7 @@ create table TAMENU(
 )
 ```
 
-#### 21.1.找某个节点所有子节点
+## 21.1.找某个节点所有子节点
 
 ```sql
 --自上向下找子节点
@@ -1706,7 +1753,7 @@ connect by prior menuid = pmenuid;
 
 ![1529573295575](E:\typora\images\1529573295575.png)
 
-#### 21.2.查找某个节点的父节点
+## 21.2.查找某个节点的父节点
 
 ```sql
 --自下向上找父节点
@@ -1721,7 +1768,7 @@ connect by menuid = prior pmenuid;
 
 ![1529573261791](E:\typora\images\1529573261791.png)
 
-#### 21.3.查询每个菜单包含的子菜单数
+## 21.3.查询每个菜单包含的子菜单数
 
 ```sql
 select 
@@ -1737,7 +1784,7 @@ order by menuid;
 
 ![1529630146977](E:\typora\images\1529630146977.png)
 
-#### 21.4.查询所有的叶子节点
+## 21.4.查询所有的叶子节点
 
 ```sql
 --即查询pmenuid中没有的menuid,这部分节点就没有上级节点
@@ -1749,7 +1796,7 @@ order by menuid;
 
 ![1529630715732](E:\typora\images\1529630715732.png)
 
-#### 21.5.查询某个层级的所有节点
+## 21.5.查询某个层级的所有节点
 
 ```sql
 --树形结构在节点很多的情况下，一般使用异步加载刷新的方式，但是默认情况下会展示到某个层级
@@ -1767,7 +1814,7 @@ order by level;
 
 ![1529631769892](E:\typora\images\1529631769892.png)
 
-#### 21.6.显示数据的树形级别
+## 21.6.显示数据的树形级别
 
 ```sql
 select 
@@ -1784,7 +1831,7 @@ connect by prior menuid = pmenuid;
 
 
 
-### 二十二、执行
+# 二十二、执行计划
 
 ```sql
 --生成执行计划

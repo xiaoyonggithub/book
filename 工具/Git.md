@@ -335,8 +335,8 @@ git push origin_ssh master
 - `.gitignore`配置所有文件忽略的规则
 - `.gitignore`本身不会被忽略，可以提交到仓库
 - `.gitignore`放入某一文件夹，就会匹配当前文件夹下的文件
-
-- 在线的各种忽略配置文件<https://github.com/github/gitignore>
+- 在线的各种忽略配置文件<https://github.com/github/gitignore> 
+  - <https://www.cnblogs.com/kevingrace/p/5690241.html>
 
 ```shell
 #创建全局的.gitignore

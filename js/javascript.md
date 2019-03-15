@@ -978,7 +978,6 @@ function fun(){
 ### 4.3.3.使用函数表达式
 
 - `function`关键字后可以跟`()`
-- 
 
 ```js
 //函数表达式，匿名函数
@@ -987,7 +986,7 @@ var fun = function(){
 };
 ```
 
-## 4.4.函数的参数
+## 4.4.`arguments`
 
 - 解析器不会检查参数的类型，也不会检查参数的个数
 
@@ -1006,11 +1005,26 @@ var fun = function(){
 
 - 参数的实参可以是任意数据类型
 
-## 4.5.参数的返回值
 
-- return后的语句不会执行，可用于中断函数的执行（`return;`）
-- return后不跟值（`return;`）会返回undefined,函数不写return也是返回undefined
-- return可返回任意类型的值
+
+## 4.5.`return`
+
+- `return`后的语句不会执行，可用于中断函数的执行（`return;`）
+- `return`后不跟值（`return;`）会返回undefined，函数不写return也是返回undefined
+- `return`可返回任意类型的值(函数)
+
+```html
+<a href="abc.htm" onclick="return fnClick()">Open</a>
+```
+
+- 事件中调用函数时，`return`的返回值实际上是对`window.event.returnvalue`进行设置，该值决定了当前操作是否继续。
+
+  - `return true`时，会跳转页面。
+  - `return false`时，会执行函数，不会跳转页面。
+
+  - 没有`return`时，执行完函数后仍然跳转页面。
+
+
 
 ## 4.6.立即执行函数
 
@@ -1131,7 +1145,7 @@ var obj = new Person('zhangan',10);
 3. 执行函数中的代码
 4. 将新建的对象作为返回值返回
 
-注意：上述Person构造函数没创建一次，就会创建一个新的getName()方法，此时会影响效率
+注意：上述Person构造函数每创建一次，就会创建一个新的getName()方法，此时会影响效率
 
 优化后的方式：所有的对象共享一个方法
 
@@ -1152,7 +1166,7 @@ var obj = new Person('zhangan',10);
 
 ## 4.9.`instanceof`
 
-instanceof可以检查一个对象是否是一个类的实例(实例是通过构造函数创建的对象)
+`instanceof`可以检查一个对象是否是一个类的实例(实例是通过构造函数创建的对象)
 
 ```javascript
 console.log(obj instanceof Person);
@@ -1160,7 +1174,7 @@ console.log(obj instanceof Person);
 
 ## 4.10.`prototype`
 
-- 每创建一个函数，解析器都会向函数中添加一个属性prototype
+- 每创建一个函数，解析器都会向函数中添加一个属性`prototype`
 
 ```javascript
 function Person(){
@@ -1169,7 +1183,7 @@ function Person(){
 console.log(Person.prototype);
 ```
 
-- 当函数以构造函数的方式调用时，它所创建的对象中都会一个隐含的属性prototype，指向该构造函数的原型对象
+- 当函数以构造函数的方式调用时，它所创建的对象中都会一个隐含的属性`prototype`，指向该构造函数的原型对象
 
 ```javascript
 function Person(){
@@ -1181,7 +1195,7 @@ console.log(obj.__proto__); //访问obj对象的prototype对象,不能通过obj.
 
 - 原型对象相当于一个公共区域，每个类的实例都可以访问该类的原型对象，故把对象的共有内容统一放在原型对象
 - 原型对象也有原型对象
-- 当访问对象的一个属性和方法时,会先在对象自身中寻找
+- 当访问对象的一个属性和方法时，会先在对象自身中寻找
   - 若找不到再在原型对象中寻找
   - 会在原型对象的原型对象中依次查找
   - 直到Object对象的原型
@@ -1317,6 +1331,116 @@ arguments封装实参的对象，是一个类数组对象，不是数组
 
 
 
+## 4.16.函数节流
+
+函数节流`(throttle)`：指定时间间隔内只会执行一次任务；
+
+- 让一个函数不要执行得太频繁，减少一些过快的调用来节流
+
+```js
+// 2、节流函数体
+function throttle(fn, wait) {
+    // 4、通过闭包保存一个标记
+    let canRun = true;
+    return function () {
+        // 5、在函数开头判断标志是否为 true，不为 true 则中断函数
+        if (!canRun) {
+            return;
+        }
+        // 6、将 canRun 设置为 false，防止执行之前再被执行
+        canRun = false;
+        // 7、定时器
+        setTimeout(() => {
+            fn.call(this, arguments);
+            // 8、执行完事件（比如调用完接口）之后，重新将这个标志设置为 true
+            canRun = true;
+        }, wait);
+    };
+}
+```
+
+### 4.16.1.应用
+
+- 懒加载要监听计算滚动条的位置，使用节流按一定时间的频率获取。
+- 用户点击提交按钮，假设我们知道接口大致的返回时间的情况下，可以使用节流，只允许一定时间内点击一次。
+
+## 4.17.函数防抖
+
+函数防抖`(debounce)`：规定时间后才执行；在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时。
+
+- 对于一定时间段的连续的函数调用，只让其执行一次
+
+```js
+/**
+ * 防抖函数
+ * @param fn  回调函数
+ * @param wait 等待时间
+ * @returns {Function}
+ */
+function debounce(fn, wait) {
+    var timer = null;
+    return function () {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        timer = setTimeout(function () {
+            fn.apply(this, arguments)
+        }, wait)
+    }
+}
+```
+
+```js
+var ele = document.getElementById("debounce");
+ele.addEventListener("click", debounce(sayDebounce, 1000));
+```
+
+### 4.17.1.应用
+
+- 输入框获取联想词，因为频繁调用接口不太好，所以我们在代码中使用防抖功能，只有在用户输入完毕的一段时间后，才会调用接口，出现联想词。
+
+
+
+[]: https://qishaoxuan.github.io/blog/js/throttleDebounce.html?tdsourcetag=s_pctim_aiomsg
+[]: https://www.codercto.com/a/35263.html
+
+
+
+## 4.18.重绘
+
+重绘`(repaint)`:当元素样式改变，但是不影响页面布局时，浏览器会使用重绘对元素进行更新，由于此时只需要 UI层面的重新像素绘制，因此**损耗较少**。
+
+重绘的常用操作：
+
+- 改变元素的颜色
+- 改变元素的背景色
+
+## 4.19.回流
+
+回流`(reflow)`:又叫重排`(Layout)`；当元素的大小、尺寸或触发了某些属性时，浏览器会重新渲染页面。
+
+由于此时浏览器需要重新经过计算，计算后还需要重新页面布局，因此是较重的操作。
+
+常见的回流操作：
+
+- 页面初次渲染
+- 浏览器窗口的大小改变
+- 元素尺寸、位置、内容的改变
+- 元素字体的改变
+- 新增或删除可见的DOM元素
+- 激活CSS伪类`(:hover)`
+
+> 回流一定会触发重绘，但是重绘不一定会触发回流；重绘的开销小，回流的代价较高。
+
+由于回流的代价较高，因此要避免大量的触发重绘和回流：
+
+- 避免频繁修改样式，可使用节流或防抖，汇总后统一一次修改
+- 尽量使用class修改样式，而不是直接操作样式
+- 减少DOM操作，可使用字符串一次性操作
+
+
+
 
 
 
@@ -1356,7 +1480,7 @@ a = '123';
 
 ### 5.1.2.函数的声明提前
 
-- 函数声明创建函数`【function function_name(){}】`，会在所有代码执行之前被创建 
+- 函数声明创建函数`function function_name(){}`，会在所有代码执行之前被创建 
 
 ```js
 fun();  //声明式函数
@@ -1391,8 +1515,6 @@ var fun = function(){
 
 
 
-
-
 # 六、垃圾回收
 
 当一个对象没有任何对象或属性对它引用时，我们无法操作该对象了，就表示该对象时一个垃圾。
@@ -1401,5 +1523,50 @@ var fun = function(){
 
 
 
+# 七、浏览器
+
+## 7.1.浏览器解析`URL`
+
+- 用户输入`URL`
+- 对`URL`进行`DNS`解析
+- 建立`TCP`连接(三次握手)
+- 浏览器发送`HTTP`请求报文
+- 服务器返回`HTTP`响应报文
+- 关闭`TCP`连接(四次挥手)
+- 浏览器解析文档并渲染页面
+
+![img](../images/169721e312f11eea)
+
+[]: https://www.cnblogs.com/wpshan/p/6282061.html
 
 
+
+## 7.2.`DNS`域名解析
+
+`DNS（Domain Name System）`**域名系统**，提供的服务是用于将主机名和域名转换为 IP 地址的工作。
+
+当用户输入`www.baodu.com`后，`DNS`的解析步骤：
+
+
+
+## 7.3.`TCP`三次握手与四次挥手
+
+
+
+## 7.4.浏览器渲染页面
+
+1. 浏览器通过HTMLParser根据深度遍历的原则把HTML解析成DOM Tree。
+
+2. 浏览器通过CSSParser将CSS解析成CSS Rule Tree（CSSOM Tree）。
+
+3. 浏览器将JavaScript通过DOM API或者CSSOM API将JS代码解析并应用到布局中，按要求呈现响应的结果。
+
+4. 根据DOM树和CSSOM树来构造render Tree。
+
+5. layout：重排（也可以叫回流），当render tree中任一节点的几何尺寸发生改变，render tree就会重新布局，重新来计算所有节点在屏幕的位置。
+
+6. repaint：重绘，当render tree中任一元素样式属性（几何尺寸没改变）发生改变时，render tree都会重新画，比如字体颜色，背景等变化。
+
+7. paint：遍历render tree，并调动硬件图形API来绘制每个节点。
+
+![img](../images/169721ed68383402)

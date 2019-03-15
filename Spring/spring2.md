@@ -4,9 +4,9 @@
 
 
 
-## 二十、Spring依赖的jar分类
+# 二十、Spring依赖的jar分类
 
-#### 20.1.AOP依赖的jar
+# 20.1.AOP依赖的jar
 
 - cglib动态代理依赖的jar 
 - aspectj依赖相关的jar,用来支持切面编程
@@ -54,9 +54,9 @@
 
 
 
-## 二十一、常见问题
+# 二十一、常见问题
 
-### 21.1.MySQL数据库版本描述
+## 21.1.MySQL数据库版本描述
 
 ```xml
 Mon Jul 23 21:52:58 CST 2018 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.
@@ -74,7 +74,7 @@ Mon Jul 23 21:52:58 CST 2018 WARN: Establishing SSL connection without server's 
 <value>jdbc:mysql://localhost:3306/scott?characterEncoding=utf8&useSSL=true&createDatabaseIfNotExist=true</value>
 ```
 
-### 21.2.通配符问题
+## 21.2.通配符问题
 
 ###### 错误：通配符的匹配很全面, 但无法找到元素 'aop:aspectj-autoproxy' 的声明。
 

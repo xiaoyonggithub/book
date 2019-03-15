@@ -1,14 +1,14 @@
-## 一、`Lombok`
+# 一、`Lombok`
 
 - Lombok可以减少很多重复代码的书写
 
 - Lombok项目是一种自动接通你的编辑器和构建工具的一个Java库
 
-### 1.1. 在IDEA中的安装步骤
+## 1.1. 在IDEA中的安装步骤
 
 Setting –> 选择Plugins选项 –> 选择Browse repositories –> 搜索lombok –> 点击安装 –> 安装完成重启IDEA –> 安装成功
 
-### 1.2.添加依赖
+1.2.添加依赖
 
 ```xml
 <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -20,7 +20,7 @@ Setting –> 选择Plugins选项 –> 选择Browse repositories –> 搜索lombo
 </dependency>
 ```
 
-### 1.3.注解使用
+## 1.3.注解使用
 
 1. `@NonNull`设置在属性上，用于属性的非空检查，会默认是生成一个无参构造；若被注解的对象是null，直接会抛出NPE
 
@@ -241,7 +241,35 @@ Setting –> 选择Plugins选项 –> 选择Browse repositories –> 搜索lombo
    }
    ```
 
-10. `@RequiredArgsConstructor`设置在类上，使用所有带`@NonNull`注解和带`final`修饰的属性生成构造方法
+10. `@RequiredArgsConstructor`设置在类上，使所有带`@NonNull`注解和带`final`修饰的属性生成构造方法
+
+    ```java
+    @Data
+    @RequiredArgsConstructor
+    public class User {
+        private String userId;
+        @NonNull
+        private String username;
+        private Integer age;
+    }
+    ```
+
+    ```java
+    @Data
+    @RequiredArgsConstructor
+    public class User {
+        private String userId;
+        @NonNull
+        private String username;
+        private Integer age;
+    
+        public User(@NonNull String username) {
+            this.username = username;
+        }
+    }
+    ```
+
+    
 
 11. `@Value`注解在类上，会生成带所有参数的构造方法、get方法、equal、hashCode和toString方法，注意没有set方法
 
@@ -269,4 +297,29 @@ Setting –> 选择Plugins选项 –> 选择Browse repositories –> 搜索lombo
     }
     ```
 
+14. `@Builder`
+
+    ```java
+    @Builder
+    @ToString
+    public class Emp {
+        private String empno;
+        private String empname;
+        private BigDecimal sal;
+    }
+    ```
+
+    ```java
+    @Test
+    public void test01(){
+        Emp emp = Emp.builder()
+            .empname("张三")
+            .empno("E0001")
+            .sal(BigDecimal.valueOf(50000))
+            .build();
+        System.out.println(emp);
+    }
+    ```
+
+15. `Generated`
 
