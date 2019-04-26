@@ -54,7 +54,7 @@
 ### 1.2.2.`singleton`对象的管理
 
 * `scope="singleton"`默认在启动容器（初始化容器）时初始化
-* `lazy-init="true"`来延迟加载`bean`,此时只有第一次获取`bean`才会初始化`bean`
+* `lazy-init="true"`来延迟加载`bean`，此时只有第一次获取`bean`才会初始化`bean`
 
 ```xml
 <bean id="serviceImpl" clas="cn.xy.service.ServiceImpl" lazy-init="true"></bean>

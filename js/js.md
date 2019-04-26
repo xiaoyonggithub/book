@@ -675,3 +675,19 @@ function setSurplusWords(ele, pnelId, total) {
 
 # 十四、滚动穿透
 
+
+
+
+
+# 十五、字符串处理
+
+## 15.1.获取字符串的字节数
+
+```js
+//unicode双字节字符编码范围:\u0391-\uFFE5;通过正则将所有双字节字符替换为2个单字节字符，在去取其长度
+//获取长度
+function getStrLength( Str ){
+    return str.replace(/[\u0391-\uFFE5]/g,"aa").length; //"g" 表示全局匹配
+}
+```
+

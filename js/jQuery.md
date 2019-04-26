@@ -278,12 +278,11 @@ $('#div').click(function(event){
 
 4).事件相关处理
 
-- 停止事件冒泡：event.stopPropagation()
-- 阻止事件的默认行为：event.preventDefault()  
+- 停止事件冒泡：`event.stopPropagation()`
+- 阻止事件的默认行为：`event.preventDefault() ` 
 
 ```js
 $('#div').click(function(event){
-    
     event.stopPropagation();
 })
 ```
@@ -293,7 +292,7 @@ $('#div').click(function(event){
 - 将多个子元素的事件监听委托给父辈元素处理
 - 监听回调是加在父辈元素上
 - 当操作一个子元素时，事件会冒泡到父辈元素上
-- 父辈元素不会直接处理事件，而是根据event.target得到发生事件的子元素，通过子元素来调用回调函数
+- 父辈元素不会直接处理事件，而是根据`event.target`得到发生事件的子元素，通过子元素来调用回调函数
 
 > 事件委托的双方
 
@@ -303,11 +302,11 @@ $('#div').click(function(event){
 > 事件委托的好处
 
 - 添加新的子元素，可以自动的有事件响应
-- 减少事件监听的数量:n==>1
+- 减少事件监听的数量:`n ==> 1`
 
-> jQuery事件委托的API
+> `jQuery`事件委托的`API`
 
-- 设置事件委托：$(parentSeletor).delegate(childrenSeletor,eventName,callback)
+- 设置事件委托：`$(parentSeletor).delegate(childrenSeletor,eventName,callback)`
 
 ```js
 $('ul').delegate('li','click',function(){
@@ -315,7 +314,7 @@ $('ul').delegate('li','click',function(){
 })
 ```
 
-- 移除事件委托：$(parentSeletor).undelegate(eventName)
+- 移除事件委托：`$(parentSeletor).undelegate(eventName)`
 
 
 
@@ -326,7 +325,7 @@ $('ul').delegate('li','click',function(){
 - `mouseenter`：只在移入当前元素才会触发事件，对应`mouseleave(只有移出当前元素才会触发事件)`
 - `hover()`使用的是`mouseenter()`和`mouseleave()`
 
-## 
+
 
 
 

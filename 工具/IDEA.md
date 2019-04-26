@@ -10,8 +10,6 @@ http://idea.lanyus.com/
 
 1、在C:\Windows\System32\drivers\etc\HOSTS中添加0.0.0.0 account.jetbrains.com
 
-2、 在cmd中执行ipconfig /flushdns![Alt text]
-
 # 二、模板（Template）
 
 ## 1.1.常用模板

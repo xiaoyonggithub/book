@@ -1,4 +1,4 @@
-### 一、缓存机制
+# 一、缓存机制
 
 mybatis中默认定义了两级缓存
 
@@ -7,7 +7,7 @@ mybatis中默认定义了两级缓存
 
 ![1530890145305](E:\typora\images\1530890145305.png)
 
-#### 1.1.一级缓存
+1.1.一级缓存
 
 * 默认开启，不能关闭；
 * SqlSession级别的缓存，与数据库同一次会话期间查到的数据放在一级缓存中；
@@ -52,7 +52,7 @@ public void tset08(){
 }
 ```
 
-##### 1.1.1.失效的情况
+### 1.1.1.失效的情况
 
 * 不同的SqlSession之间一级缓存失效
 
@@ -174,19 +174,19 @@ public void tset08(){
 
 提示：其实一级缓存就是存放在map中，每次查询时先去map中取，有就取出，没有就查询
 
-#### 1.2.二级缓存
+## 1.2.二级缓存
 
 * 基于namespace级别的缓存，一个namespace对应一个二级缓存
 * 注意：查询的数据默认放在一级缓存，只有SqlSession提交或关闭后才会将数据同步到二级缓存中
 
-##### 1.2.1.工作机制(二级缓存)
+### 1.2.1.工作机制(二级缓存)
 
 1. 在一个会话中，执行查询后，会将数据放在一级缓存中；
 2. 若会话关闭了，一级缓存中的数据会清空，但会保存到二级缓存中；
 3. 若再次查询就会从二级缓存中获取；
 4. 二级缓存中，不同namespace查询的数据会放在对应的缓存（map）中
 
-##### 1.2.2.使用步骤（二级缓存）
+### 1.2.2.使用步骤（二级缓存）
 
 1. 开启二级缓存配置
 
@@ -195,7 +195,7 @@ public void tset08(){
 <setting name="cacheEnabled" value="true"></setting>
 ```
 
-2. 在mapper.xml中配置`<cache>`
+2. 在`mapper.xml`中配置`<cache>`
 
 ```xml
 <!--设置namespace使用缓存
@@ -212,7 +212,7 @@ public void tset08(){
 
 3.POJO需要实现序列化接口
 
-1.2.3.`cache`的属性配置
+### 1.2.3.`cache`的属性配置
 
 `<cache></cache>`标签属性的设置
 
@@ -225,7 +225,7 @@ public void tset08(){
 | readOnly      | 只读，默认false                                              |
 | size          | 缓存大小，最大可存储的对象数                                 |
 
-##### 1.2.4.`eviction`缓存的回收策略
+### 1.2.4.`eviction`缓存的回收策略
 
 | 策略 | 描述                                                     |
 | ---- | -------------------------------------------------------- |
@@ -234,7 +234,7 @@ public void tset08(){
 | SOFT | 软引用：移除基于垃圾回收器状态和软引用规则的对象         |
 | WEAK | 弱引用：更积极地移除基于垃圾收集器状态和弱引用规则的对象 |
 
-##### 1.2.5.验证二级缓存的使用
+### 1.2.5.验证二级缓存的使用
 
 ```xml
 <!-- 设置namespace使用二级缓存 -->
@@ -272,11 +272,11 @@ public Emp getEmpById(Integer empno);
 
 注意：查询的数据默认放在一级缓存，只有SqlSession提交或关闭后才会将数据同步到二级缓存中
 
-##### 1.2.6.缓存修改配置
+### 1.2.6.缓存修改配置
 
 * `<setting name="cacheEnabled" value="true"></setting>`只影响二级缓存
 * `<select useCache="true">`只影响二级缓存，是否使用二级缓存
-* 在增删改语句中`flushCache`(清空缓存)默认为`true`,影响一级缓存和二级缓存
+* 在增删改语句中`flushCache`(清空缓存)默认为`true`，影响一级缓存和二级缓存
 
 ```xml
 <!--flushCache="true"执行后会清空以一级缓存和二级缓存 -->
@@ -287,29 +287,29 @@ public Emp getEmpById(Integer empno);
 
 * `session.clearCache()`只清除一级缓存，不影响二级缓存
 * `<setting name="localCacheScope" value="SESSION "></setting>`设置一级缓存作用域
-  * SESSION ：使用一级缓存，默认
-  * STATEMENT：相当于禁用缓存
+  * `SESSION `：使用一级缓存，默认
+  * `STATEMENT`：相当于禁用缓存
 
-##### 1.2.7.缓存的使用顺序
+### 1.2.7.缓存的使用顺序
 
 二级缓存>一级缓存>在数据库查询
 
 二级缓存的范围大于一级缓存
 
-##### 1.2.8.`cache-ref`
+### 1.2.8.`cache-ref`
 
 ```xml
 <!--指定与那个namespace下的缓存一样-->
 <cache-ref namespace="com.xy.mapper.EmpMapper"/>
 ```
 
-#### 1.3.自定义缓存
+## 1.3.自定义缓存
 
 实现`Cache`接口
 
 
 
-#### 1.4.整合`ehcache`
+## 1.4.整合`ehcache`
 
 [ehcache整合mybatis的Cache接口实现](https://github.com/mybatis)
 
@@ -339,7 +339,7 @@ public Emp getEmpById(Integer empno);
 </mapper>    
 ```
 
-3. 运行时可动态改变参数的值,即配置缓存参数
+3. 运行时可动态改变参数的值，即配置缓存参数
 
 ```xml
 <mapper namespace="org.acme.FooMapper">
@@ -375,27 +375,33 @@ public Emp getEmpById(Integer empno);
    memoryStoreEvictionPolicy="LRU">
  </defaultCache>
 </ehcache>
- 
-<!-- 
-属性说明：
-l diskStore：指定数据在磁盘中的存储位置。
-l defaultCache：当借助CacheManager.add("demoCache")创建Cache时，EhCache便会采用<defalutCache/>指定的的管理策略
- 
-以下属性是必须的：
-l maxElementsInMemory - 在内存中缓存的element的最大数目 
-l maxElementsOnDisk - 在磁盘上缓存的element的最大数目，若是0表示无穷大
-l eternal - 设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断
-l overflowToDisk - 设定当内存缓存溢出的时候是否将过期的element缓存到磁盘上
- 
-以下属性是可选的：
-l timeToIdleSeconds - 当缓存在EhCache中的数据前后两次访问的时间超过timeToIdleSeconds的属性取值时，这些数据便会删除，默认值是0,也就是可闲置时间无穷大
-l timeToLiveSeconds - 缓存element的有效生命期，默认是0.,也就是element存活时间无穷大
- diskSpoolBufferSizeMB 这个参数设置DiskStore(磁盘缓存)的缓存区大小.默认是30MB.每个Cache都应该有自己的一个缓冲区.
-l diskPersistent - 在VM重启的时候是否启用磁盘保存EhCache中的数据，默认是false。
-l diskExpiryThreadIntervalSeconds - 磁盘缓存的清理线程运行间隔，默认是120秒。每个120s，相应的线程会进行一次EhCache中数据的清理工作
-l memoryStoreEvictionPolicy - 当内存缓存达到最大，有新的element加入的时候， 移除缓存中element的策略。默认是LRU（最近最少使用），可选的有LFU（最不常使用）和FIFO（先进先出）
- -->
 ```
+
+- `<diskStore>`:数据在磁盘的存储位置。
+- `<defaultCache>`:当借助`CacheManager.add("demoCache")`创建`Cache`时，`EhCache`便会采用`<defalutCache/>`指定的的管理策略
+
+> 必须的属性
+
+- `maxElementsInMemory`：在内存中缓存的`element`的最大数目；
+- `maxElementsOnDisk`:在磁盘上缓存的`element`的最大数目，`0`表示无穷大；
+- `overflowToDisk`:当内存缓存溢出时，是否将过期的`element`缓存到磁盘；
+- `eternal`:设置缓存的`element`是否永不过期；
+  - `eternal = true`:缓存数据始终有效；
+  - `eternal = false`:需要与`timeToIdleSeconds，timeToLiveSeconds`配合使用；
+
+> 可选属性
+
+- `timeToIdleSeconds`:缓存元素的闲置时间，当缓存元素前后两次的访问时间超过`timeToIdleSeconds`的值，该元素就会被清除，默认值为`0`，表示`element`闲置时间无穷大；
+- `timeToLiveSeconds`:缓存`element`的有效生命期，默认值为`0`，表示`element`存活时间无穷大；
+- `diskSpoolBufferSizeMB`：设置`DiskStore`(磁盘缓存)的缓存区大小，默认是`30MB`；每个`Cache`都应该有自己的一个缓冲区；
+- `diskPersistent`:在`VM`重启的时候是否启用磁盘保存`EhCache`中的数据，默认是`false`；
+- `diskExpiryThreadIntervalSeconds`:磁盘缓存的清理线程运行间隔，默认是120秒；即每个120s，相应的线程会进行一次`EhCache`中数据的清理工作。
+- `memoryStoreEvictionPolicy`:移除策略，当内存缓存达到最大，有新元素加入时，移除缓存中`element`的策略；
+  - `LRU`（最近最少使用），默认
+  - `LFU`（最不常使用）
+  - `FIFO`（先进先出）
+- `clearOnFlush`：缓存最大时，是否清除
+- 
 
 ![缓存原理图](E:\typora\images\1530892409176.png)
 
@@ -881,14 +887,6 @@ public class SSMTest {
 
 #### 5.3.配置参数
 
-
-
-
-
-
-
-
-
 | 常见类   | 描述     |
 | -------- | -------- |
 | PageInfo | 分页信息 |
@@ -908,8 +906,6 @@ public class SSMTest {
 
 
 ### 七、调用存储过程
-
-
 
 
 

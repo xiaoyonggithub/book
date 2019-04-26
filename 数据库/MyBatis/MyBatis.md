@@ -73,7 +73,7 @@
   </bean>  
   ```
 
-* `Mybatis`中接口和对应的`mapper`文件放在同一个包下,且接口的名称和`mapper`文件的名称要相同,目的是为了`Mybatis`进行自动扫描，就不需要配置`mapper`文件的位置了 
+* `Mybatis`中接口和对应的`mapper`文件放在同一个包下，且接口的名称和`mapper`文件的名称要相同，目的是为了`Mybatis`进行自动扫描，就不需要配置`mapper`文件的位置了 
 
   ```sql
   
@@ -238,9 +238,7 @@ public class Employee{
 * 基本类型加`_`（`int/_int`）
 * 包装类型字母小写（`String/string,Long/long`）
 
-> 建议：使用全类名，可方便跳转，查询映射的区别
-
-#### 4.4.`typeHandlers`
+>   4.4.`typeHandlers`
 
 * `typeHandlers` ：日期和时间处理器，`JDK1.8`定义`JSR310`规范（日期类型的类库），`Mybatis`可使用基于`JSR310`的各种**日期时间类型的处理器**
 
@@ -422,7 +420,7 @@ oracle.password = scott
 ```java
 public interface EmpMapper {
 
-    //基于注解配置SQL，且使用接口的方式注册
+    //基于注解配置SQL，且使用接口的方式注 册
     @Select("select * from emp where empno = #{empno}")
     public Emp getEmpById(Integer empno);
 }
@@ -465,7 +463,6 @@ public interface EmpMapper {
        from admin
        where admin_id = #{adminId}
     </select>
-
 
 </mapper>
 ```
@@ -549,7 +546,7 @@ public interface EmpMapper {
 public Emp getEmpById(Integer empno);
 ```
 
-* 多个参数：会将多个参数封装为`map`,`key：param1,param2...;value:value1,value2,...`；
+* 多个参数：会将多个参数封装为`map`，`key：param1,param2...;value:value1,value2,...`；
 
   `key`是`param1,param2`或`0,1`，`value`是传入参数的值；
 
@@ -680,7 +677,7 @@ select * from ${year}_sal where xxx
 * `#{}`可指定的规则
 
   * `javaType`：指定pojo中属性的类型
-  * `jdbcType`：在一些特定的情况下使用。如我们的数据为`null`,部分数据库不能识别`mybatis`对`null`的默认处理，比如`Oracle`就会报错
+  * `jdbcType`：在一些特定的情况下使用。如我们的数据为`null`，部分数据库不能识别`mybatis`对`null`的默认处理，比如`Oracle`就会报错
 
   ```
   ### Cause: org.apache.ibatis.type.TypeException: Could not set parameters for mapping: ParameterMapping{property='comm', mode=IN, javaType=class java.math.BigDecimal, jdbcType=null, numericScale=null, resultMapId='null', jdbcTypeName='null', expression='null'}. 
@@ -1565,7 +1562,7 @@ List<Emp>  getEmpInnerParam(Emp emp);
 
 #### 6.5.`bind`
 
-`<bind>`将OGNL表达式的值绑定到一个变量中，方便后来引用这个值
+`<bind>`将`OGNL`表达式的值绑定到一个变量中，方便后来引用这个值
 
 ```xml
 <select id="getEmpByName" resultType="com.xy.domain.Emp">
@@ -1581,7 +1578,7 @@ List<Emp>  getEmpByName(Emp emp);
 
 #### 6.6.`sql`
 
-`<sql>`抽取可重用的SQL片段
+`<sql>`抽取可重用的`SQL`片段
 
 ```xml
 <!--插入表格的列 -->

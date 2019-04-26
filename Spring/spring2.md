@@ -1,3 +1,41 @@
+# 十九、其他
+
+## 19.1.`RequestContextHolder`
+
+在`service`层或工具类中如何获取`HttpServletRequest`对象
+
+```java
+HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+```
+
+
+
+## 19.2.`RequestContextUtils `
+
+`RequestContextUtils`用于从`HttpServletRequest`上下文中获取特殊对象的工具类
+
+- 从request中获取WebApplicationContext
+
+```java
+RequestContextUtils.getWebApplicationContext(request);
+```
+
+- 从request中获取LocaleResolver或Locale
+
+```java
+RequestContextUtils.getLocaleResolver(request);
+RequestContextUtils.getLocale(request);
+```
+
+- 从request中获取ThemeResolver或Theme
+
+```java
+RequestContextUtils.getThemeResolver(request);
+RequestContextUtils.getTheme(request);
+```
+
+
+
 
 
 

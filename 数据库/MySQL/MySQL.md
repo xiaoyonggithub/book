@@ -827,21 +827,21 @@ select trim('  bar  ');
 select ltrim(' bar')
 ```
 
-#### 10.16.`rtrim(str)`
+## 10.16.`rtrim(str)`
 
 ```sql
 --rtrim(str);去除最右侧的空格
 select rtrim(' bar ');
 ```
 
-#### 10.17.`replace(str,from_str,to_str)`
+## 10.17.`replace(str,from_str,to_str)`
 
 ```sql
 --replace(str,from_str,to_str);替换字符
 select replace('www.mysql.com','www','http://wwww');
 ```
 
-#### 10.18.`repeat(str,count)`
+## 10.18.`repeat(str,count)`
 
 ```sql
 --repeat(str,count);返回重复count次str的字符串;若count<0;返回空字符（''）;若str=null或count=null,返回null;
@@ -850,21 +850,21 @@ select repeat('MySQL',-1); --''
 select repeat(null,4);     --null
 ```
 
-#### 10.19.`reverse(str)`
+## 10.19.`reverse(str)`
 
 ```sql
 --reverse(str);颠倒字符串str
 select reverse('abc');  --cba
 ```
 
-#### 10.20.`insert(str,pos,len,newstr)`
+## 10.20.`insert(str,pos,len,newstr)`
 
 ```sql
 --insert(str,pos,len,newstr);将str的[pos-(pos+len)]的子串替换为newstr
 select insert('whatareyou',5,3,'is');  --whatisyou
 ```
 
-#### 10.21.`dayofweek(date)`
+## 10.21.`dayofweek(date)`
 
 ```sql
 --dayofweek(date);返回日期的星期几的索引
@@ -872,7 +872,7 @@ select dayofweek('2018-06-06');   --4（星期三）;1-星期天,2-星期一
 select dayofweek(now());          --3
 ```
 
-#### 10.22.`now()`
+## 10.22.`now()`
 
 ```sql
 --now();返回当前日期的字符串,格式2018-06-06 20:12:10
@@ -887,56 +887,56 @@ select CURRENT_TIME();  --21:13:04
 select curtime();       --21:13:04
 ```
 
-#### 10.23.`weekday(date)`
+## 10.23.`weekday(date)`
 
 ```sql
 --weekday(date);返回日期的星期几的索引
 select weekday('2018-06-06');  --2（星期三）;0-星期一,1-星期二
 ```
 
-#### 10.24.`dayofmonth(date)`
+## 10.24.`dayofmonth(date)`
 
 ```sql
 --dayofmonth(date);返回日期中的day,值在[1-31]
 select dayofmonth('2018-06-06');  --6
 ```
 
-#### 10.25.`dayofyear(date)`
+## 10.25.`dayofyear(date)`
 
 ```sql
 --dayofyear(date);返回日期在一年中的天数,值在[1-366]
 select dayofyear('2018-06-06');  --157
 ```
 
-#### 10.26.`month(date)`
+## 10.26.`month(date)`
 
 ```sql
 --month(date);返回date的月份,值在[1-12]
 select month('2018-01-01');   --1
 ```
 
-#### 10.27.`dayname(date)`
+## 10.27.`dayname(date)`
 
 ```sql
 --dayname(date);返回日期的星期几的名称
 select dayname('2018-06-06');  --Wednesday
 ```
 
-#### 10.28.`monthname(date)`
+## 10.28.`monthname(date)`
 
 ```sql
 --monthname(date);返回date月份的名称
 select monthname('2018-06-06'); -- June
 ```
 
-#### 10.29.`quarter(date)`
+## 10.29.`quarter(date)`
 
 ```sql
 --quarter(date),返回date季度的索引,值在[1-4]
 select quarter('2018-06-06');  --2
 ```
 
-#### 10.30.`week(date,first)`
+## 10.30.`week(date,first)`
 
 ```sql
 --week(date,first);返回date在当前年的第几个周;first=0,表示一周从星期天开始;first=1,表示一周从星期一开始
@@ -945,35 +945,35 @@ select week('2018-01-02',0); --0,2018-01-01是星期天
 select week('2018-01-02',1); --1
 ```
 
-#### 10.31.`year(date)`
+## 10.31.`year(date)`
 
 ```sql
 --year(date);返回date的年份,值在[1000-9999]
 select year('18-06-06');  --2018
 ```
 
-#### 10.32.`hour(time)`
+## 10.32.`hour(time)`
 
 ```sql
 --hour(time);返回time的小时,值在[0-23]
 select hour('20:43:23');  --20
 ```
 
-#### 10.33.`mimute(time)`
+## 10.33.`mimute(time)`
 
 ```sql
 --mimute(time);返回time的分钟,值在[0-23]
 select mimute('20:43:23');  --43
 ```
 
-#### 10.34.`second(time)`
+## 10.34.`second(time)`
 
 ```sql
 --seconf(time);返回time的秒数,值在[0-59]
 select second('20:43:23');  --23
 ```
 
-#### 10.35.`date_add(date,interval exp type)`
+## 10.35.`date_add(date,interval exp type)`
 
 ```sql
 --date_add(date,inerval exp type);日期的增加,可精确到秒
@@ -989,7 +989,7 @@ SELECT DATE_SUB("2018-01-01 00:00:00", INTERVAL "1 1:1:1" DAY_SECOND); --2017-12
 SELECT DATE_SUB("2018-01-02", INTERVAL 31 DAY); --2017-12-02s
 ```
 
-#### 10.36.`case value when [condition] then result [when [condition] then result ...]`
+## 10.36.`case value when [condition] then result [when [condition] then result ...]`
 
 ```sql
 case value
@@ -1000,28 +1000,28 @@ when [condition] then result
 select case 1 when 1 then 'one' when 2 then 'two' else 'more' end;  --one
 ```
 
-#### 10.37.`strcmp(str1,str2)`
+## 10.37.`strcmp(str1,str2)`
 
 ```sql
 --strcmp(str1,str2);若str1<str2返回-1;若str1=str2返回0;若str1>str2返回1
 select strcmp('text','text2');  --{-1}
 ```
 
-#### 10.38.`version()`
+## 10.38.`version()`
 
 ```sql
 --version();查询数据库版本信息
 select version();  --5.7.15-log
 ```
 
-#### 10.39.`connection_id()`
+## 10.39.`connection_id()`
 
 ```sql
 --connection_id();返回到目前为止MySQL服务的连接次数
 select connection_id(); --9
 ```
 
-#### 10.40.`database()/schema()`
+## 10.40.`database()/schema()`
 
 ```sql
 --database()/schema();返回数据库名
@@ -1029,7 +1029,7 @@ select database();
 select schema();
 ```
 
-#### 10.41.获取用户名
+## 10.41.获取用户名
 
 ```sql
 --获取用户名
@@ -1040,7 +1040,7 @@ select session_user();
 select current_user();
 ```
 
-#### 10.42.获取字符串的字符集和排序方式 
+## 10.42.获取字符串的字符集和排序方式 
 
 ```sql
 --charset(str);获取字符串的字符集
@@ -1049,42 +1049,42 @@ select charset('str');   --utf8mb4
 select collation('str'); --utf8mb4_general_ci
 ```
 
-#### 10.43.`last_insert_id()`
+## 10.43.`last_insert_id()`
 
 ```sql
 --last_insert_id();获取最后生成的auto_increment值
 select last_insert_id();
 ```
 
-#### 10.44.`password(str)`
+## 10.44.`password(str)`
 
 ```sql
 --password(str);对字符串str加密,一般用于对用户密码加密
 select password('root');  --*81F5E21E35407D884A6CD4A731AEBFB6AF209E1B
 ```
 
-#### 10.45.`md5(str)`
+## 10.45.`md5(str)`
 
 ```sql
 --md5(str);对str加密,一般对普通数据加密
 select md5('str');  --341be97d9aff90c9978347f66f945b77
 ```
 
-#### 10.46.`encode(str,pwdstr)`
+## 10.46.`encode(str,pwdstr)`
 
 ```sql
 --encode(str,pwdstr);使用字符串pwdstr加密字符串str;加密结构是一个二进制数,必须使用blob类型的字段保存
 select encode('str','pwd');
 ```
 
-#### 10.47.`decode(cryptstr,pwdstr)`
+## 10.47.`decode(cryptstr,pwdstr)`
 
 ```sql
 --decode(crytstr,pwdstr);使用pwdtsr解密字符串crytstr;crytstr是使用encode()加密的结果
 select decode(encode('str','pwd'),'pwd');  --str
 ```
 
-#### 10.48.`format(x,n)`
+## 10.48.`format(x,n)`
 
 ```sql
 --format(x,n);对数字x进行格式化,保留x后n位小数;这个过程要进行四舍五入
@@ -1092,7 +1092,7 @@ select format(3.2637,3);   --3.264
 select format(3.2634,3);   --3.263
 ```
 
-#### 10.49.不同进制数字进行转换
+## 10.49.不同进制数字进行转换
 
 ```sql
 --bin(x);10转2
@@ -1106,7 +1106,7 @@ select oct(14);  --16
 select conv(1110,2,8);  --16
 ```
 
-#### 10.50.`ip`与数字的转化
+## 10.50.`ip`与数字的转化
 
 ```sql
 --inet_aton(ip);ip地址转数字
@@ -1116,7 +1116,7 @@ select inet_aton('255.255.255.255');  --4294967295
 select inet_ntoa(3232236513);       --192.168.3.225
 ```
 
-#### 10.51.`get_lock(name,time)`
+## 10.51.`get_lock(name,time)`
 
 ```sql
 --get_lock(name,time);定义一个名为name、持续时间为time秒的锁;
@@ -1126,7 +1126,7 @@ select inet_ntoa(3232236513);       --192.168.3.225
 select get_lock('lock',3);
 ```
 
-#### 10.52.`release_lock(name)`
+## 10.52.`release_lock(name)`
 
 ```sql
 --release_lock(name);解除名为name的锁
@@ -1136,7 +1136,7 @@ select get_lock('lock',3);
 select release_lock('lock');
 ```
 
-#### 10.53.`is_free_lock(name)`
+## 10.53.`is_free_lock(name)`
 
 ```sql
 --is_free_lock(name);判断是否使用了名为name的锁
@@ -1145,21 +1145,21 @@ select release_lock('lock');
 select is_free_lock('lock');
 ```
 
-#### 10.54.`benchmark(count,expr)`
+## 10.54.`benchmark(count,expr)`
 
 ```sql
 --benchmark(count,expr);将表达式expr重复执行count,返回执行时间;用来判断mysql处理表达式的速度
 select benchmark(10,'select * from pre_attr');
 ```
 
-#### 10.55.`convert(str using charset)`
+## 10.55.`convert(str using charset)`
 
 ```sql
 --convert(str using charset);将字符串的字符集变为charset
 select charset('abc'),charset(convert('abc' using gbk));  -- utf8mb4	  gbk
 ```
 
-#### 10.56.`cast(x as type)/convert(x,type)`
+## 10.56.`cast(x as type)/convert(x,type)`
 
 ```sql
 --convert(x,type);将x的转化为type类型
@@ -1170,7 +1170,7 @@ select create_time,cast(create_time as date) from bbs_post;  --2015-01-21 10:02:
 --只是改变了输出值的数据类型，并没有改变表中字段的类型
 ```
 
-#### 10.57.`find_in_set(str,strList)`
+## 10.57.`find_in_set(str,strList)`
 
 ```mysql
 -- like是广泛的模糊匹配，字符串中没有分隔符

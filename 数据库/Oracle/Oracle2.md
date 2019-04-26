@@ -93,15 +93,15 @@ comment on column aa10.aaa100 is '';
 
 ***
 # 四、复制
-# 4.1. 复制表格数据
+## 4.1. 复制表格数据
 1. 目标表已经存在
 ```sql
 --复制表中的数据到相应的目标表字段中
 insert into aa10_dest(aaa100,aaa101,aaa102,aaa103) 
 select aaa100,aaa101,aaa102,aaa103 from aa10;
 ```
-***
 2. 目标表不存在
+
 ```sql
 create table aa10_dest 
 as
@@ -133,12 +133,20 @@ insert into demo.aa10_dest select aaa100,aaa101,aaa102,aaa103 from yhjy.aa10;
 >此时需要登录到有权限的用户
 
 ***
-# 五、`exp、imp`导入导出
-`exp`和`imp`是客户端工具程序，它们既可以在客户端使用，也可以在服务端使用。
-`dos`环境下执行命令。
-# 5.1. `exp`导出
+# 五、导入导出
+- `exp`和`imp`是客户端工具程序，它们既可以在客户端使用，也可以在服务端使用，`dos`环境下执行命令；
+  - 高版本`exp`导出的`dmp`文件，低版本`imp`不能导入；
+  - 低版本`exp`导出的`dmp`文件，高版本`imp`可以导入；
+
+- `expdp`和`impdp`是服务器端的工具程序，只能在`oracle`服务器端使用，不能在客户端使用。
+
+- `imp`只适用`exp`导出的文件，不使用与`expdp`导出的文件；`impdp`只适用`expdp`导出的文件，而不使用于`exp`导出的文件。
+
+- `exp`不能导出分区表，而`expdp`可以。
+
+## 5.1.`exp`导出
 1. 查看导出命令的语法信息
-```sql
+```dos
 exp help = y
 ```
 2. 完全导出数据库`orcl`
@@ -153,13 +161,13 @@ exp system/manager@orcl file=d:test.dump owner=(system,scott)
 ```dos
 exp system/manager@orcl file=test.dump tables=(aa10,user)
 ```
->`file=test.dump`此时表示相对路径
+`file=test.dump`此时表示相对路径
 
 5. 数据库表中指定查询条件下的数据
 ```dos
 exp system/maanger@orcl file=d:\test.dump tables=(user) query=\"where username='xy'\"  compress=y 
 ```
-> ` compress=y `对`dump`文件进行压缩
+`compress=y `对`dump`文件进行压缩
 
 6. 建立参数文件导出
 >创建一个`param.par`文件
@@ -176,39 +184,52 @@ query=\"where userid = 'u0001'\"
 exp username/password parfile=param.par
 ```
 
-***
-# 5.2.`imp`导入
+7.导出密码带有特殊字符的，密码双引号，连接串单引号
+
+```shell
+exp 'testuser/"test/15/!&/57"@localhost:1521/ora11g'  tables=inner_notify file=exp_export.dmp log=exp_export.log
+```
+
+---
+
+
+
+## 5.2.`imp`导入
+
 1. 查看导入命令的语法信息
 ```sql
 imp help = y
 ```
 2. 导入
-```dos
+```shell
 imp system/manager@orcl ignore=y full=y file=d:\test.dump log=d:\test.log
 ```
+
+导入时不加`ignore=y`，若有的表已经存在，则它会报错，且不导入该表；若加了`ignore=y`就可以导入已存在的表，但是导入的数据可能出现重复。
+
 3. 导入指定用户的数据
-```dos
- 
+```shell
+ imp system/manager@orcl file=d:\test.dump fromuser=(scott)
 ```
 4. 将一个用户的数据导入到另一个用户
-```sql
+```shell
 imp system/manager@orcl file=d:\test.dump fromuser=(scott) touser=(sys)
 imp system/manager@orcl file=d:\test.dump fromuser=scott touser=sys
 ```
 >将`scott`用户的数据导入到`sys`用户中
 
 5. 导入指定表的数据
-```sql
+```shell
 imp system/manager@orcl file=d:\test.dump tables=(aa10,user)
 ```
 6. 多个导入文件同时导入
-```sql
+```shell
 imp system/manager@orcl file=(d:\test.dump,e:\demo.dump) filesize=1G 
 ```
 7. 参数文件导入
 >建立参数文件`param.par`
 
-```
+```shell
 file=test.dump
 fromuser=scott
 touser=sys
@@ -216,7 +237,7 @@ log=test.log
 ```
 >导入
 
-```
+```shell
 imp system/manager parfile=param.par
 ```
 8. 导入模板
@@ -237,24 +258,196 @@ grant connect,resource,dba to jyrc;
 imp jyrc/jyrc@orcl file=f:/jyrc.dmp full=y ignore=y log=f:/jyrc20171226.log
 ```
 
-# 六、数据泵的导入导出
+## 5.3.`Oracle 11g`使用`exp`导出时，空表不能导出
 
-`expdp`和`impdp`是服务端的工具程序，只能在`oracle`服务端使用，不能在客户端使用。
-`imp`只适用于`exp`导出的文件，不适用于`expdp`导出文件；`impdp`只适用于`expdp`导出的文件，而不适用于`exp`导出文件。
-使用`exp`通常不能导出行数据的空表，而此时必须使用`expdp`导出
-## 6.1.`impdp`导入
+`11G`中有个新特性，当表无数据时，不分配`segment`，以节省空间。
+
+> 1、 设置`deferred_segment_creation`为`false`，指定之后创建的表有效
+
+```
+alter system/system set deferred_segment_creation=false;  
+```
+
+> 2、创建表的时候声明立即创建`Segment`
+
+```
+create table table_name segment creation immediate;
+```
+
+> 3、对于已经创建但是还没有`Segment`的表来说
+
+```sql
+--执行此语句来分配空间
+alter table table_name allocate extent;
+--也可插入一条语句来分配空间
+```
+
+> 4、批量处理
+
+```
+--查询出所有没有分配segment的表
+select 'alter table ' || table_name || ' allocate extent;'  AS SQLSTR 
+	from user_tables 
+where segment_created= 'NO' ;
+--执行结果，分配segment
+```
+
+### 5.3.1.`deferred_segment_creation`
+
+`11.2.0.4g`才有的参数,指创建一个表，在没有插入数据时**是否分配空间**，为`true`时，不分配空间，但在sys用户下不支持。
+
+> - 在`sys`用户下，创建一个没有数据的表时，同时自动分配空间。
+> - 在普通用户下，创建一个没有数据的表时，不会分配空间。
+
+1. 查看`deferred_segment_creation`
+
+```sql
+show parameter deferred_segment_creation;
+```
+
+2. 修改`deferred_segment_creation`
+
+```sql
+alter system/system set deferred_segment_creation=false;  
+```
+
+3. 某`schema`中所有未分配`segment`的表
+
+```sql
+select *  
+  from user_tables   
+ where segment_created = 'NO';
+```
+
+
+
+## 5.4.`impdp`导入
 1. 帮助命令
 ```dos
 impdp -help
 ```
-## 6.2.`expdp`导出
+2. 导入到指定用户
+
+```shell
+impdp scott/tiger DIRECTORY=DUMP_DIR DUMPFILE=expdp_export.dmp SCHEMAS=scott;
+```
+
+3. 改变表的`owner`，将`scott`的数据导入到`system`用户下
+
+```shell
+impdp system/manager DIRECTORY=DUMP_DIR DUMPFILE=expdp_export.dmp TABLES=scott.dept REMAP_SCHEMA=scott:system;
+```
+
+4. 导入表空间
+
+```shell
+impdp system/manager DIRECTORY=DUMP_DIR DUMPFILE=expdp_export.dmp TABLESPACES=example;
+```
+
+5. 导入整个数据库
+
+```shell
+impdb system/manager DIRECTORY=DUMP_DIR DUMPFILE=expdp_export.dmp FULL=y;
+```
+
+6. 追加数据
+
+```shell
+impdp system/manager DIRECTORY=DUMP_DIR DUMPFILE=expdp_export.dmp SCHEMAS=system TABLE_EXISTS_ACTION=append
+```
+
+使用`impdp`完成数据库导入时，若表已经存在，有四种的处理方式:
+
+- `skip`:默认操作
+- `replace`:先删除`drop`表，然后再创建表，最后插入数据
+- `append`:在原来的数据基础上添加数据
+- `truncate`:先`truncate`表，再插入数据
+
+
+
+## 5.5.`expdp`导出
+
 1. 帮助命令
 ```dos
 expdp -help
 ```
 
-***
+2. 按指定用户的导出数据
+
+```shell
+expdp jyrc/jyrc@porcl schemas=jyrc dumpfile=jyrc20190325.dmp version='11.2.0.1.0' DIRECTORY=PATH
+```
+
+3. 并行进程`parallel`导出数据
+
+```shell
+expdp scott/tiger@localhost:1521/orcl directory=DUMP_DIR dumpfile=expdp_export.dmp parallel=40 job_name=expdp40
+```
+
+4. 按指定表名导出数据
+
+```shell
+expdp scott/tiger@localhost:1521/orcl TABLES=emp,dept dumpfile=expdp_export.dmp DIRECTORY=DUMP_DIR
+```
+
+5. 按查询条件导出
+
+```shell
+expdp scott/tiger@localhost:1521/orcl directory=DUMP_DIR dumpfile=expdp_export.dmp tables=emp query='WHERE deptno=20'
+```
+
+6. 按表空间导出数据
+
+```shell
+expdp system/manager DIRECTORY=DUMP_DIR DUMPFILE=expdp_export.dmp TABLESPACES=temp,example;
+```
+
+7. 导出整个数据库
+
+```shell
+expdp system/manager DIRECTORY=DUMP_DIR DUMPFILE=expdp_export.dmp FULL=y;
+```
+
+
+
+
+
+
+
+## 5.6.`DIRECTORY`
+
+1. 新建逻辑目录`DIRECTORY`，逻辑目录并不会自动创建，若目录不存在导出会报错，故需要手动创建
+
+```sql
+CREATE [OR REPLACE] DIRECTORY directory_name AS 'pathname';
+create or replace directory exp_dir as 'h:\tmp';
+```
+
+2. 查询所有的`directory`
+
+```sql
+select * from dba_directories;
+```
+
+3. 授权
+
+```sql
+--将读写权限授予指定用户
+grant read,write on directory directory_name to user_name;
+```
+
+4. 删除`directory`
+
+```sql
+drop directory directory_name;
+```
+
+
+
+
+
 # 七、用户
+
 1. 创建用户
 ```sql
 --语法
@@ -381,7 +574,7 @@ revoke 权限，... from 用户名;
 revoke create table,create view from user_name;
 ```
 回收权限可以通过管理员，或者为用户授权的其他用户回收。
-# 9.1.对象权限
+## 9.1.对象权限
 指数据库中某一对象所拥有权限，即可以通过某一用户的对象权限，让其他用户来操作本用户中所授权的对象。分别是`select`、`insert`、`update`、`delete`、`execute`、`alter`、`index(索引)`、`references(关联)`
 1. 语法
 ```sql
@@ -1022,7 +1215,14 @@ select '''' from dual;
 select '姓名：'||name||'，年龄：'||age from emp;
 ```
 
-# 连接`oracle`数据库时，使用本机`ip`地址可以，使用`localhost`不行
+
+
+
+
+# 三十、问题
+
+## 30.1.连接`oracle`数据库时，使用本机`ip`地址可以，使用`localhost`不行
+
 修改配置文件`D:\app\Administrator\product\11.2.0\dbhome_1\NETWORK\ADMIN\tnsnames.ora`，将`HOST`=你自己的主机名。
 ```
 LISTENER =
@@ -1073,11 +1273,11 @@ select * from bd_corp for update
 在`pl/sql Developer`具的的菜单`“tools”`里面的`“sessions”`可以查询现在存在的会话
 
 # `DBLink`
-`DbLink`实现数据库的跨库访问。
-`dblink`分为公有和私有；公有的`dblink`使用`public`修饰，在`create`和`drop`时都需要加上`public`。
-公有的`dblink`对所有的用户开放，在`dblink`上创建的同义词也会随之对所有人开放。
-私有的`dblink`只对创建者开放，在`dblink`上创建的同义词也不能被其他用户访问，需要为用户创建视图，并将视图授权给所需用户后，用户才可访问该视图。
-# 如何创建`DbLink`
+- `DbLink`实现数据库的跨库访问，`dblink`分为公有和私有；
+  - 公有的`dblink`使用`public`修饰，在`create`和`drop`时都需要加上`public`；
+    公有的`dblink`对所有的用户开放，在`dblink`上创建的同义词也会随之对所有人开放；
+  - 私有的`dblink`只对创建者开放，在`dblink`上创建的同义词也不能被其他用户访问，需要为用户创建视图，并将视图授权给所需用户后，用户才可访问该视图。
+
 1. 查看用户是否具有权限
 ```sql
 select * from user_sys_privs where privilege like upper('%DATABASE LINK%') and username = upper('scott');
@@ -1087,9 +1287,6 @@ select * from user_sys_privs where privilege like upper('%DATABASE LINK%') and u
 grant create public database link to scott;
 ```
 3. 创建`DbLink`
->图形化界面`PL/SQL`创建
->![Alt text](./1513067768585.png)
->`sql`语句创建`dblink`
 ```sql
 create public database link scott  -- 链接名
 connect to scott       --用户
@@ -1145,52 +1342,8 @@ create public database link PRE_DB_LINK
 > `dblink`查询的时候，均会与远程数据库创建一个连接，`dblink`应该不会自动释放这个连接 ，如果是大量使用`dblink`查询，会造成`web `项目的连接数不够，导致系统无法正常运行。 
 
 
-# `Oracle 11g`使用`exp`导出时，空表不能导出
-`11G`中有个新特性，当表无数据时，不分配`segment`，以节省空间。
->1、 设置`deferred_segment_creation`为`false`，指定之后创建的表有效
-```
-alter system/system set deferred_segment_creation=false;  
-```
->2、创建表的时候声明立即创建`Segment`
-```
-create table table_name segment creation immediate;
-```
->3、对于已经创建但是还没有`Segment`的表来说
-```sql
---执行此语句来分配空间
-alter table table_name allocate extent;
---也可插入一条语句来分配空间
-```
->4、批量处理
-```
---查询出所有没有分配segment的表
-select 'alter table ' || table_name || ' allocate extent;'  AS SQLSTR 
-	from user_tables 
-where segment_created= 'NO' ;
---执行结果，分配segment
-```
 
 
-# `deferred_segment_creation`
-`11.2.0.4g`才有的参数,指创建一个表，在没有插入数据时**是否分配空间**，为`true`时，不分配空间，但在sys用户下不支持。
->* 在`sys`用户下，创建一个没有数据的表时，同时自动分配空间。
->* 在普通用户下，创建一个没有数据的表时，不会分配空间。
-
-1. 查看`deferred_segment_creation`
-```
-show parameter deferred_segment_creation;
-```
-2. 修改`deferred_segment_creation`
-```
-alter system/system set deferred_segment_creation=false;  
-```
-3. 某`schema`中所有未分配`segment`的表
-```
-select *  
-  from user_tables   
- where segment_created = 'NO'  
-```
-4. 如果表插入数据后被`truncate`，则会保留`segment`
 
 
 # 获取对象的定义语句`(DDL)`

@@ -31,8 +31,8 @@
 3. 安装`VMware Tools`工具
    * 在虚拟机中点击"安装VMware Tools"
    * centos 会出现一个 vm 的安装包
-   * 点击右键解压, 得到一个安装文件
-   * 进入该 vm 解压的目录 ，该文件在 /root/桌面/vmware-tools-distrib/下
+   * 点击右键解压， 得到一个安装文件
+   * 进入该vm解压的目录 ，该文件在 /root/桌面/vmware-tools-distrib/下
    * 安装 ./vmware-install.pl
    * 全部使用默认设置即可
    * 需要 reboot 重新启动即可生效

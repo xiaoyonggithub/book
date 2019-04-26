@@ -1,6 +1,6 @@
-### 一、基本结构
+# 一、基本结构
 
-#### 1.1.`if`语句
+## 1.1.`if`语句
 
 ```plsql
 IF condition THEN 
@@ -28,7 +28,7 @@ ELSE
 END IF;
 ```
 
-#### 1.2.`case`语法
+## 1.2.`case`语法
 
 ```plsql
 CASE selector
@@ -50,7 +50,7 @@ CASE
 END CASE;
 ```
 
-#### 1.3.`loop`循环语句
+## 1.3.`loop`循环语句
 
 ```plsql
 LOOP
@@ -75,13 +75,13 @@ END LOOP;
 
 
 
-### 二、变量
+# 二、变量
 
 
 
-### 三、存储过程
+# 三、存储过程
 
-#### 3.1.调用储存过程
+## 3.1.调用储存过程
 
 ```plsql
 procedure prc_jsgrrsdlf_dabgf_tmp(prm_yuj210      in uj21.yuj210%type, --人事档案流水号
@@ -113,13 +113,13 @@ declare
 
 
 
-### 四、函数
+# 四、函数
 
-### 五、游标
+# 五、游标
 
 指向查询结果集的指针，指向哪一行，提取哪一行的数据(PLSQL的游标默认指向结果集的第一行) 
 
-#### 5.1.游标的属性
+## 5.1.游标的属性
 
 【%found 】当最近一次读入记录成功时返回true 
 
@@ -129,7 +129,7 @@ declare
 
 【%rowcount】返回已从游标中读取的记录数 
 
-#### 5.2.读取游标数据
+## 5.2.读取游标数据
 
 ```plsql
 --
@@ -179,7 +179,7 @@ begin
 end;
 ```
 
-#### 5.3.带参数的游标
+## 5.3.带参数的游标
 
 ```plsql
 --带参数的游标
@@ -219,7 +219,7 @@ begin
 end;
 ```
 
-#### 5.4.游标删除记录
+## 5.4.游标删除记录
 
 ```plsql
 declare
@@ -238,7 +238,7 @@ begin
 end;
 ```
 
-#### 5.5.游标修改记录
+## 5.5.游标修改记录
 
 ```plsql
 declare
@@ -274,7 +274,7 @@ begin
 end;
 ```
 
-#### 5.6.`for update of `与`for update`的区别
+## 5.6.`for update of `与`for update`的区别
 
 `【for update】`锁定所有表中满足条件的记录
 
@@ -305,4 +305,4 @@ for udpate of a.deptno;
 
 
 
-### 六、触发器
+# 六、触发器

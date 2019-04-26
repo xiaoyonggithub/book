@@ -95,7 +95,7 @@ public @interface Metadata{
 
 ## 1.6.`@Inherited`
 
-`@Inherited` 允许子类继承父类的注解，不是子注解类型继承符父注解类型
+`@Inherited`允许子类继承父类的注解，不是子注解类型继承符父注解类型
 
 ```java
 @Retention(RetentionPolicy.RUNTIME)

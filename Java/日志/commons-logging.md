@@ -1,7 +1,7 @@
 ## 一、`commons-logging`
 
-- Jakarta Commons Logging(JCL)是一个接口，自身的日志系统十分弱小
-- 基本jar包有 commons-logging-1.2.jar
+- `Jakarta Commons Logging(JCL)`是一个接口，自身的日志系统十分弱小
+- 基本`jar`包有`commons-logging-1.2.jar`
 
 ### 1.1.日志级别
 
@@ -11,10 +11,10 @@
 
 > 默认的配置（自动配置）步骤:
 
-1. 先在classpath下查找commons-logging.properties文件
-2. 若没有commons-logging.properties文件，则在classpath中寻找log4j的包
-3. 若没有log4j的包，则使用java日志类（JUL）的实现类（自定义）
-4. 若JUL的实现类也没有，就使用commons-logging自己提供的一个简单日志实现类（SimpleLog）
+1. 先在`classpath`下查找`commons-logging.properties`文件
+2. 若没有`commons-logging.properties`文件，则在`classpath`中寻找`log4j`的包
+3. 若没有`log4j`的包，则使用`java`日志类（`JUL`）的实现类（自定义）
+4. 若`JUL`的实现类也没有，就使用`commons-logging`自己提供的一个简单日志实现类（`SimpleLog`）
 
 > 配置文件:`commons-logging.properties`
 

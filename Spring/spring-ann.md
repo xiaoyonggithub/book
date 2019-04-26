@@ -422,11 +422,11 @@ public interface BeanFactory {
 
 设置控制器（`Controller`）可以处理那些`URL`请求：
 
-* 在类定义处设置：提供初步的请求映射信息 ，相对于 `WEB `应用的根目 
+* 在类定义处设置：提供初步的请求映射信息 ，相对于`WEB `应用的根目 
 
-* 在方法定义处设置：提供进一步的细分映射信息 ,相对于类定义处的 `URL； `
+* 在方法定义处设置：提供进一步的细分映射信息 ，相对于类定义处的`URL； `
 
-  若类定义处未标注 `@RequestMapping`，则方法处标记的 `URL `相对于`WEB `应用的根目录 
+  若类定义处未标注`@RequestMapping`，则方法处标记的`URL `相对于`WEB `应用的根目录 
 
 `DispatcherServlet `截获请求后，就通过控制器上`@RequestMapping` 提供的映射信息确定请求所对应的处理方法。
 

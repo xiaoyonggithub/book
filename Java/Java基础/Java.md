@@ -1,4 +1,8 @@
-# 一、创建对象的方式
+
+
+# 一、对象
+
+## 1.1.创建对象的方式
 
 ```java
 import java.io.Serializable;  
@@ -177,15 +181,81 @@ public static Worker createWorker5(Worker worker) {
 
 `ResourceBundle`和`Properties`都能读取属性文件，它们的区别：
 
-* `Properties`继承于`Hashtable`，是基于输入流从属性文件中读取键值对，load()加载资源完毕后，就与输入流脱离了关系，但是不会自动关闭输入流，需手动关闭；
+* `Properties`继承于`Hashtable`，是基于输入流从属性文件中读取键值对，`load()`加载资源完毕后，就与输入流脱离了关系，但是不会自动关闭输入流，需手动关闭；
 * `ResourceBundle`是基于类读取属性文件，即将属性文件当作类，因此属性文件必须放在包中，使用属性文件的全限定类名指定文件的位置；
 * 属性文件采用`ISO-8859-1`编码方式，该编码方式不支持中文，中文字符将被转化为`Unicode`编码方式显示；
 
-# 三、匿名内部类
+```java
+public final class Configuration {
 
-在匿名内部类中使用局部变量时，在JDK1.7之前，局部变量需要`final`修饰；JDK1.7之后可省略，会默认添加；
+    private static final String CONFIG_FILE = "db";
+    private static ResourceBundle rb;
 
-Lambda表达式中同理
+    //使构造方法外部不能实例化
+    private Configuration() {
+        rb = ResourceBundle.getBundle(CONFIG_FILE);
+    }
+
+    public static Configuration getInstance() {
+        return ConfigurationEnmu.INSTANCE.getInstance();
+    }
+
+    public String getValue(String key) {
+        return rb.getString(key);
+    }
+
+    private static enum ConfigurationEnmu {
+        INSTANCE;
+        private Configuration configuration;
+
+        //枚举类的构造方法，会在类加载时实例化
+        ConfigurationEnmu() {
+            configuration = new Configuration();
+        }
+
+        public Configuration getInstance() {
+            return configuration;
+        }
+    }
+
+}
+```
+
+# 三、内部类
+
+内部类在编译完成后也会产生`.class`文件，文件名称：`外部类名称$内部类名称.class`。
+
+## 3.1.匿名内部类
+
+匿名内部类是没有名称的内部类。
+
+- 匿名内部类不能定义任何静态成员和方法；
+- 匿名内部类的方法不能抽象；
+- 匿名内部类必须实现接口或继承父类的所有抽象方法；
+- 匿名内部类不能定义构造方法；
+- 当匿名内部类与外部类有同名变量（方法）时，默认方法匿名内部类的变量（方法），访问外部类的变量（方法）则需要加上外部类的类名；
+- 匿名内部类可以访问外部类私有变量和方法，但是访问的外部类成员变量或成员方法必须用`static`修饰；
+
+```java
+public static int num = 100;
+
+@Test
+public void test07() {
+    int num = 0; //外部类方法中的局部变量，此时匿名内部类中不能访问到
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            int num = 10;
+            System.out.println(num);  //10，默认访问匿名内部类中的变量
+            System.out.println(ThreadTest.num); //100，访问外部类的变量
+        }
+    };
+    Thread thread = new Thread(runnable);
+    thread.start();
+}
+```
+
+在匿名内部类中使用局部变量时，在JDK1.7之前，局部变量需要`final`修饰；而在JDK1.7之后可省略，会默认添加；Lambda表达式中同理
 
 ```java
 final int num = 0;
@@ -200,6 +270,32 @@ Runnable runnable = new Runnable() {
 //Lambda
 Runnable r = () -> System.out.println("Lambda" + num);
 ```
+
+## 3.2.成员内部类/实例内部类
+
+
+
+## 3.3.静态内部类
+
+
+
+## 3.4.局部内部类
+
+
+
+## 3.5.内部类的优缺点
+
+### 3.5.1.优点
+
+- 可以实现多重继承；
+- 内部类可以很好的实现隐藏：一般的非内部类，是不允许有private与protected权限的，但内部类可以；
+- 减少了类文件编译后的产生的字节码文件的大小
+
+### 3.5.2.缺点
+
+- 使程序结构不清楚
+
+
 
 # 四、集合
 
@@ -333,8 +429,8 @@ final void checkForComodification() {
 obj instanceof class
 ```
 
-* 若obj是class的一个实例且obj!=null,则返回true
-* 若obj不是class的一个实例或obj==null,则返回false
+* 若`obj`是`class`的一个实例且`obj != null`，则返回`true`
+* 若`obj`不是`class`的一个实例或`obj == null`，则返回`false`
 
 ### 5.1.1.`instanceof`在编译状态和运行状态的区别
 
@@ -362,7 +458,7 @@ class是obj对象的父类和自身类时返回true
 
 # 六、JSON数据的处理
 
-## 6.2.Java对象转Json
+## 6.2.`Java`对象转`Json`
 
 ```java
 import com.alibaba.fastjson.JSON;
@@ -372,7 +468,7 @@ User user = new User();
 String json = JSONObject.toJSONString(user);
 ```
 
-## 6.3.Json转Java对象
+## 6.3.`Json`转`Java`对象
 
 ```java
 import com.alibaba.fastjson.JSON;
@@ -381,9 +477,9 @@ import com.alibaba.fastjson.JSONObject;
 User user = JSONObject.parseObject(json, User.class);
 ```
 
-## 6.4.Map转Json
+## 6.4.`Map`转`Json`
 
-## 6.4.1.`json-lib`
+### 6.4.1.`json-lib`
 
 ```java
 <dependency>
@@ -399,7 +495,7 @@ JSONObject jsonObject = JSONObject.fromObject(map);
 //json-lib是一个比较老的解决方案，近几年都没有升级过，它的适用环境是JDK1.5,在JDK1.6可能会报错，故需加上<classifier>jdk15</classifier>
 ```
 
-## 6.4.2.`com.alibaba.fastjson.JSON`
+### 6.4.2.`com.alibaba.fastjson.JSON`
 
 ```xml
 <dependency>
@@ -413,7 +509,7 @@ JSONObject jsonObject = JSONObject.fromObject(map);
 JSONUtils.toJSONString(requestMap);
 ```
 
-## 6.4.3.`gson`
+### 6.4.3.`gson`
 
 ```xml
 <dependency>
@@ -427,7 +523,7 @@ JSONUtils.toJSONString(requestMap);
 new Gson().toJson(param);
 ```
 
-## 6.4.4.`jackson`
+### 6.4.4.`jackson`
 
 ```xml
 jackson-core-2.6.0.jar
@@ -440,9 +536,9 @@ ObjectMapper mapper = new ObjectMapper();
 json = mapper.writeValueAsString(map);
 ```
 
-## 6.5.Json转Map
+## 6.5.`Json`转`Map`
 
-## 6.5.1.`com.alibaba.fastjson.JSON`
+### 6.5.1.`com.alibaba.fastjson.JSON`
 
 ```xml
 <dependency>
@@ -456,7 +552,7 @@ json = mapper.writeValueAsString(map);
 String str = "{\"0\":\"zhangsan\",\"1\":\"lisi\",\"2\":\"wangwu\",\"3\":\"maliu\"}";
 //第一种方式
 Map maps = (Map)JSON.parse(str);
-/第二种方式
+//第二种方式
 Map mapTypes = JSON.parseObject(str);
 //第三种方式
 Map mapType = JSON.parseObject(str,Map.class);
@@ -468,7 +564,7 @@ JSONObject jsonObject = JSONObject.parseObject(str);
 Map mapObj = JSONObject.parseObject(str,Map.class);
 ```
 
-## 6.5.2.`jackson`
+### 6.5.2.`jackson`
 
 ```xml
 jackson-core-2.6.0.jar
@@ -511,7 +607,7 @@ List<User> users= JSONObject.parseArray(json, User.class);
 
 ## 7.1.`Comparable`
 
-`Comparable`自然排序接口，若某个类实现了该接口，就意味该类支持排序（可以直接通过Arrays.sort() 或 Collections.sort()进行排序）
+`Comparable`自然排序接口，若某个类实现了该接口，就意味该类支持排序（可以直接通过`Arrays.sort()`或 `Collections.sort()`进行排序）
 
 ```java
 public class User implements Comparable<User> {
@@ -572,7 +668,7 @@ public void test04(){
 }
 ```
 
-> 注意，null 不是任何类的实例，即使 e.equals(null) 返回 false，e.compareTo(null) 也将抛出 NullPointerException。
+> 注意，null不是任何类的实例，即使e.equals(null)返回false，e.compareTo(null)也将抛出 NullPointerException。
 
 
 
@@ -580,7 +676,7 @@ public void test04(){
 
 `Comparator`比较器接口，用于定制某个类排序，但是该类本身不支持排序
 
-- 包括两个函数：compare() 和 equals()
+- 包括两个函数：compare()和equals()
 
 ```java
 public class User implements Comparable<User> {
@@ -696,9 +792,9 @@ System.out.println(str.replaceFirst(".", "#"));//#y.txt.bak
 
 ## 1.2.`JDK6`与`JDK7`中`substrting()`的区别
 
-String是通过字符数组实现的，在jdk6 中String类包含三个成员变量：`char value[]， int offset，int count`
+`String`是通过字符数组实现的，在`jdk6`中`String`类包含三个成员变量：`char value[]， int offset，int count`。
 
-- `JDK6`，调用substring()方法时，会创建一个新的String对象，但是该对象的值仍然指向原来的数组，只是
+- `JDK6`，调用`substring()`方法时，会创建一个新的`String`对象，但是该对象的值仍然指向原来的数组，只是
 
   `offset、count`的值不同
 
@@ -717,7 +813,7 @@ public String substring(int beginIndex, int endIndex) {
 
 ![img](../../images/20180323163448304.jpg)
 
-- `JDK7`，调用substring()方法时，会堆内存中创建一个新的数组
+- `JDK7`，调用`substring()`方法时，会堆内存中创建一个新的数组
 
 ```java
 public String(char value[], int offset, int count) {
@@ -822,16 +918,14 @@ public void test08() {
 
 ## 1.5.`switch`
 
-- `JDK7`以前switch中只支持`int`（`byte、short、char`及其对应的包装类型），但是`byte、short、char`会自动为`int`，
+- `JDK7`以前`switch`中只支持`int`（`byte、short、char`及其对应的包装类型），但是`byte、short、char`会自动为`int`，
 - `JDK7`以后支持`int、enum、boolean、String`
-  - jdk1.7并没有新的指令来处理switch string，而是通过调用switch中string.hashCode,将string转换为int从而进行判断
+  - `jdk1.7`并没有新的指令来处理`switch string`，而是通过调用`switch`中`string.hashCode`，将`string`转换为`int`从而进行判断
 
 ## 1.6.字符串常量池、class常量池和运行时常量池
 
 - 字符串常量池
-  - 
 - class常量池
-
 - 运行时常量池
 
 
@@ -876,4 +970,102 @@ System.out.println(collect);//Hollis:hollischuang:Java干货
 ```
 
 `StringJoiner`是通过`StringBuilder`实现，故性能`StringBuilder`差不多，且是非线程安全的
+
+# 十、枚举
+
+
+
+# 十一、运算符
+
+## 11.1.位移运算符
+
+- `>>`:右移，若数值为正，高位补`0`；若数值为负，高位补`1`
+
+```java
+//正数，高位补0
+System.out.println(20 >> 2); // 20/2^2 = 5
+System.out.println(Integer.toBinaryString(20));     //10100
+System.out.println(Integer.toBinaryString(20 >> 2));//00101
+```
+
+```java
+//负数，高位补1
+System.out.println(-20 >> 2); // -20/2^2 = -5
+System.out.println(Integer.toBinaryString(-20));       //11111111111111111111111111101100
+System.out.println(Integer.toBinaryString(-20 >> 2));  //11111111111111111111111111111011
+```
+
+```java
+-20 的二进制原码 ：1001 0100
+-20 的二进制反码 ：1110 1011
+-20 的二进制补码 ：1110 1100 
+右移两位后的补码 ：1111 1011 
+            反码：1111 1010
+            原码：1000 0101
+            结果：r = -5
+```
+
+- `>>>`:**无符号右移，也叫逻辑右移**，忽略符号位，空位都以0补齐
+  - 若数值为正，高位补`0`；
+  - 若数值为负，高位补`0`；
+
+```java
+//正数，高位补0
+System.out.println(20 >>> 2); // 20/2^2 = 5
+System.out.println(Integer.toBinaryString(20));     //10100
+System.out.println(Integer.toBinaryString(20 >>> 2));//00101
+```
+
+```java
+//负数，高位补0
+System.out.println(-20 >>> 2); // 1073741819
+System.out.println(Integer.toBinaryString(-20));       //11111111 11111111 11111111 11101100
+System.out.println(Integer.toBinaryString(-20 >>> 2));  //00111111 11111111 11111111 11111011
+```
+
+```java
+-20:源码：10000000 00000000 00000000 00010100
+    反码：11111111  11111111   11111111   11101011
+    补码：11111111  11111111   11111111   11101100
+    右移：00111111  11111111   11111111   11111011
+    结果：r = 1073741819
+```
+
+- `<<`:**左移**，**不分正负数，低位补0**
+
+```java
+//正数
+
+```
+
+```java
+//负数
+
+```
+
+```java
+-20 的二进制原码 ：1001 0100
+-20 的二进制反码 ：1110 1011
+-20 的二进制补码 ：1110 1100
+ 左移两位后的补码：1011 0000
+            反码：1010 1111
+            原码：1101 0000 
+            结果：r = -80
+```
+
+
+
+# 十二、类的使用
+
+## 12.1.`PropertyDescriptor `
+
+`PropertyDescriptor `描述`Java Bean`通过存储器方法导出的一个属性
+
+- 获取某个类的成员属性
+
+```java
+PropertyDescriptor(String propertyName, Class<?> beanClass)
+PropertyDescriptor(String propertyName, Class<?> beanClass, String readMethodName, String writeMethodName)
+PropertyDescriptor(String propertyName, Method readMethod, Method writeMethod)
+```
 

@@ -97,5 +97,22 @@ maxsize 100m
 extent management local; 
 ```
 
+自启动所有的`PDB`数据库，通过触发器在数据库启动之后启动
 
+```plsql
+create or replace trigger sys.after_startup after startup on database
+begin
+execute immediate 'alter pluggable database all open ';
+end after_startup;
+```
+
+
+
+
+
+
+
+# 三、字符集
+
+[^1]: https://www.cnblogs.com/xdouby/p/5666624.html
 

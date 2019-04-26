@@ -1,6 +1,6 @@
 
 
-- JavaScript是一门单线程语言，是基于回调队列的
+- `JavaScript`是一门单线程语言，是基于回调队列的
 
 - `v8`的主要包含两个组件
 
@@ -17,13 +17,13 @@
 
 - `script`标签引用的外部文件，标签内的代码就不会执行了
 
-- 字面量：一些不可改变的值，可直接使用（但一般不使用字面量），如1,2,3,4...
+- 字面量：一些不可改变的值，可直接使用（但一般不使用字面量），如`1,2,3,4...`
 
 - 变量：可以保存字面量，变量的值可任意改变
 
 ## 1.1.基本数据类型
 
-基本数据类型：String,Number,Boolean,Undefined,Null
+基本数据类型：`String,Number,Boolean,Undefined,Null`
 
 ### 1.1.1.String
 
@@ -172,7 +172,7 @@ console.log(typeof undefined); //undefined
   console.log(Number(undefined)); //NaN
   ```
 
-- parseInt()和parseFloat(),只能用于将字符串转为数字，可以将字符串中有效的数字取出来
+- parseInt()和parseFloat()，只能用于将字符串转为数字，可以将字符串中有效的数字取出来
 
 ```js
 var str = '123px';
@@ -1105,7 +1105,7 @@ var fun = function(){
       console.log(a);//2
       console.log(b);//4
   }
-  fun.call(obj,2,4);
+  fun.call(obj,2,4); //this是obj对象
   ```
 
 函数中访问属性的区别：

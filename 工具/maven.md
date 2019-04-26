@@ -176,11 +176,11 @@ mvn help:active-profiles
 
 ```
 
-mvc1为主项目，存在同名文件时会使用主项目（mvc1  ）的配置文件
+mvc1为主项目，存在同名文件时会使用主项目（mvc1）的配置文件
 
 ## 1.4.阿里云镜像
 
-```
+```xml
 <mirror>
     <id>nexus-aliyun</id>
 	<mirrorOf>central</mirrorOf>

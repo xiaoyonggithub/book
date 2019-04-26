@@ -51,6 +51,6 @@ include动作使用`request.getRequestDispatcher("relativeURL").forward(request,
 
 ## 4.3.总结
 
-- include指令是“先包含，后编译”，在编译时主文件已经包含被include的文件内容（即源代码);
-- include动作是“先运行，后包含”，在运行时主文件才包含被include的文件运行结果 
+- include指令是**先包含，后编译**，在编译时主文件已经包含被include的文件内容（即源代码);
+- include动作是**先运行，后包含**，在运行时主文件才包含被include的文件运行结果 
 

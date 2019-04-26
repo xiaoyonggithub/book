@@ -387,3 +387,37 @@ SELECT @@max_sp_recursion_depth;
 
 > 问题：使用索引为什么可加快数据库的检索速度?
 
+
+
+
+
+# 六、问题记录
+
+## 6.1.`Host ‘XXXXXX’ is blocked because of many connection errors`
+
+原因：同一`ip`在短时间内产生太多（超过`mysql`数据库`max_connection_errors`的最大值）中断的数据库连接而导致的阻塞；当客户端连接服务端超时(超过`connect_timeout`), 服务端就会给这个客户端记录一次`error`，当出错的次数达到`max_connect_errors`的时候，这个客户端就会被锁定，`max_connection_errors`的默认值为`10`
+
+1. 查看`max_connection_errors`的值
+
+```sql
+show global variables like '%max_connect_errors%';
+```
+
+2. 修改`max_connection_errors`的值
+
+```sql
+set global max_connection_errors = 1000;
+```
+
+3. 若需要永久解决，可修改`mysql`的配置文件对应属性
+
+```sql
+max_connection_errors = 1000
+```
+
+4. 清除缓存，把计数清除掉
+
+```sql
+flush hosts;
+```
+

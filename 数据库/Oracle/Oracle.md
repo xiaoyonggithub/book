@@ -1,27 +1,21 @@
-# 一、表空间
+# 一、表
 
-## 1.1.查看数据库数据量
+## 1.1.临时表
 
-1、 查看所有表空间及其大小
+- 临时表是全局的，在数据库设计时创建，不是在程序使用时创建；
+- 每个登录用户都使用相同临时表，但相互之间看不到彼此之间的数据，即临时表是会话独立的；
+- 临时表不会产生日志
+- 临时表的分类
+  - 事务型临时表：指在事务处理过程中插入的记录，只在事务提交或回滚之前有效，一旦事务完成，表中的数据就会被自动清除。
+  - 会话型临时表：指临时表中的数据在本次会话期间都是有效，直到会话结束，会话结束后表中针对本次会话的数据会自动清除。
 
-```sql
-select 
-	tablespace_name,sum(bytes)/1024/1024/1024 as GB 
-from dba_data_files 
-group by tablespace_name;
-```
 
-2、查看所有表空间对应的数据文件
 
-```sql
-select tablespace_name,file_name from dba_data_files;
-```
 
-3、修改数据文件的大小
 
-```sql
-alter database datafile 'D:\datafile.dbf' resize 1024M;
-```
+
+
+
 
 # 二、用户
 
@@ -482,7 +476,10 @@ select segment_type, owner,
  group by segment_type, owner;
 ```
 
+## 9.10.数据表空间与临时表空间的区别
 
+数据表空间：存放数据库中要持久化存储的一些对象，如表、视图、储存过程。
+临时表空间：存放数据库中间操作过程产生的数据，在执行结束后，存放的内容自动释放，如数据排序
 
 
 
@@ -1833,10 +1830,240 @@ connect by prior menuid = pmenuid;
 
 # 二十二、执行计划
 
+执行计划是一条查询语句在`Oracle`中的执行过程或访问路径的描述
+
+- 设置`autotrace`
+
+| 序号 | 命令                        | 解释                             |
+| ---- | --------------------------- | -------------------------------- |
+| 1    | SET AUTOTRACE OFF           | 此为默认值，即关闭Autotrace      |
+| 2    | SET AUTOTRACE ON EXPLAIN    | 只显示执行计划                   |
+| 3    | SET AUTOTRACE ON STATISTICS | 只显示执行的统计信息             |
+| 4    | SET AUTOTRACE ON            | 包含2,3两项内容                  |
+| 5    | SET AUTOTRACE TRACEONLY     | 与ON相似，但不显示语句的执行结果 |
+
+- 查看执行计划
+
 ```sql
 --生成执行计划
 explain plan for select * from tamenu where pmenuid = '6';
 --查看执行计划
+select plan_table_output from table(dbms_xplan.display('PLAN_TABLE'));
 select * from table(dbms_xplan.display);
 ```
 
+- 执行顺序
+  - 缩进最多的最先执行；缩进相同时，最上面的最先执行
+
+- 执行计划中字段的解释
+
+```sql
+ Plan Hash Value  : 1385717940 
+
+--------------------------------------------------------------------
+| Id | Operation           | Name | Rows | Bytes | Cost | Time     |
+--------------------------------------------------------------------
+|  0 | SELECT STATEMENT    |      |   10 | 48450 |    5 | 00:00:01 |
+|  1 |   TABLE ACCESS FULL | GBZE |   10 | 48450 |    5 | 00:00:01 |
+```
+
+- `Id`:序号，不是执行的顺序；执行顺序根据缩进判断
+- `Operation`:当前操作的内容
+- `Name`:
+- `Rows`：当前操作的`Cardinality`，`Oracle`估计当前操作的返回结果集
+- `Bytes`:执行该步骤后返回的字节数
+- `Cost`:`Oracle`计算出来的一个数值（代价），用于说明`SQL`执行的代价
+- `Time`:估计当前操作的时间
+
+
+
+## 22.1.表的访问方式
+
+- `TABLE ACCESS FULL`：全表扫描
+- `TABLE ACCESS BY ROWID`：通过`ROWID`表存取
+- `TABLE ACCESS BY INDEX SCAN`：索引扫描
+  - 扫描索引得到对应的`ROWID`
+  - 通过`ROWID`定位到具体的行读取数据
+
+## 22.2.索引扫描
+
+- `INDEX UNIQUE SCAN`：索引唯一扫描，每次至多返回一条记录
+  - 字段存在`UNIQUE、PRIMARY KEY`约束时，唯一性扫描
+- `INDEX RANGE SCAN`：索引范围扫描，一个索引会读取多条数据
+  - 在唯一索引上使用范围操作符，如`<、>、<>、>=、=<、between`
+  - 在组合索引上，只使用部分列进行查询（查询时必须包含前导列，否则会走全表扫描）
+  - 对非唯一索引上的类进行任何查询
+- `INDEX FULL SCAN`：索引全扫描
+- `INDEX FAST FULL SCAN`：索引快速扫描
+  - 扫描索引中的所有数据块
+- `INDEX SKIP SCAN`：索引跳跃扫描
+
+
+
+## 22.3.表连接方式
+
+- `SORT MERGE JOIN`：排序-合并连接
+- `NESTED LOOPS`:嵌套循环
+- `HASH JOIN`:哈希连接
+  - `OPTIMAL HASH JOIN`
+  - `ONEPASS HASH JOIN`
+  - `MULTIPASS HASH JOIN`
+- `CARTESIAN PRODUCT`:笛卡尔积
+
+
+
+## 22.4.表的连接类型
+
+- `INNER JOIN`:内连接
+  - 等值连接(连接条件为`=`)
+  - 非等值连接(连接条件为非`=`，如`>、>=、<、<=`)
+- `OUTER JOIN`:外连接
+  - `LEFT OUTER JOIN`:简写`LEFT JOIN`，左连接
+  - `RIGHT OUTER JOIN`:简写`RIGHT JOIN`，右连接
+  - `FULL OUTER JOIN`:简写`FULL JOIN`，全连接
+- `+`操作符是`Oracle`的特殊表示法，只能用作左外和右外连接
+  - 有`+`的表是匹配表，没有`+`的是驱动表
+  - 有`+`的表值返回符合条件的记录
+
+
+
+## 22.5.谓词说明
+
+- `Access`:通过某种方式定位到需要的数据，然后读取这些数据结果集，这种方式叫做`Access`
+  - 表示谓词条件的值将会影响数据的访问路径
+- `Filter`:把所有的数据都访问了，然后过滤掉不需要的数据，这种方式叫做`Filter`
+  - 表示谓词条件的值不会影响数据的访问路径，只起过滤作用
+
+
+
+## 22.6.`Statistics`(统计信息)
+
+- `recursive calls`:产生递归`sql`调用的条数
+- `Db block gets`:从`buffer cache`中读取的`block`数量
+- `consistent gets`:从`buffer cache`中读取的`undo`数量的`block`数量
+- `physical reads`:从磁盘中读取的`block`数量
+- `redo size`:`DML`生成的`redo`的大小
+- `bytes sent via SQL*Net to client`:数据库服务器通过`SQL*Net`向查询客户端发送的查询结果字节数
+- `bytes received via SQL*Net from client`:通过`SQL*Net`接收了来自客户端的数据字节数
+- `SQL*Net roundtrips to/from client`:服务器与客户端来回往返通信的`Oracle Messages`条数
+- `sorts(memory)`：在内存执行的排序量
+- `sorts(disk)`:在磁盘执行的排序量
+- `rows processed`:处理的数据条数
+
+## 22.7.性能优化
+
+从`Oracle`自身考虑的话，可以从以下方面优化：
+
+- 减少数据访问--索引使用（减少磁盘的访问）
+- 返回更少的数据--分页应用（减少网络传输或磁盘访问）
+- 减少交互次数--减少`IO`的访问，逻辑上的优化（减少网络传输）
+- 减少数据库服务器CPU运算--增加客户端运算（减少CPU及内存的开销）
+- 利用更多的资源--分布式尝试（增加资源）
+
+
+
+
+
+## 22.1.优化器
+
+`Oracle`优化器有两种：
+
+- `RBO(Rule-Based Optimization)`基于规则的优化器
+
+- `CBO(Cost-Based Optimization)`基于代价的优化器
+
+
+
+[^1]: <https://www.cnblogs.com/xqzt/p/4467867.html>
+[^2]: <https://www.cnblogs.com/Dreamer-1/p/6076440.html>
+[^3]: <https://www.cnblogs.com/muyunlee/p/5299615.html>
+
+
+
+
+
+# 二十三、视图
+
+## 23.1.普通视图与物化视图区别
+
+普通视图：是虚拟表
+
+物化视图：是一种特殊的物理表
+
+## 23.2.物化视图
+
+### 2.1.物化视图优点
+
+- 提高查询速度
+- 简化开发任务
+- 减少工作量
+
+### 2.2.物化视图操作
+
+1. 创建物化视图
+
+```sql
+create materialized view [view_name]  -- 视图名
+refresh [fast|complete|force]         -- 刷新方式
+[ 
+    on [commit|demand] |              -- 刷新的时间
+    start with (start_time) next (next_time)   -- 设置刷新的开始时间，next设置刷新的时间间隔
+] 
+as 
+{创建物化视图用的查询语句}             -- 视图数据
+```
+
+```sql
+create materialized view 
+```
+
+2. 删除物化视图
+
+```sql
+drop materialized view view_name; 
+```
+
+### 2.3.刷新方式
+
+- `fast`:快速刷新（增量刷新），只增加上次刷新时间到目前这段时间，新增的数据
+
+  - 增量刷新物化视图还需要一个物化视图日志表
+
+  ```sql
+  create materialized view log on （主表名） 
+  ```
+
+- `complete`:完全刷新，相当于重新执行一次创建视图的查询语句
+
+- `force`:
+
+
+
+## 2.4.刷新时间
+
+- `on demand`:在需要的时候刷新，需手动刷新，可以使用`job`定时刷新
+
+```plsql
+begin 
+     dbms_mview.refresh(TAB=>'an_user_base_file_no_charge', 
+                                       METHOD=>'COMPLETE', 
+                                       PARALLELISM=>8);   --PARALLELISM并行控制参数 
+end; 
+/ 
+```
+
+- `on commit`:当主表有数据提交时，立即刷新数据
+
+```plsql
+-- 增量刷新不需要使用并行
+begin 
+     dbms_mview.refresh(TAB=>'an_user_base_file_no_charge', 
+                                       METHOD=>'FAST', 
+                                       PARALLELISM=>1); 
+end; 
+/ 
+```
+
+
+
+2.5.

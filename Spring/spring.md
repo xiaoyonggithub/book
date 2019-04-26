@@ -80,15 +80,15 @@
 
 区别：
 
-* `classpath:`只会到当前项目的classpath中查找找文件,即只会从第一个classpath中加载;
-* `classPath*:`不仅会在当前项目classpath下查找，还会在jar文件中（classpath）进行查找,即从所有的classpath中加载;
+* `classpath:`只会到当前项目的classpath中查找文件，即只会从第一个classpath中加载；
+* `classpath*:`不仅会在当前项目classpath下查找，还会在jar文件中（classpath）进行查找，即从所有的classpath中加载；
 
 使用场景：
 
-* 在多个classpath中存在同名资源，都需要加载时，那么用classpath:只会加载第一个，而classpath*会加载所有
-* 若要加载的资源，不在当前ClassLoader的路径里，那么用classpath:前缀是找不到的,此时就需要使用classpath*
+* 在多个classpath中存在同名资源，都需要加载时，那么用classpath:只会加载第一个，而classpath*会加载所有；
+* 若要加载的资源，不在当前ClassLoader的路径里，那么用classpath:前缀是找不到的，此时就需要使用classpath*；
 
-注意： 用`classpath*:`需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用`classpath* `
+注意： 用`classpath*:`需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用`classpath* `；
 
 ```xml
 <context-param>
@@ -149,7 +149,7 @@ Srping匹配资源路径时支持Ant模式通配符匹配，Spring提供AntPathM
 ## 3.1.配置文件创建`<bean>`
 
 ```xml
-<!--class:bean全类名，通过反射的方式在IOC容器创建bean,要求必须提供无参构造器
+<!--class:bean全类名，通过反射的方式在IOC容器创建bean，要求必须提供无参构造器
 	id：bean的唯一标识-->
 <bean id="emp" class="com.xy.pojo.Emp"></bean>
 ```
@@ -494,12 +494,12 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-`@Autowired`也可以放在数据、集合和Map属性上
+`@Autowired`也可以放在数据、集合和`Map`属性上
 
-* 数组：将所有匹配的bean的装配进数组
-* 集合：Spring读取集合的类型，然后装配与之匹配的bean
+* 数组：将所有匹配的`bean`的装配进数组
+* 集合：`Spring`读取集合的类型，然后装配与之匹配的`bean`
 
-* Map: 将bean的名称作为key,将bean作为value进行装配
+* `Map`: 将`bean`的名称作为`key`，将`bean`作为`value`进行装配
 
 ```java
 public interface Service {
@@ -549,7 +549,7 @@ com.example.demo.autowired.impl.UserService@47dbb1e2
 
 - `@Autowired`:Spring提供的注解
   - 通过`AutowiredAnnotationBeanPostProcessor`实现依赖注入的
-  - 根据**类型**进行自动装配的；若根据ID装配，则需要与`@Qualifier`配合使用（自动注入的策略就从 byType 转变成 byName ）
+  - 根据**类型**进行自动装配的；若根据ID装配，则需要与`@Qualifier`配合使用（自动注入的策略就从 byType转变成byName）
   - 可设置为`required=false`时，没找到bean时不报错
   - `@Autowired`可设置在变量、setter方法、构造函数上；`@Qualifier`的标注对象是成员变量、方法**入参**、构造函数**入参**
 - `@Resource`:JSR-330提供的注解
@@ -558,7 +558,7 @@ com.example.demo.autowired.impl.UserService@47dbb1e2
   - 可作用在变量、setter方法
 - `@Inject`:JSR-250提供的注解
   - 通过`javax.inject.Inject`实现注入
-  - 根据类型自动装配；若需要按ID进行装配，需与`@Named`配合使用（**自动注入的策略就从 byType 转变成 byName 了**）
+  - 根据类型自动装配；若需要按ID进行装配，需与`@Named`配合使用（**自动注入的策略就从byType转变成 byName了**）
   - 可设置在变量、setter方法、构造函数上
 
 
@@ -854,7 +854,7 @@ com.xy.dao.UserDao@769a1df5
 
 # 六、自动装配
 
-IOC能自动装配bean,只需要自定义自动装配的模式，自动装配的模式如下：
+IOC能自动装配bean，只需要自定义自动装配的模式，自动装配的模式如下：
 
 * `byType`:根据类型自动装配，缺点是有多个目标对象的bean时不知道装配那个;
 * `byName`:根据名称自动装配，目标的名称必须与属性名相同;
@@ -2056,10 +2056,10 @@ public void testNamedParameterJdbcTemplate2(){
 
 ## 14.1.事务的四个属性（ACID）
 
-* 原子性`atomicity`：事务是一个原子操作，有一系列动作组成。务的原子性确保动作要么全部完成，要么全不起作用;
-* 一致性`consistency`:一旦事务动作完成，事务就提交。数据和资源处于满足业务规则的一致状态中;
-* 隔离性`isolation`：可能许多事务会同时处理相同的数据，因此每个事务都应该与其他事务隔开，防止数据损坏;
-* 持久性`durability`：一旦事务完成，无论发生什么系统错误，它的结果都不应该受影响。通常情况下，事务的结果被写入到持久化存储器中;
+* 原子性`atomicity`：事务是一个原子操作，有一系列动作组成。务的原子性确保动作要么全部完成，要么全不起作用；
+* 一致性`consistency`:一旦事务动作完成，事务就提交。数据和资源处于满足业务规则的一致状态中；
+* 隔离性`isolation`：可能许多事务会同时处理相同的数据，因此每个事务都应该与其他事务隔开，防止数据损坏；
+* 持久性`durability`：一旦事务完成，无论发生什么系统错误，它的结果都不应该受影响。通常情况下，事务的结果被写入到持久化存储器中；
 
 ## 14.2.事务管理器的实现
 
